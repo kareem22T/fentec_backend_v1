@@ -69,5 +69,6 @@ class Kernel extends HttpKernel
         'check_api_password' => CheckApiPassword::class,
         'cors' => \App\Http\Middleware\Cors::class,
         'admin_guest' => \App\Http\Middleware\AdminGuest::class,
+        'admin' => \App\Http\Middleware\AdminMiddleware::class, 
     ];
 }

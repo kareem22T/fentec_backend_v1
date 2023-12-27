@@ -106,6 +106,7 @@
         <div class="custom-loader"></div>
     </div>
 
+    @if(Auth::guard("admin")->user()->role === "Master")
     <nav>
         <a href="{{ route('admin.home') }}" class="@yield('home_active')"><img src="{{ asset('/dashboard/images/adaptive-icon.png') }}" alt="fentec logo"></a>
         <a href="{{ route('scooters.manage') }}" class="@yield('scooters_active')">
@@ -130,6 +131,7 @@
             </svg>
         </a>
     </nav>
+    @endif
     <main>
         @yield('content')
     </main>

@@ -36,7 +36,7 @@ class RegisterController extends Controller
         $credentials = ['email' => $request->input('email'), 'password' => $request->input('password')];
 
         if (Auth::guard('admin')->attempt($credentials)) {
-            return $this->jsonData(true, true, 'Successfully Operation', [], []);
+            return $this->jsonData(true, true, 'Successfully Operation', [], ["role" => Auth::guard('admin')->user()->role]);
         }
 
         return $this->jsonData(false, null, 'Faild Operation', ['Email or password is not correct!'], []);

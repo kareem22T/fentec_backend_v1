@@ -51,7 +51,7 @@ class ManageScooters extends Controller
             return $this->jsondata(false, null, 'Add failed', [$validator->errors()->first()], []);
         }
         
-        $zone = Zone::fide($request->id);
+        $zone = Zone::find($request->id);
         $zone->delete();
         
         if ($zone)

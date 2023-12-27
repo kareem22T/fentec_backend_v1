@@ -24,13 +24,16 @@ Route::middleware('auth:sanctum')->post('/create-seller', [ManageSellersControll
 Route::middleware('auth:sanctum')->post('/update-seller', [ManageSellersController::class, 'update']);
 
 Route::middleware('auth:admin')->group(function () {
-    Route::get('/', [AdminHomeController::class, 'getIndex'])->name('admin.home');
+    Route::middleware('admin:Master')->get('/', [AdminHomeController::class, 'getIndex'])->name('admin.home');
 
     //coupon
-    Route::post('/coupon/put', [AdminHomeController::class, 'addCoupon'])->name('coupon.put');
+    Route::middleware('admin:Master')->post('/coupon/put', [AdminHomeController::class, 'addCoupon'])->name('coupon.put');
+
+    //notification
+    Route::middleware('admin:Master')->post('/notification/push', [AdminHomeController::class, 'pushNotification'])->name('notification.push');
 
     // users
-    Route::prefix('users')->group(function () {
+    Route::middleware('admin:Moderator')->prefix('users')->group(function () {
         Route::get('/', [ManageUsersController::class, 'previewIndex'])->name('prev.users');
         Route::post('/', [ManageUsersController::class, 'getUsers'])->name('get.users');
         Route::post('/approve', [ManageUsersController::class, 'approve'])->name('user.approve');
@@ -38,17 +41,18 @@ Route::middleware('auth:admin')->group(function () {
     });
 
     // admins
-    Route::prefix('admins')->group(function () {
+    Route::middleware('admin:Master')->prefix('admins')->group(function () {
         Route::get('/', [ManageAdminControler::class, 'index'])->name('admins.manage');
         Route::get('/get', [ManageAdminControler::class, 'get'])->name('get.admins');
         Route::post('/add', [ManageAdminControler::class, 'add'])->name('admin.add');
     });
 
     // scooters
-    Route::prefix('scooters')->group(function () {
+    Route::middleware('admin:Technician')->prefix('scooters')->group(function () {
         Route::get('/', [ManageScooters::class, 'index'])->name('scooters.manage');
         Route::get('/zones', [ManageScooters::class, 'zonesIndex'])->name('zones.manage');
         Route::post('/zones-add', [ManageScooters::class, 'add'])->name('zones.add');
+        Route::post('/zones-delete', [ManageScooters::class, 'delete'])->name('zones.delete');
     });
 
     //logout

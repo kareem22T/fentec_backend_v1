@@ -15,6 +15,10 @@ class ManageUsersController extends Controller
 {
     use DataFormController;
     use SendEmailTrait;
+    public function __construct()
+    {
+        $this->middleware('admin:Moderator')->only(['previewIndex', 'getUsers', "approve", "reject"]);
+    }
 
     public function previewIndex () {
         return view('admin.dashboard.users.preview');

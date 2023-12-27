@@ -3,8 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\Seller\RegisterController as SellerRigisterController;
-use ExpoSDK\ExpoMessage;
-use ExpoSDK\Expo;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,29 +45,4 @@ Route::group(['middleware' => ['check_api_password'], 'prefix' => 'sellers'], fu
 
 Route::get('/', function () {
     return 'welcome';
-});
-
-Route::get('/push', function () {
-/**
- * Create messages fluently and/or pass attributes to the constructor
- */
-    $expo = Expo::driver('file');
-    $message = (new ExpoMessage([
-        'title' => 'initial title',
-        'body' => 'initial body',
-    ]))
-    ->setTitle('This title overrides initial title')
-    ->setBody('This notification body overrides initial body')
-    ->setData(['id' => 1])
-    ->setChannelId('default')
-    ->setBadge(0)
-    ->playSound();
-
-    $recipients = [
-        'ExponentPushToken[vr6jOyOAhiawPxDD2xr9_A]',
-    ];
-
-    $response = $expo->send($message)->to($recipients)->push();
-
-    return $response;
 });

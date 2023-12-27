@@ -26,7 +26,23 @@ createApp({
                     setTimeout(() => {
                         $('.loader').fadeOut()
                         $('#errors').fadeOut('slow')
-                        window.location.href = '/admin'
+                        switch (response.data.data.role) {
+                            case "Moderator":
+                                window.location.href = '/admin/users'
+                                break;
+
+                            case "Accountant":
+                                window.location.href = '/admin/sellers'
+                                break;
+
+                            case "Technician":
+                                window.location.href = '/admin/scooters'
+                                break;
+
+                            default:
+                                window.location.href = '/admin'
+                                break;
+                        }
                     }, 1300);
                 } else {
                     $('.loader').fadeOut()

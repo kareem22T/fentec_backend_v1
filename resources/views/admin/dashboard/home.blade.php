@@ -38,9 +38,9 @@
             <button class="button">Quick access </button>
         </div>
         <div class="card notification_wrapper">
-            <input type="text" name="" id="title" class="input" placeholder="title">
-            <textarea name="" id="msg" cols="30" rows="10" class="input" placeholder="Message"></textarea>
-            <button class="button">Push Notification</button>
+            <input type="text" name="" id="title" class="input" placeholder="title" v-model="msg_title">
+            <textarea name="" id="msg" cols="30" rows="10" class="input" placeholder="Message" v-model="msg"></textarea>
+            <button class="button" @click="pushNotification()">Push Notification</button>
         </div>
     </section>
     <section class="row-2 table_wrapper">
@@ -101,7 +101,9 @@ createApp({
         title: null,
         code: null,
         start_in: null,
-        end_in: null
+        end_in: null,
+        msg_title: null,
+        msg: null
     }
   },
   methods: {
@@ -113,6 +115,63 @@ createApp({
                 code: this.code,
                 start_in: this.start_in,
                 end_in: this.end_in,
+            },
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            }
+            );
+            if (response.data.status === true) {
+                document.getElementById('errors').innerHTML = ''
+                let error = document.createElement('div')
+                error.classList = 'success'
+                error.innerHTML = response.data.message
+                document.getElementById('errors').append(error)
+                $('#errors').fadeIn('slow')
+                $('.loader').fadeOut()
+                setTimeout(() => {
+                    $('#errors').fadeOut('slow')
+                    window.location.reload()
+                }, 2000);
+            } else {
+                $('.loader').fadeOut()
+                document.getElementById('errors').innerHTML = ''
+                $.each(response.data.errors, function (key, value) {
+                    let error = document.createElement('div')
+                    error.classList = 'error'
+                    error.innerHTML = value
+                    document.getElementById('errors').append(error)
+                });
+                $('#errors').fadeIn('slow')
+                setTimeout(() => {
+                    $('input').css('outline', 'none')
+                    $('#errors').fadeOut('slow')
+                }, 5000);
+            }
+
+        } catch (error) {
+            document.getElementById('errors').innerHTML = ''
+            let err = document.createElement('div')
+            err.classList = 'error'
+            err.innerHTML = 'server error try again later'
+            document.getElementById('errors').append(err)
+            $('#errors').fadeIn('slow')
+            $('.loader').fadeOut()
+
+            setTimeout(() => {
+            $('#errors').fadeOut('slow')
+            }, 3500);
+
+            console.error(error);
+        }
+    },
+    async pushNotification() {
+      $('.loader').fadeIn().css('display', 'flex')
+        try {
+            const response = await axios.post(`{{ route('notification.push') }}`, {
+                msg_title: this.msg_title,
+                msg: this.msg,
             },
             {
                 headers: {

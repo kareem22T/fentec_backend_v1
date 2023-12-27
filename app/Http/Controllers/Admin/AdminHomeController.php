@@ -6,7 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Coupon;
+use App\Models\User;
 use App\Traits\DataFormController;
+use ExpoSDK\ExpoMessage;
+use ExpoSDK\Expo;
 
 class AdminHomeController extends Controller
 {
@@ -41,5 +44,39 @@ class AdminHomeController extends Controller
         ]);
 
         return $this->jsondata(true, null, 'Coupon added successfuly', [], []);
+    }
+
+    public function pushNotification(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'msg' => 'required',
+            'msg_title' => 'required',
+        ], [
+            'msg.required' => 'Please Enter Notfication msg',
+            'msg_title.required' => 'Please Enter Notification title',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->jsondata(false, null, 'Login failed', [$validator->errors()->first()], []);
+        }
+
+        $usersToken = User::where('notification_token', '!=', null)->pluck('notification_token')->toArray();
+        if ($usersToken) {
+            $expo = Expo::driver('file');
+            $message = (new ExpoMessage([
+                'title' => $request->msg_title,
+                'body' => $request->msg,
+            ]))
+            ->setTitle($request->msg_title)
+            ->setBody($request->msg)
+            ->setData(['id' => 1])
+            ->setChannelId('default')
+            ->setBadge(0)
+            ->playSound();
+
+            $recipients = $usersToken;
+
+            $response = $expo->send($message)->to($recipients)->push();
+            return $this->jsondata(true, null, 'Notification has pushed successfuly', [], [$response]);
+        }
     }
 }
