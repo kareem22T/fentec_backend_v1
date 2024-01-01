@@ -4,7 +4,8 @@
     "scripts": {
         "dev": "vite",
         "build": "vite build",
-        "watch_admin": "sass --watch public/dashboard/sass/admin.scss:public/dashboard/css/admin.css --style expanded"
+        "watch_admin": "sass --watch public/dashboard/sass/admin.scss:public/dashboard/css/admin.css --style expanded",
+        "mv_css": "mv public/dashboard/css/admin.css dashboard/css"
     },
     "devDependencies": {
         "axios": "^1.1.2",
