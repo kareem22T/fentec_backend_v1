@@ -45,6 +45,8 @@ Route::middleware('auth:admin')->group(function () {
         Route::get('/', [ManageAdminControler::class, 'index'])->name('admins.manage');
         Route::get('/get', [ManageAdminControler::class, 'get'])->name('get.admins');
         Route::post('/add', [ManageAdminControler::class, 'add'])->name('admin.add');
+        Route::post('/update', [ManageAdminControler::class, 'update'])->name('admin.update');
+        Route::post('/delete', [ManageAdminControler::class, 'delete'])->name('admin.delete');
     });
 
     // scooters

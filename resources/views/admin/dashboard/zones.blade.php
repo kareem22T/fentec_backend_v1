@@ -55,7 +55,6 @@
                                 <td>{{ $zone->created_at }}</td>
                                 <td>
                                     <div class="btns flex-center">
-                                        <button class="button success"><i class='bx bx-edit'></i></button>
                                         <button class="button danger"><i class='bx bx-trash'  onclick="deleteZone({{ $zone->id }})"></i></button>
                                     </div>
                                 </td>
@@ -63,7 +62,7 @@
                         @endforeach
                     @else
                         <tr style="font-size: 20px; font-weight: 700; text-align: center">
-                            <td colspan="5"><h2>There is no requests!</h2></td>
+                            <td colspan="5"><h2>There is no added zones!</h2></td>
                         </tr>
                     @endif
                 </tbody>

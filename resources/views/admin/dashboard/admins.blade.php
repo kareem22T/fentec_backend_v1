@@ -64,8 +64,8 @@
                     <td>@{{admin.phone}}</td>
                     <td>
                         <div class="btns flex-center">
-                            <button class="button success" @click=""><i class='bx bx-edit'></i></button>
-                            <button class="button danger" @click=""><i class='bx bx-trash'></i></button>
+                            <button class="button success" @click="getEditValues(admin);admin_data = admin;showEditAdmin = true;"><i class='bx bx-edit'></i></button>
+                            <button class="button danger" @click="this.delete(admin.id, admin.full_name)"><i class='bx bx-trash'></i></button>
                         </div>
                     </td>
                 </tr>
@@ -103,8 +103,8 @@
                     <td>@{{admin.phone}}</td>
                     <td>
                         <div class="btns flex-center">
-                            <button class="button success" @click=""><i class='bx bx-edit'></i></button>
-                            <button class="button danger" @click=""><i class='bx bx-trash'></i></button>
+                            <button class="button success" @click="getEditValues(admin);admin_data = admin;showEditAdmin = true;"><i class='bx bx-edit'></i></button>
+                            <button class="button danger" @click="this.delete(admin.id, admin.full_name)"><i class='bx bx-trash'></i></button>
                         </div>
                     </td>
                 </tr>
@@ -142,8 +142,8 @@
                     <td>@{{admin.phone}}</td>
                     <td>
                         <div class="btns flex-center">
-                            <button class="button success" @click=""><i class='bx bx-edit'></i></button>
-                            <button class="button danger" @click=""><i class='bx bx-trash'></i></button>
+                            <button class="button success" @click="getEditValues(admin);admin_data = admin;showEditAdmin = true;"><i class='bx bx-edit'></i></button>
+                            <button class="button danger" @click="this.delete(admin.id, admin.full_name)"><i class='bx bx-trash'></i></button>
                         </div>
                     </td>
                 </tr>
@@ -181,8 +181,8 @@
                     <td>@{{admin.phone}}</td>
                     <td>
                         <div class="btns flex-center">
-                            <button class="button success" @click=""><i class='bx bx-edit'></i></button>
-                            <button class="button danger" @click=""><i class='bx bx-trash'></i></button>
+                            <button class="button success" @click="getEditValues(admin);admin_data = admin;showEditAdmin = true;"><i class='bx bx-edit'></i></button>
+                            <button class="button danger" @click="this.delete(admin.id, admin.full_name)"><i class='bx bx-trash'></i></button>
                         </div>
                     </td>
                 </tr>
@@ -194,7 +194,7 @@
     </section>
 
 
-    <div class="hide-content" @click="showAddAdmin = false" v-if="showAddAdmin"></div>
+    <div class="hide-content" @click="showAddAdmin = false" v-if="showAddAdmin | showEditAdmin"></div>
     <div class="pop-up show_request_details_wrapper card" v-if="showAddAdmin">
         <h1>Add @{{ admin_title }}</h1>
         <br>
@@ -215,8 +215,45 @@
         </div>
         <br>
         <div class="btns flex-center">
-            <button class="button secondary" @click="showAddAdmin = false">Cancel</button>
+            <button class="button secondary" @click="showAddAdmin = false;admin_data = null">Cancel</button>
             <button class="button success" @click="add()">Add</button>
+        </div>
+    </div>
+    <div class="pop-up show_request_details_wrapper card" v-if="showEditAdmin && admin_data">
+        <h1>edit @{{ admin_data.full_name }} information</h1>
+        <br>
+        <div class="form-group">
+            <input type="text" name="name" id="name" class="form-control input" v-model="to_edit_name" placeholder="Name">
+        </div>
+        <br>
+        <div class="form-group">
+            <input type="text" name="email" id="email" class="form-control input"  v-model="to_edit_email" placeholder="Email">
+        </div>
+        <br>
+        <div class="form-group">
+            <input type="text" name="phone" id="phone" class="form-control input" v-model="to_edit_phone" placeholder="Phone">
+        </div>
+        <br>
+        <div class="form-group">
+            <select name="role" id="role" class="form-control input" v-model="to_edit_role" placeholder="Role">
+                <option value="Master">Master</option>
+                <option value="Technician">Technician</option>
+                <option value="Accountant">Accountant</option>
+                <option value="Moderators">Moderators</option>
+            </select>
+        </div>
+        <br>
+        <div class="form-group">
+            <input type="text" name="password" id="password" class="form-control input" v-model="to_edit_password" placeholder="New Password (optional)">
+        </div>
+        <br>
+        <div class="form-group">
+            <input type="text" name="password" id="password" class="form-control input" v-model="to_edit_password" placeholder="New Password confirmation">
+        </div>
+        <br>
+        <div class="btns flex-center">
+            <button class="button secondary" @click="showEditAdmin = false">Cancel</button>
+            <button class="button success" @click="edit()">edit</button>
         </div>
     </div>
 </div>
@@ -243,10 +280,24 @@ createApp({
         email: null,
         phone: null,
         password: null,
-
+        to_edit_name: null,
+        to_edit_email: null,
+        to_edit_phone: null,
+        to_edit_password: null,
+        to_edit_id: null,
+        to_edit_password_confirmation: null,
+        showEditAdmin: false,
+        admin_data: null
     }
   },
   methods: {
+    getEditValues(admin) {
+        this.to_edit_name = admin.full_name;
+        this.to_edit_email = admin.email;
+        this.to_edit_phone = admin.phone;
+        this.to_edit_role = admin.role;
+        this.to_edit_id = admin.id;
+    },
     async getAdmins() {
       $('.loader').fadeIn().css('display', 'flex')
         try {
@@ -354,6 +405,126 @@ createApp({
             }, 3500);
 
             console.error(error);
+        }
+    },
+    async edit() {
+      $('.loader').fadeIn().css('display', 'flex')
+        try {
+            const response = await axios.post(`{{ route('admin.update') }}`, {
+                admin_id: this.to_edit_id,
+                full_name: this.to_edit_name,
+                email: this.to_edit_email,
+                phone: this.to_edit_phone,
+                password: this.to_edit_password,
+                password_confirmation: this.to_edit_password_confirmation,
+                role: this.to_edit_role,
+            },
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            }
+            );
+            if (response.data.status === true) {
+                document.getElementById('errors').innerHTML = ''
+                let error = document.createElement('div')
+                error.classList = 'success'
+                error.innerHTML = response.data.message
+                document.getElementById('errors').append(error)
+                $('#errors').fadeIn('slow')
+                $('.loader').fadeOut()
+                setTimeout(() => {
+                    $('#errors').fadeOut('slow')
+                    window.location.reload()
+                }, 2000);
+            } else {
+                $('.loader').fadeOut()
+                document.getElementById('errors').innerHTML = ''
+                $.each(response.data.errors, function (key, value) {
+                    let error = document.createElement('div')
+                    error.classList = 'error'
+                    error.innerHTML = value
+                    document.getElementById('errors').append(error)
+                });
+                $('#errors').fadeIn('slow')
+                setTimeout(() => {
+                    $('input').css('outline', 'none')
+                    $('#errors').fadeOut('slow')
+                }, 5000);
+            }
+
+        } catch (error) {
+            document.getElementById('errors').innerHTML = ''
+            let err = document.createElement('div')
+            err.classList = 'error'
+            err.innerHTML = 'server error try again later'
+            document.getElementById('errors').append(err)
+            $('#errors').fadeIn('slow')
+            $('.loader').fadeOut()
+
+            setTimeout(() => {
+            $('#errors').fadeOut('slow')
+            }, 3500);
+
+            console.error(error);
+        }
+    },
+    async delete(id, name) {
+        if (confirm("Are you sure you want to delete " + name + " account")) {
+        $('.loader').fadeIn().css('display', 'flex')
+            try {
+                const response = await axios.post(`{{ route('admin.delete') }}`, {
+                    admin_id: id,
+                },
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                }
+                );
+                if (response.data.status === true) {
+                    document.getElementById('errors').innerHTML = ''
+                    let error = document.createElement('div')
+                    error.classList = 'success'
+                    error.innerHTML = response.data.message
+                    document.getElementById('errors').append(error)
+                    $('#errors').fadeIn('slow')
+                    $('.loader').fadeOut()
+                    setTimeout(() => {
+                        $('#errors').fadeOut('slow')
+                        window.location.reload()
+                    }, 2000);
+                } else {
+                    $('.loader').fadeOut()
+                    document.getElementById('errors').innerHTML = ''
+                    $.each(response.data.errors, function (key, value) {
+                        let error = document.createElement('div')
+                        error.classList = 'error'
+                        error.innerHTML = value
+                        document.getElementById('errors').append(error)
+                    });
+                    $('#errors').fadeIn('slow')
+                    setTimeout(() => {
+                        $('input').css('outline', 'none')
+                        $('#errors').fadeOut('slow')
+                    }, 5000);
+                }
+
+            } catch (error) {
+                document.getElementById('errors').innerHTML = ''
+                let err = document.createElement('div')
+                err.classList = 'error'
+                err.innerHTML = 'server error try again later'
+                document.getElementById('errors').append(err)
+                $('#errors').fadeIn('slow')
+                $('.loader').fadeOut()
+
+                setTimeout(() => {
+                $('#errors').fadeOut('slow')
+                }, 3500);
+
+                console.error(error);
+            }
         }
     },
   },
