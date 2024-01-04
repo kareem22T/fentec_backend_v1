@@ -12,6 +12,24 @@ class MapController extends Controller
     public function getNearstScooter(Request $request) {
         $scooters = Scooter::all();
 
+        if ($scooters->count() == 0)
+            return  response()->json(
+        
+                array(
+
+                    "status" => false,
+
+                    "account_status" => true,
+
+                    "message" => "",
+
+                    "errors" => array("there is no avilable scooters now"),
+
+                    "data" => array()
+                )
+
+            );
+
         $destinations = "";
         foreach ($scooters as $scooter) {
             $destinations .= $scooter->latitude . "," . $scooter->longitude . "|";
@@ -35,7 +53,6 @@ class MapController extends Controller
             ];
     
         }
-        return $distances;
         $nearest_distance_b_user_scooter = 0;
 
         $nearest_distance_b_user_scooter_km = "";
