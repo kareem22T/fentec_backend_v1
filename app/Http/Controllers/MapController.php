@@ -35,6 +35,7 @@ class MapController extends Controller
             ];
     
         }
+        return $distances;
         $nearest_distance_b_user_scooter = 0;
 
         $nearest_distance_b_user_scooter_km = "";
