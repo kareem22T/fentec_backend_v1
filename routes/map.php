@@ -3,4 +3,5 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MapController;
 
-Route::get('/calc_distance', [MapController::class, 'getNearstScooter']);
+Route::get('/nearest-scooter', [MapController::class, 'getNearstScooter']);
+Route::get('/scooters', [MapController::class, 'getAllScooters']);

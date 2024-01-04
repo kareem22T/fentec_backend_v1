@@ -8,7 +8,35 @@ use App\Models\Scooter;
 
 class MapController extends Controller
 {
+    public function getAllScooters() {
+        $scooters = Scooter::all();
 
+        if ($scooters && $scooters->count() > 0) {
+            return response()->json([
+                "status" => true,
+                "account_status" => true,
+                "message" => "successfuly operation",
+                "errors" => [],
+                "data" => $scooters
+            ]);
+        } elseif ($scooters && $scooters->count() == 0) {
+            return response()->json([
+                "status" => false,
+                "account_status" => true,
+                "message" => "No scooters founded",
+                "errors" => ['There is no any scooter'],
+                "data" => []
+            ], 404);
+        } else {
+            return response()->json([
+                "status" => false,
+                "account_status" => true,
+                "message" => "Could not fetch scooters",
+                "errors" => ['Server error could not fetch scooters'],
+                "data" => []
+            ], 500);
+        }
+    }
     public function getNearstScooter(Request $request) {
         $scooters = Scooter::all();
 
