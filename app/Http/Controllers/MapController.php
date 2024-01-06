@@ -26,7 +26,7 @@ class MapController extends Controller
                 "message" => "No scooters founded",
                 "errors" => ['There is no any scooter'],
                 "data" => []
-            ], 404);
+            ], 200);
         } else {
             return response()->json([
                 "status" => false,
