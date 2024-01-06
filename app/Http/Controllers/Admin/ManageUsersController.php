@@ -16,6 +16,7 @@ class ManageUsersController extends Controller
 {
     use DataFormController;
     use SendEmailTrait;
+    use pushNotification;
     public function __construct()
     {
         $this->middleware('admin:Moderator')->only(['previewIndex', 'getUsers', "approve", "reject"]);
