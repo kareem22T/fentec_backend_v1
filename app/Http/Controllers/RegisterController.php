@@ -322,9 +322,10 @@ class RegisterController extends Controller
     public function editEmail(Request $request) {
         $user = $request->user();
         $validator = Validator::make($request->all(), [
-            'new_email' => 'required',
+            'new_email' => 'required|email',
         ],[
-            'new_email.required' => 'please write an valid email'
+            'new_email.required' => 'please write an valid email',
+            'new_email.email' => 'please write an valid email'
         ]);
 
         if ($validator->fails())
