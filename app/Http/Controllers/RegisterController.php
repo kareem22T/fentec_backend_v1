@@ -334,6 +334,8 @@ class RegisterController extends Controller
             $user->email = $request->new_email;
             $user->verify = 0;
             $user->save();
+        else:
+            return $this->jsondata(false, $user->verify, 'Change email failed', ["You have Enterd the old email"], []);
         endif;
 
         $user->currentAccessToken()->delete();
@@ -347,7 +349,7 @@ class RegisterController extends Controller
                     Your email has changed successfully!', 
                     [], 
                     [
-                        'name' => $token,
+                        'name' => $user->name,
                         'phone' => $user->phone,
                         'email' => $user->email,
                         'token' => $token
