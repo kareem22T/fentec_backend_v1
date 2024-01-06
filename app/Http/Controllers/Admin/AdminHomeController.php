@@ -8,12 +8,11 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\Coupon;
 use App\Models\User;
 use App\Traits\DataFormController;
-use ExpoSDK\ExpoMessage;
-use ExpoSDK\Expo;
+use App\Traits\PushNotificationTrait;
 
 class AdminHomeController extends Controller
 {
-    use DataFormController;
+    use DataFormController, PushNotificationTrait;
     
     public function getIndex() {
         return view('admin.dashboard.home');
@@ -61,21 +60,7 @@ class AdminHomeController extends Controller
 
         $usersToken = User::where('notification_token', '!=', null)->pluck('notification_token')->toArray();
         if ($usersToken) {
-            $expo = Expo::driver('file');
-            $message = (new ExpoMessage([
-                'title' => $request->msg_title,
-                'body' => $request->msg,
-            ]))
-            ->setTitle($request->msg_title)
-            ->setBody($request->msg)
-            ->setData(['id' => 1])
-            ->setChannelId('default')
-            ->setBadge(0)
-            ->playSound();
-
-            $recipients = $usersToken;
-
-            $response = $expo->send($message)->to($recipients)->push();
+            $response = $this->pushNotification($request->msg_title, $request->msg, $usersToken);
             return $this->jsondata(true, null, 'Notification has pushed successfuly', [], [$response]);
         }
     }

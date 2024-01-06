@@ -8,6 +8,7 @@ use App\Traits\DataFormController;
 use App\Traits\SendEmailTrait;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use App\Traits\PushNotificationTrait;
 
 use App\Models\User;
 
@@ -58,7 +59,8 @@ class ManageUsersController extends Controller
                 "Hello" . $user->name . " <br>You Account has been approved now you can enjoy the journy with us";
 
             $this->sendEmail($email, $msg_title, $msg_body);
-
+            if ($user->notification_token)
+                $response = $this->pushNotification($msg_title, $msg_title, [$user->notification_token]);
             return  $this->jsondata(true, null, 'User Approved Successfuly', [], []);
         endif;
     }
@@ -89,7 +91,8 @@ class ManageUsersController extends Controller
                 "Hello" . $user->name . " <br>You Account has been rejected because: <br>" . $user->rejection_reason;
 
             $this->sendEmail($email, $msg_title, $msg_body);
-
+            if ($user->notification_token)
+                $response = $this->pushNotification($msg_title, $msg_title, [$user->notification_token]);
             return  $this->jsondata(true, null, 'User Rejected Successfuly', [], []);
         endif;
     }
