@@ -20,8 +20,8 @@ trait PushNotificationTrait
             'title' => $title,
             'body' => $body,
         ]))
-        ->setTitle($request->msg_title)
-        ->setBody($request->msg)
+        ->setTitle($title)
+        ->setBody($body)
         ->setData(['id' => 1])
         ->setChannelId('default')
         ->setBadge(0)
