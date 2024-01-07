@@ -413,7 +413,7 @@ class RegisterController extends Controller
             if (Storage::disk($disk)->exists($path)) 
                 Storage::disk($disk)->delete($path);  
 
-            $profile_pic = $this->saveImg($request->profile_img, 'images/uploads', 'profile' . $user->id);
+            $profile_pic = $this->saveImg($request->profile_img, 'images/uploads', 'profile' . $user->id . "_" . time());
             $user->photo_path = $profile_pic;
             $user->save();
         endif;
