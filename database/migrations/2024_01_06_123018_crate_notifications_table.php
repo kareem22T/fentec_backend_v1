@@ -13,10 +13,9 @@ return new class extends Migration
     {
         Schema::create('notifications', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id');
+            $table->integer('user_id')->nullable();
             $table->text('title');
             $table->text('body');
-            $table->boolean('seen')->default(false);
             $table->timestamps();
         });
     }

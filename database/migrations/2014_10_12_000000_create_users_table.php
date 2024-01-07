@@ -29,6 +29,7 @@ return new class extends Migration
             $table->string('password');
             $table->integer('coins')->default(0);
             $table->string('notification_token', 100)->nullable();
+            $table->boolean('has_unseened_notifications')->default(false);
             $table->rememberToken();
             $table->timestamps();
         });
