@@ -60,7 +60,7 @@ class AdminHomeController extends Controller
 
         $usersToken = User::where('notification_token', '!=', null)->pluck('notification_token')->toArray();
         if ($usersToken) {
-            $response = $this->pushNotification($request->msg_title, $request->msg, $usersToken);
+            $response = $this->pushNotification($request->msg_title, $request->msg, [$usersToken]);
             return $this->jsondata(true, null, 'Notification has pushed successfuly', [], [$response]);
         }
     }
