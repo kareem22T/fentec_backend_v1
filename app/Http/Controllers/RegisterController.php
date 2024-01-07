@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\RegisterRequest;
 use App\Models\User;
 use App\Models\Admin;
@@ -406,7 +406,14 @@ class RegisterController extends Controller
             return $this->jsondata(false, $user->verify, 'Change profile pic failed', [$validator->errors()->first()], []);
 
         if ($request->profile_img) :
-            $profile_pic = $this->saveImg($request->profile_img, 'images/uploads', 'profile' . $user->id . time());
+            $disk = 'public';
+
+            // Specify the path to the image within the storage disk
+            $path = 'images/uploads/' . $user->photo_path;
+            if (Storage::disk($disk)->exists($path)) 
+                Storage::disk($disk)->delete($path);  
+
+            $profile_pic = $this->saveImg($request->profile_img, 'images/uploads', 'profile' . $user->id);
             $user->photo_path = $profile_pic;
             $user->save();
         endif;
