@@ -386,7 +386,42 @@ class RegisterController extends Controller
                     'Your phone number has changed successfully!', 
                     [], 
                     [
-                        'name' => $token,
+                        'name' => $user->name,
+                        'phone' => $user->phone,
+                        'email' => $user->email,
+                        'token' => $token
+                    ]
+                );
+
+    }
+    public function editProfilePic(Request $request) {
+        $user = $request->user();
+        $validator = Validator::make($request->all(), [
+            'profile_img' => 'required',
+        ],[
+            'profile_img.required' => 'please upload profile pic'
+        ]);
+
+        if ($validator->fails())
+            return $this->jsondata(false, $user->verify, 'Change profile pic failed', [$validator->errors()->first()], []);
+
+        if ($request->profile_img) :
+            $profile_pic = $this->saveImg($request->profile_img, 'images/uploads', 'profile' . $user->id);
+            $user->photo_path = $profile_pic;
+        endif;
+    
+        $user->currentAccessToken()->delete();
+        $token = $user->createToken('token')->plainTextToken;
+
+        if ($user)
+            return 
+                $this->jsondata(
+                    true, 
+                    $user->verify, 
+                    'Your profile pic changed successfully!', 
+                    [], 
+                    [
+                        'name' => $user->name,
                         'phone' => $user->phone,
                         'email' => $user->email,
                         'token' => $token
