@@ -30,7 +30,7 @@ Route::middleware('auth:admin')->group(function () {
     Route::middleware('admin:Master')->post('/coupon/put', [AdminHomeController::class, 'addCoupon'])->name('coupon.put');
 
     //notification
-    Route::middleware('admin:Master')->post('/notification/push', [AdminHomeController::class, 'pushNotification'])->name('notification.push');
+    Route::middleware('admin:Master')->post('/notification/push', [AdminHomeController::class, 'pushNotificationmain'])->name('notification.push');
 
     // users
     Route::middleware('admin:Moderator')->prefix('users')->group(function () {
