@@ -408,6 +408,7 @@ class RegisterController extends Controller
         if ($request->profile_img) :
             $profile_pic = $this->saveImg($request->profile_img, 'images/uploads', 'profile' . $user->id);
             $user->photo_path = $profile_pic;
+            $user->save();
         endif;
     
         $user->currentAccessToken()->delete();
