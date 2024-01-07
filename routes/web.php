@@ -25,6 +25,7 @@ Route::group(['middleware' => ['check_api_password']], function () {
     Route::middleware('auth:sanctum')->post('/send-code', [RegisterController::class, 'sendVerfication']);
     Route::middleware('auth:sanctum')->post('/active-account', [RegisterController::class, 'activeAccount']);
     Route::middleware('auth:sanctum')->post('/change-password', [RegisterController::class, 'changePassword']);
+    Route::middleware('auth:sanctum')->post('/change-profile-pic', [RegisterController::class, 'editProfilePic']);
     Route::middleware('auth:sanctum')->post('/edit-email', [RegisterController::class, 'editEmail']);
     Route::middleware('auth:sanctum')->post('/edit-phone', [RegisterController::class, 'editPhone']);
     Route::middleware('auth:sanctum')->post('/seen-approving-msg', [RegisterController::class, 'seenApprovingMsg']);
