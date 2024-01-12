@@ -61,7 +61,8 @@ class ManageUsersController extends Controller
 
             $this->sendEmail($email, $msg_title, $msg_body);
             if ($user->notification_token)
-                $response = $this->pushNotification($msg_title, $msg_body, [$user->notification_token]);
+                $response = $this->pushNotification($msg_title, $msg_body, [$user->notification_token], $user->id
+            );
             return  $this->jsondata(true, null, 'User Approved Successfuly', [], []);
         endif;
     }
@@ -93,7 +94,7 @@ class ManageUsersController extends Controller
 
             $this->sendEmail($email, $msg_title, $msg_body);
             if ($user->notification_token)
-                $response = $this->pushNotification($msg_title, $msg_body, [$user->notification_token]);
+                $response = $this->pushNotification($msg_title, $msg_body, [$user->notification_token], $user->id);
             return  $this->jsondata(true, null, 'User Rejected Successfuly', [], []);
         endif;
     }

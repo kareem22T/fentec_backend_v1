@@ -418,7 +418,7 @@ class RegisterController extends Controller
             $user->save();
         endif;
     
-        $user->currentAccessToken()->delete();
+        // $user->currentAccessToken()->delete();
         $token = $user->createToken('token')->plainTextToken;
 
         if ($user)
