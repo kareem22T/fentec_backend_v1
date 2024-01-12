@@ -419,7 +419,7 @@ class RegisterController extends Controller
         endif;
     
         // $user->currentAccessToken()->delete();
-        $token = $user->createToken('token')->plainTextToken;
+        // $token = $user->createToken('token')->plainTextToken;
 
         if ($user)
             return 
@@ -432,7 +432,7 @@ class RegisterController extends Controller
                         'name' => $user->name,
                         'phone' => $user->phone,
                         'email' => $user->email,
-                        'token' => $token
+                        // 'token' => $token
                     ]
                 );
 
