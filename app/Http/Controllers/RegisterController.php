@@ -339,9 +339,6 @@ class RegisterController extends Controller
             return $this->jsondata(false, $user->verify, 'Change email failed', ["You have Enterd the old email"], []);
         endif;
 
-        $user->currentAccessToken()->delete();
-        $token = $user->createToken('token')->plainTextToken;
-
         if ($user)
             return 
                 $this->jsondata(
@@ -353,7 +350,6 @@ class RegisterController extends Controller
                         'name' => $user->name,
                         'phone' => $user->phone,
                         'email' => $user->email,
-                        'token' => $token
                     ]
                 );
 
@@ -375,9 +371,6 @@ class RegisterController extends Controller
             $user->save();
         endif;
 
-        $user->currentAccessToken()->delete();
-        $token = $user->createToken('token')->plainTextToken;
-
         if ($user)
             return 
                 $this->jsondata(
@@ -389,7 +382,6 @@ class RegisterController extends Controller
                         'name' => $user->name,
                         'phone' => $user->phone,
                         'email' => $user->email,
-                        'token' => $token
                     ]
                 );
 
@@ -417,9 +409,6 @@ class RegisterController extends Controller
             $user->photo_path = $profile_pic;
             $user->save();
         endif;
-    
-        // $user->currentAccessToken()->delete();
-        // $token = $user->createToken('token')->plainTextToken;
 
         if ($user)
             return 
@@ -432,7 +421,6 @@ class RegisterController extends Controller
                         'name' => $user->name,
                         'phone' => $user->phone,
                         'email' => $user->email,
-                        // 'token' => $token
                     ]
                 );
 
