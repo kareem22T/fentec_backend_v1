@@ -189,7 +189,8 @@ class RegisterController extends Controller
 
     public function getChargesHistory(Request $request) {
         if ($request->user()) :
-            return $this->jsonData(true, $request->user()->verify, '', [], [$request->user()->chargeProcess()]);
+            $history = User::with('chargeProcess')->find($request->user()->id);
+            return $this->jsonData(true, $request->user()->verify, '', [], $history);
         else :
             return $this->jsonData(false, null, 'Account Not Found', [], []);
         endif;
