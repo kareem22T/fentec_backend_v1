@@ -61,5 +61,9 @@ class User extends Authenticatable
     {
         return $this->hasOne('App\Models\Invetation_code', 'user_id');
     }
+    public function chargeProcess()
+    {
+        return $this->hasMany('App\Models\Seller_history', 'user_id');
+    }
 
 }

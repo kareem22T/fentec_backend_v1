@@ -12,6 +12,7 @@ class Seller_history extends Model
     protected $fillable = [
         'id',
         'recipient',
+        'user_id',
         'amount',
         'seller_id',
         'created_at'
@@ -27,6 +28,10 @@ class Seller_history extends Model
     public function seller()
     {
         return $this->belongsTo('App\Models\Seller', 'seller_id');
+    }
+    public function user()
+    {
+        return $this->belongsTo('App\Models\User', 'user_id');
     }
 
 }

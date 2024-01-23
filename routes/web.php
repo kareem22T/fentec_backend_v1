@@ -29,6 +29,7 @@ Route::group(['middleware' => ['check_api_password']], function () {
     Route::middleware('auth:sanctum')->post('/edit-email', [RegisterController::class, 'editEmail']);
     Route::middleware('auth:sanctum')->post('/edit-phone', [RegisterController::class, 'editPhone']);
     Route::middleware('auth:sanctum')->post('/seen-approving-msg', [RegisterController::class, 'seenApprovingMsg']);
+    Route::middleware('auth:sanctum')->post('/get-charges-history', [RegisterController::class, 'getChargesHistory']);
     Route::middleware('auth:sanctum')->post('/logout', [RegisterController::class, 'logout']);
 });
 

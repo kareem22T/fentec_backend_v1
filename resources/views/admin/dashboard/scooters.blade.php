@@ -57,7 +57,7 @@
     function initMap () {
         const map = new google.maps.Map(document.getElementById('map'), {
             zoom: 10,
-            center: {lat: 37.4221, lng: -122.0841},
+            center: { lat: 30.10811445920852, lng: 31.33138500000002 },
         });
         const markersList = [
             { lat: 37.4221, lng: -122.0841 },

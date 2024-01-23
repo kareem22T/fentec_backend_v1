@@ -16,6 +16,7 @@ return new class extends Migration
             $table->text('recipient');
             $table->text('amount');
             $table->integer('seller_id');
+            $table->integer('user_id');
             $table->timestamps();
         });
     }

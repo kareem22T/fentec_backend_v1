@@ -272,6 +272,7 @@ class RegisterController extends Controller
 
         $addTohistory = Seller_history::create([
             'recipient' => $request->code,
+            'user_id' => $client->id,
             'amount' => $request->amount,
             'seller_id' => $request->user()->id,
         ]);

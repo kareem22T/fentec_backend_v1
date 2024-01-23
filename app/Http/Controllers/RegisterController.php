@@ -187,6 +187,14 @@ class RegisterController extends Controller
 
     }
 
+    public function getChargesHistory(Request $request) {
+        if ($request->user()) :
+            return $this->jsonData(true, $request->user()->verify, '', [], [$request->user()->chargeProcess()]);
+        else :
+            return $this->jsonData(false, null, 'Account Not Found', [], []);
+        endif;
+    }
+
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
