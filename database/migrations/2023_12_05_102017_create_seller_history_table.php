@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('seller_history', function (Blueprint $table) {
             $table->id();
             $table->text('recipient');
+            $table->text('seller_name');
             $table->text('amount');
             $table->integer('seller_id');
             $table->integer('user_id');

@@ -275,6 +275,7 @@ class RegisterController extends Controller
             'user_id' => $client->id,
             'amount' => $request->amount,
             'seller_id' => $request->user()->id,
+            'seller_name' => $request->user()->name,
         ]);
 
         if ($client->notification_token) {

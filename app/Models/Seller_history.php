@@ -15,6 +15,7 @@ class Seller_history extends Model
         'user_id',
         'amount',
         'seller_id',
+        'seller_name',
         'created_at'
     ];
 
