@@ -30,11 +30,13 @@ class ManageUsersController extends Controller
         $usersRequests = User::where('approved', false)->where('rejected', false)->where('name', '!=', null)->get();
         $usersList = User::where('approved', true)->get();
         $incompleteUsers = User::where('name', null)->get();
+        $rejectedUsers = User::where('rejected', true)->get();
 
         return  $this->jsondata(true, null, 'Successful Operation', [], [
             "usersRequests" => $usersRequests,
             "usersList" => $usersList,
             "incompleteUsers" => $incompleteUsers,
+            "rejectedUsers" => $rejectedUsers,
         ]);
     }
 
@@ -51,6 +53,8 @@ class ManageUsersController extends Controller
 
         $user = User::find($request->id);
         $user->approved  = true;
+        $user->rejected  = false;
+        $user->rejection_reason  = null;
         $user->save();
 
         if ($user) :

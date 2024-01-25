@@ -116,6 +116,45 @@
             </tbody>
         </table>
     </section>
+    <section class="row-2 table_wrapper" v-if="rejectedUsers && rejectedUsers.length > 0" >
+        <div class="head">
+            <h1>Rejected Users</h1>
+            <div class="pagination"></div>
+            <div class="form-group search">
+                <input type="text" name="search" id="search" placeholder="Search Users" class="input">
+                <i class='bx bx-search'></i>
+            </div>
+        </div>
+        <table class="normal_table">
+            <thead>
+                <tr>
+                    <th>name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Rejected Reason</th>
+                    <th>Controls</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-if="rejectedUsers && rejectedUsers.length > 0" v-for="user in rejectedUsers" :key="user.id">
+                    <td>@{{user.name}}</td>
+                    <td>@{{user.email}}</td>
+                    <td>@{{user.phone}}</td>
+                    <td>@{{user.rejection_reason}}</td>
+                    <td>
+                        <div class="btns flex-center">
+                            <button class="button" @click="handleShowRequest(user)"><i class='bx bx-show-alt'></i></button>
+                            {{-- <button class="button secondary" @click=""><i class='bx bx-envelope'></i></button> --}}
+                            <button class="button success" @click="selectedRequest = user;handleShowApprovePopUp()"><i class='bx bx-check-circle' ></i></button>
+                        </div>
+                    </td>
+                </tr>
+                <tr v-if="!rejectedUsers || rejectedUsers.length == 0" style="font-size: 20px; font-weight: 700; text-align: center">
+                    <td colspan="5"><h2>There is no  rejected users!</h2></td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
 
     <div class="hide-content" @click="showUserProfile = false" v-if="showRequestDetails || rejectionReasonPopUp || showRjectionAlert || approvePopUp || showUserProfile"></div>
     <div class="pop-up show_request_details_wrapper card" v-if="selectedRequest && showRequestDetails">
@@ -281,6 +320,7 @@ createApp({
         usersList: null,
         incompleteUsers: null,
         selectedRequest: null,
+        rejectedUsers: null,
         showRequestDetails: false,
         rejectionReasonPopUp: false,
         rejection_reason: "Your Identity image is not avilable please Upload it",
@@ -307,6 +347,7 @@ createApp({
                 this.usersList = response.data.data.usersList
                 this.usersRequests = response.data.data.usersRequests
                 this.incompleteUsers = response.data.data.incompleteUsers
+                this.rejectedUsers = response.data.data.rejectedUsers
             } else {
                 $('.loader').fadeOut()
                 document.getElementById('errors').innerHTML = ''
