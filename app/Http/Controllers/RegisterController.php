@@ -101,12 +101,26 @@ class RegisterController extends Controller
         $user->approving_msg_seen = 0;
         
         if ($request->photo) :
-            $profile_pic = $this->saveImg($request->photo, 'images/uploads', 'profile' . $user->id);
+            $disk = 'public';
+
+            // Specify the path to the image within the storage disk
+            $path = 'images/uploads/' . $user->photo_path;
+            if (Storage::disk($disk)->exists($path)) 
+                Storage::disk($disk)->delete($path);  
+
+            $profile_pic = $this->saveImg($request->photo, 'images/uploads', 'profile' . $user->id . "_" . time());
             $user->photo_path = $profile_pic;
         endif;
 
         if($request->identity) :
-            $identity_pic = $this->saveImg($request->identity, 'images/uploads', 'identity' . $user->id);
+            $disk = 'public';
+
+            // Specify the path to the image within the storage disk
+            $path = 'images/uploads/' . $user->identity_path;
+            if (Storage::disk($disk)->exists($path)) 
+                Storage::disk($disk)->delete($path);  
+
+            $identity_pic = $this->saveImg($request->identity, 'images/uploads', 'identity' . $user->id . "_" . time());
             $user->identity_path = $identity_pic;
         endif;
         $user->save();
