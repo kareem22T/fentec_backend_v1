@@ -5,6 +5,28 @@
   box-sizing: border-box;
 }
 
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+.pagination button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: white;
+  border: none;
+  box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2509803922);
+}
+.pagination button svg {
+  width: 30px;
+  height: 30px;
+}
+.pagination button svg path {
+  fill: rgb(255, 115, 0);
+}
+
 body {
   display: flex;
   justify-content: space-between;
@@ -77,7 +99,7 @@ body main {
   max-width: 1300px;
   margin: 0 auto;
   height: 100vh;
-  padding-left: 100px;
+  padding-left: 116px;
 }
 @media (max-width: 700px) {
   body main {
@@ -120,6 +142,7 @@ body main {
 
 .button {
   background: rgb(255, 115, 0);
+  text-decoration: none;
   font-weight: 600;
   color: #fff;
   box-shadow: 0px 3px 3px 1px rgba(0, 0, 0, 0.25);
@@ -188,7 +211,7 @@ body main {
   font-weight: 700;
 }
 
-.flex-center, #admins_wrapper .switchs, .user_profile_pop_up > div > div .identity .after, .user_profile_pop_up > div > div .details div, .users_wrapper .show_request_details_wrapper .details div, .users_wrapper .show_request_details_wrapper .head .identity .after, .users_wrapper .show_request_details_wrapper .head .profile, .scooter_wrapper .statistics > div {
+.flex-center, .statistics_wrapper .switchs, #admins_wrapper .switchs, .user_profile_pop_up > div > div .identity .after, .user_profile_pop_up > div > div .details div, .users_wrapper .show_request_details_wrapper .details div, .users_wrapper .show_request_details_wrapper .head .identity .after, .users_wrapper .show_request_details_wrapper .head .profile, .scooter_wrapper .statistics > div, .pagination button {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -242,6 +265,7 @@ body main {
 }
 .table_wrapper .search input {
   padding-right: 65px !important;
+  min-height: 55px;
 }
 .table_wrapper .search i {
   font-size: 35px;
@@ -264,12 +288,13 @@ body main {
   font-weight: 600;
   border: none;
   resize: none;
+  min-height: 55px;
 }
 .table_wrapper .add-btn i {
   font-size: 35px;
   color: rgb(255, 115, 0);
 }
-.table_wrapper .btns.flex-center button, .table_wrapper #admins_wrapper .btns.switchs button, #admins_wrapper .table_wrapper .btns.switchs button, .table_wrapper .user_profile_pop_up > div > div .identity .btns.after button, .user_profile_pop_up > div > div .identity .table_wrapper .btns.after button, .table_wrapper .user_profile_pop_up > div > div .details div.btns button, .user_profile_pop_up > div > div .details .table_wrapper div.btns button, .table_wrapper .users_wrapper .show_request_details_wrapper .details div.btns button, .users_wrapper .show_request_details_wrapper .details .table_wrapper div.btns button, .table_wrapper .users_wrapper .show_request_details_wrapper .head .identity .btns.after button, .users_wrapper .show_request_details_wrapper .head .identity .table_wrapper .btns.after button, .table_wrapper .users_wrapper .show_request_details_wrapper .head .btns.profile button, .users_wrapper .show_request_details_wrapper .head .table_wrapper .btns.profile button, .table_wrapper .scooter_wrapper .statistics > div.btns button, .scooter_wrapper .table_wrapper .statistics > div.btns button {
+.table_wrapper .btns.flex-center button, .table_wrapper .statistics_wrapper .btns.switchs button, .statistics_wrapper .table_wrapper .btns.switchs button, .table_wrapper #admins_wrapper .btns.switchs button, #admins_wrapper .table_wrapper .btns.switchs button, .table_wrapper .user_profile_pop_up > div > div .identity .btns.after button, .user_profile_pop_up > div > div .identity .table_wrapper .btns.after button, .table_wrapper .user_profile_pop_up > div > div .details div.btns button, .user_profile_pop_up > div > div .details .table_wrapper div.btns button, .table_wrapper .users_wrapper .show_request_details_wrapper .details div.btns button, .users_wrapper .show_request_details_wrapper .details .table_wrapper div.btns button, .table_wrapper .users_wrapper .show_request_details_wrapper .head .identity .btns.after button, .users_wrapper .show_request_details_wrapper .head .identity .table_wrapper .btns.after button, .table_wrapper .users_wrapper .show_request_details_wrapper .head .btns.profile button, .users_wrapper .show_request_details_wrapper .head .table_wrapper .btns.profile button, .table_wrapper .scooter_wrapper .statistics > div.btns button, .scooter_wrapper .table_wrapper .statistics > div.btns button, .table_wrapper .pagination button.btns button, .pagination .table_wrapper button.btns button {
   margin: 0;
 }
 .table_wrapper table th,
@@ -681,6 +706,85 @@ body main {
 }
 #admins_wrapper .switchs button.active path {
   fill: rgb(255, 115, 0);
+}
+
+.statistics_wrapper h1 {
+  margin: 0;
+}
+.statistics_wrapper .switchs {
+  color: #000;
+  margin-top: 2rem;
+}
+.statistics_wrapper .switchs button {
+  box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.25);
+  border: none;
+  background: white;
+  padding: 1rem 1.5rem;
+  border-radius: 1rem;
+  font-family: Outfit;
+  font-size: 21px;
+  font-weight: 500;
+  letter-spacing: 0em;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  opacity: 0.5;
+  transition: all 0.3s ease-in;
+  cursor: pointer;
+}
+.statistics_wrapper .switchs button svg {
+  width: 30px;
+  height: 30px;
+}
+.statistics_wrapper .switchs button svg path {
+  stroke: #000;
+}
+.statistics_wrapper .switchs button.active {
+  color: rgb(255, 115, 0);
+  opacity: 1;
+}
+.statistics_wrapper .switchs button.active path {
+  stroke: rgb(255, 115, 0);
+}
+.statistics_wrapper button {
+  cursor: pointer;
+  position: relative;
+}
+.statistics_wrapper button .period {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  font-size: 12px;
+  white-space: nowrap;
+  left: 50%;
+  transform: translateX(-50%);
+  font-weight: 500;
+  background: #eaeaea;
+  padding: 5px 15px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #e1e1e1;
+}
+.statistics_wrapper button .period svg {
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+}
+.statistics_wrapper button .period svg path {
+  stroke: #000;
+}
+.statistics_wrapper button.primary {
+  background-color: rgb(255, 115, 0);
+  transition: all 0.3s ease-in;
+}
+.statistics_wrapper button.primary svg {
+  stroke: white;
+}
+.statistics_wrapper button.primary:hover {
+  background-color: rgb(215, 98, 2);
 }
 
 /*# sourceMappingURL=admin.css.map */

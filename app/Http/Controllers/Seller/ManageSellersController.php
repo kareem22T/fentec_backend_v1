@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Seller;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Seller;
+use App\Models\Seller_history;
 use App\Traits\DataFormController;
 use App\Traits\SendEmailTrait;
 use Illuminate\Support\Facades\Auth;
@@ -24,6 +25,58 @@ class ManageSellersController extends Controller
         } else {
             return $this->jsonData(false, null, 'Faild Operation', ['You are not have the role as Accountant'], []);
         }
+
+    }
+    public function getSellerIndex($sellerid) {
+        $id = $sellerid;
+        return view("admin.dashboard.seller")->with(compact('id'));
+    }
+
+    public function getSellerDetails(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'seller_id' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->jsondata(false, null, 'Login failed', [$validator->errors()->first()], []);
+        }
+
+        $seller = Seller::find($request->seller_id);
+
+        if ($seller) :
+            $history = Seller_history::with(["user" => function ($q) {
+                $q->select("id", "name");
+            }])->where("seller_id", $seller->id)->paginate(15);
+            $seller->history = $history;
+        endif;
+
+        if($seller)
+            return  $this->jsondata(true, null, 'عملية ناجحة', [], $seller);
+    }
+
+    public function fillterSellerByDate(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'from' => 'required',
+            'to' => 'required',
+        ], [
+            "from.required" => "من فضلك اختر الفرة الزمنية",
+            "to.required" => "من فضلك اختر الفرة الزمنية"
+        ]);
+
+        if ($validator->fails()) {
+            return $this->jsondata(false, null, 'fillter failed', [$validator->errors()->first()], []);
+        }
+        $seller = Seller::find($request->seller_id);
+
+        if ($seller) :
+            $history = Seller_history::with(["user" => function ($q) {
+                $q->select("id", "name");
+            }])->where("seller_id", $seller->id)->where("created_at", ">", $request->from)->where("created_at", "<", $request->to)->paginate(15);
+            $seller->history = $history;
+        endif;
+
+        if($seller)
+            return  $this->jsondata(true, null, 'عملية ناجحة', [], $seller);
 
     }
 
@@ -166,5 +219,6 @@ class ManageSellersController extends Controller
         }
 
     }
+
 
 }

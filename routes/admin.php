@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\AdminHomeController;
 use App\Http\Controllers\Admin\ManageUsersController;
 use App\Http\Controllers\Admin\ManageAdminControler;
 use App\Http\Controllers\Admin\ManageScooters;
+use App\Http\Controllers\Admin\StatisticsController;
 use App\Http\Controllers\Seller\ManageSellersController;
 
 Route::middleware(['admin_guest'])->group(function () {
@@ -25,13 +26,13 @@ Route::middleware('auth:sanctum')->post('/update-seller', [ManageSellersControll
 
 Route::middleware('auth:admin')->group(function () {
     Route::middleware('admin:Master')->get('/', [AdminHomeController::class, 'getIndex'])->name('admin.home');
-
+    
     //coupon
     Route::middleware('admin:Master')->post('/coupon/put', [AdminHomeController::class, 'addCoupon'])->name('coupon.put');
-
+    
     //notification
     Route::middleware('admin:Master')->post('/notification/push', [AdminHomeController::class, 'pushNotificationmain'])->name('notification.push');
-
+    
     // users
     Route::middleware('admin:Moderator')->prefix('users')->group(function () {
         Route::get('/', [ManageUsersController::class, 'previewIndex'])->name('prev.users');
@@ -39,7 +40,7 @@ Route::middleware('auth:admin')->group(function () {
         Route::post('/approve', [ManageUsersController::class, 'approve'])->name('user.approve');
         Route::post('/reject', [ManageUsersController::class, 'reject'])->name('user.reject');
     });
-
+    
     // admins
     Route::middleware('admin:Master')->prefix('admins')->group(function () {
         Route::get('/', [ManageAdminControler::class, 'index'])->name('admins.manage');
@@ -48,7 +49,7 @@ Route::middleware('auth:admin')->group(function () {
         Route::post('/update', [ManageAdminControler::class, 'update'])->name('admin.update');
         Route::post('/delete', [ManageAdminControler::class, 'delete'])->name('admin.delete');
     });
-
+    
     // scooters
     Route::middleware('admin:Technician')->prefix('scooters')->group(function () {
         Route::get('/', [ManageScooters::class, 'index'])->name('scooters.manage');
@@ -56,6 +57,21 @@ Route::middleware('auth:admin')->group(function () {
         Route::post('/zones-add', [ManageScooters::class, 'add'])->name('zones.add');
         Route::post('/zones-delete', [ManageScooters::class, 'delete'])->name('zones.delete');
     });
+    
+    // statistics
+    Route::middleware('admin:Accountant')->prefix('statistics')->group(function () {
+        Route::get('/', [StatisticsController::class, 'index'])->name('statistics.manage');
+        Route::get('/get-sellers', [StatisticsController::class, 'getSellers'])->name('get.sellers');
+        Route::post('/get-sellers-by-search', [StatisticsController::class, 'getSellersBySearch'])->name('search.sellers');
+        Route::post('/seller-add', [StatisticsController::class, 'createSeller'])->name('add.seller');
+        Route::post('/seller-update', [StatisticsController::class, 'updateSeller'])->name('update.seller');
+        Route::post('/seller-delete', [StatisticsController::class, 'deleteSeller'])->name('seller.delete');
+        Route::post('/fillter-sellers', [StatisticsController::class, 'fillterSellersByDate'])->name('fillter.seller');
+    });
+    
+    Route::get('/seller/{id}', [ManageSellersController::class, 'getSellerIndex'])->name("show.seller.details");
+    Route::post('/seller', [ManageSellersController::class, 'getSellerDetails'])->name("get.seller.details");
+    Route::post('/fillter-seller', [ManageSellersController::class, 'fillterSellerByDate'])->name("fillter.sellerHistory");
 
     //logout
     Route::get('/logout', [RegisterController::class, 'logout'])->name('admin.logout');

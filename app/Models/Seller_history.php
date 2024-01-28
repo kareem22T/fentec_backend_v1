@@ -30,9 +30,13 @@ class Seller_history extends Model
     {
         return $this->belongsTo('App\Models\Seller', 'seller_id');
     }
+    /**
+     * Get the user associated with the Seller_history
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function user()
     {
-        return $this->belongsTo('App\Models\User', 'user_id');
+        return $this->hasOne('App\Models\User', 'id', 'user_id');
     }
-
 }
