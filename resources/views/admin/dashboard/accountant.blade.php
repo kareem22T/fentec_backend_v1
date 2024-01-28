@@ -41,9 +41,9 @@
         <table class="normal_table">
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Phone</th>
+                    <th>Id</th>
+                    <th>Serial</th>
+                    <th>Controls</th>
                     {{-- <th>Controls</th> --}}
                 </tr>
             </thead>
