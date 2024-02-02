@@ -292,7 +292,7 @@ class RegisterController extends Controller
                 false,
                 $user->verify,
                 'Account faild',
-                ['invalid verfication code or expired, click resened for create one'],
+                ['invalid verfication code or expired, click resened for create one' . $retrievedVerificationCode],
                 [
                 ]
             );
