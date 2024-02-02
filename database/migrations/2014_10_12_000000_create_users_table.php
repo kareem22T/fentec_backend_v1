@@ -25,6 +25,8 @@ return new class extends Migration
             $table->boolean('approving_msg_seen')->default(0);
             $table->boolean('rejected')->default(0);
             $table->text('rejection_reason')->nullable();
+            $table->boolean('isBanned')->default(0);
+            $table->text('ban_reason')->nullable();
             $table->boolean('where_know')->nullable();
             $table->string('password');
             $table->integer('coins')->default(0);

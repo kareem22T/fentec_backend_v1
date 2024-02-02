@@ -30,6 +30,8 @@ class User extends Authenticatable
         'approved',
         'rejected',
         'rejection_reason',
+        'isBanned',
+        'ban_reason',
         'approving_msg_seen',
         'password',
         'notification_token',

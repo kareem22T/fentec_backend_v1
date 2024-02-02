@@ -39,12 +39,13 @@ Route::middleware('auth:admin')->group(function () {
         Route::post('/', [ManageUsersController::class, 'getUsers'])->name('get.users');
         Route::post('/approve', [ManageUsersController::class, 'approve'])->name('user.approve');
         Route::post('/reject', [ManageUsersController::class, 'reject'])->name('user.reject');
+        Route::post('/ban', [ManageUsersController::class, 'ban'])->name('user.ban');
     });
     
     // admins
     Route::middleware('admin:Master')->prefix('admins')->group(function () {
         Route::get('/', [ManageAdminControler::class, 'index'])->name('admins.manage');
-        Route::get('/get', [ManageAdminControler::class, 'get'])->name('get.admins');
+        Route::post('/get', [ManageAdminControler::class, 'get'])->name('get.admins');
         Route::post('/add', [ManageAdminControler::class, 'add'])->name('admin.add');
         Route::post('/update', [ManageAdminControler::class, 'update'])->name('admin.update');
         Route::post('/delete', [ManageAdminControler::class, 'delete'])->name('admin.delete');

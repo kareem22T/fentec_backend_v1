@@ -43,7 +43,7 @@
             <div class="flex-center">
                 <button class="add-btn" @click="admin_title = 'Master';showAddAdmin = true">Add <i class="bx bx-plus"></i></button>
                 <div class="form-group search">
-                    <input type="text" name="search" id="search" placeholder="Search Master" class="input">
+                    <input type="text" name="search" id="search" placeholder="Search Master" class="input" v-model="Master_search_words" @input="getAdmins()">
                     <i class='bx bx-search'></i>
                 </div>
             </div>
@@ -82,7 +82,7 @@
             <div class="flex-center">
                 <button class="add-btn" @click="admin_title = 'Technician';showAddAdmin = true">Add <i class="bx bx-plus"></i></button>
                 <div class="form-group search">
-                    <input type="text" name="search" id="search" placeholder="Search Technician" class="input">
+                    <input type="text" name="search" id="search" placeholder="Search Technician" class="input" v-model="Technician_search_words" @input="getAdmins()">
                     <i class='bx bx-search'></i>
                 </div>
             </div>
@@ -121,7 +121,7 @@
             <div class="flex-center">
                 <button class="add-btn" @click="admin_title = 'Accountant';showAddAdmin = true">Add <i class="bx bx-plus"></i></button>
                 <div class="form-group search">
-                    <input type="text" name="search" id="search" placeholder="Search Accountant" class="input">
+                    <input type="text" name="search" id="search" placeholder="Search Accountant" class="input" v-model="Accountant_search_words" @input="getAdmins()">
                     <i class='bx bx-search'></i>
                 </div>
             </div>
@@ -160,7 +160,7 @@
             <div class="flex-center">
                 <button class="add-btn" @click="admin_title = 'Moderator';showAddAdmin = true">Add <i class="bx bx-plus"></i></button>
                 <div class="form-group search">
-                    <input type="text" name="search" id="search" placeholder="Search Moderator" class="input">
+                    <input type="text" name="search" id="search" placeholder="Search Moderator" class="input" v-model="Moderator_search_words" @input="getAdmins()">
                     <i class='bx bx-search'></i>
                 </div>
             </div>
@@ -199,19 +199,19 @@
         <h1>Add @{{ admin_title }}</h1>
         <br>
         <div class="form-group">
-            <input type="text" name="name" id="name" class="form-control input" v-model="name" placeholder="Name">
+            <input type="text" name="name" @keydown.enter="add" id="name" class="form-control input" v-model="name" placeholder="Name">
         </div>
         <br>
         <div class="form-group">
-            <input type="text" name="email" id="email" class="form-control input" v-model="email" placeholder="Email">
+            <input type="text" name="email" @keydown.enter="add" id="email" class="form-control input" v-model="email" placeholder="Email">
         </div>
         <br>
         <div class="form-group">
-            <input type="text" name="phone" id="phone" class="form-control input" v-model="phone" placeholder="Phone">
+            <input type="text" name="phone" @keydown.enter="add" id="phone" class="form-control input" v-model="phone" placeholder="Phone">
         </div>
         <br>
         <div class="form-group">
-            <input type="text" name="password" id="password" class="form-control input" v-model="password" placeholder="Password">
+            <input type="text" name="password" @keydown.enter="add" id="password" class="form-control input" v-model="password" placeholder="Password">
         </div>
         <br>
         <div class="btns flex-center">
@@ -287,7 +287,12 @@ createApp({
         to_edit_id: null,
         to_edit_password_confirmation: null,
         showEditAdmin: false,
-        admin_data: null
+        admin_data: null,
+
+        Master_search_words: null,
+        Technician_search_words: null,
+        Accountant_search_words: null,
+        Moderator_search_words: null,
     }
   },
   methods: {
@@ -299,9 +304,15 @@ createApp({
         this.to_edit_id = admin.id;
     },
     async getAdmins() {
-      $('.loader').fadeIn().css('display', 'flex')
+        if(!this.Master_search_words && !this.Technician_search_words && !this.Accountant_search_words && !this.Moderator_search_words)
+            $('.loader').fadeIn().css('display', 'flex')
         try {
-            const response = await axios.get(`{{ route('get.admins') }}`,
+            const response = await axios.post(`{{ route('get.admins') }}`,{
+                Master_search_words: this.Master_search_words,
+                Technician_search_words: this.Technician_search_words,
+                Accountant_search_words: this.Accountant_search_words,
+                Moderator_search_words: this.Moderator_search_words,
+            },
             {
                 headers: {
                     'Content-Type': 'multipart/form-data'

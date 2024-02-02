@@ -14,15 +14,39 @@ use Illuminate\Support\Facades\Hash;
 class ManageAdminControler extends Controller
 {
     use DataFormController;
-    function index() {
+    public function index() {
         return view('admin.dashboard.admins');
     }
 
-    public function get() {
-        $masters = Admin::where('role', "Master")->where('id', '!=', Auth::guard('admin')->user()->id)->get();
-        $technicians = Admin::where('role', "Technician")->where('id', '!=', Auth::guard('admin')->user()->id)->get();
-        $accountant = Admin::where('role', "Accountant")->where('id', '!=', Auth::guard('admin')->user()->id)->get();
-        $moderators = Admin::where('role', "Moderator")->where('id', '!=', Auth::guard('admin')->user()->id)->get();
+    public function get(Request $request) {
+        $masters = Admin::where('role', "Master")->where('id', '!=', Auth::guard('admin')->user()->id)
+        ->where(function ($query) use ($request) {
+            $query->where('full_name', 'like', '%' . $request->Master_search_words . '%')
+                ->orWhere('email', 'like', '%' . $request->Master_search_words . '%')
+                ->orWhere('phone', 'like', '%' . $request->Master_search_words . '%');
+        })
+        ->get();
+        $technicians = Admin::where('role', "Technician")->where('id', '!=', Auth::guard('admin')->user()->id)
+        ->where(function ($query) use ($request) {
+            $query->where('full_name', 'like', '%' . $request->Technician_search_words . '%')
+                ->orWhere('email', 'like', '%' . $request->Technician_search_words . '%')
+                ->orWhere('phone', 'like', '%' . $request->Technician_search_words . '%');
+        })
+        ->get();
+        $accountant = Admin::where('role', "Accountant")->where('id', '!=', Auth::guard('admin')->user()->id)
+        ->where(function ($query) use ($request) {
+            $query->where('full_name', 'like', '%' . $request->Accountant_search_words . '%')
+                ->orWhere('email', 'like', '%' . $request->Accountant_search_words . '%')
+                ->orWhere('phone', 'like', '%' . $request->Accountant_search_words . '%');
+        })
+        ->get();
+        $moderators = Admin::where('role', "Moderator")->where('id', '!=', Auth::guard('admin')->user()->id)
+        ->where(function ($query) use ($request) {
+            $query->where('full_name', 'like', '%' . $request->Moderator_search_words . '%')
+                ->orWhere('email', 'like', '%' . $request->Moderator_search_words . '%')
+                ->orWhere('phone', 'like', '%' . $request->Moderator_search_words . '%');
+        })
+        ->get();
 
         return  $this->jsondata(true, null, 'Successful Operation', [], [
             "masters" => $masters,
