@@ -246,7 +246,7 @@ class RegisterController extends Controller
         $user = $request->user();
         // $user->last_code = $code;
         Cache::put('verification_code_' . $user->id, $code, 10);
-        $user->save();
+        // $user->save();
 
         $email = $user->email;
         $msg_title = 'Verfication code';
