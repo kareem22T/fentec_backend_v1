@@ -285,7 +285,7 @@ class RegisterController extends Controller
 
         $user = $request->user();
 
-        if ($user->last_code_created_at->addMinutes(10)->isPast())
+        if (Carbon::parse($user->last_code_created_at)->addMinutes(10)->isPast())
             $this->jsonData(
                 false,
                 $user->verify,
