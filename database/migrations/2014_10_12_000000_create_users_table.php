@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('photo_path')->nullable();
             $table->string('identity_path')->nullable();
             $table->string('last_code')->nullable();
+            $table->dateTime('last_code_created_at')->default(new DateTime());
             $table->boolean('verify')->default(0);
             $table->boolean('approved')->default(0);
             $table->boolean('approving_msg_seen')->default(0);

@@ -25,6 +25,7 @@ class User extends Authenticatable
         'identity_path',
         'photo_path',
         'last_code',
+        'last_code_created_at',
         'where_know',
         'verify',
         'approved',

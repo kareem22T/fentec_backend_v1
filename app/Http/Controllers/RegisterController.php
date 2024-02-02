@@ -14,6 +14,7 @@ use App\Http\Requests\LoginRequest;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use App\Traits\SavePhotoTrait;
+use Illuminate\Support\Facades\Cache;
 use App\Traits\SendEmailTrait;
 
 class RegisterController extends Controller
@@ -243,7 +244,8 @@ class RegisterController extends Controller
         $code = rand(100000, 999999);
 
         $user = $request->user();
-        $user->last_code = $code;
+        // $user->last_code = $code;
+        Cache::put('verification_code_' . $user->id, $code, 10);
         $user->save();
 
         $email = $user->email;
@@ -283,8 +285,19 @@ class RegisterController extends Controller
         }
 
         $user = $request->user();
+        $retrievedVerificationCode = Cache::get('verification_code_' . $user->id);
+        if (!$retrievedVerificationCode)
+            return
+            $this->jsonData(
+                false,
+                $user->verify,
+                'Account faild',
+                ['invalid verfication code or expired, click resened for create one'],
+                [
+                ]
+            );
 
-        if ($request->code == $user->last_code) {
+        if ($request->code == $retrievedVerificationCode) {
             $user->verify = true;
             $user->save();
 
