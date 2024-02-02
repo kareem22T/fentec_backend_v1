@@ -14,9 +14,8 @@ use App\Http\Requests\LoginRequest;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use App\Traits\SavePhotoTrait;
-use Illuminate\Support\Facades\Cache;
 use App\Traits\SendEmailTrait;
-
+use Carbon\Carbon;
 class RegisterController extends Controller
 {
     use DataFormController;
@@ -244,9 +243,9 @@ class RegisterController extends Controller
         $code = rand(100000, 999999);
 
         $user = $request->user();
-        // $user->last_code = $code;
-        Cache::put('verification_code_' . $user->id, $code, 10);
-        // $user->save();
+        $user->last_code = $code;
+        $user->last_code_created_at = Carbon::now();
+        $user->save();
 
         $email = $user->email;
         $msg_title = 'Verfication code';
@@ -285,19 +284,18 @@ class RegisterController extends Controller
         }
 
         $user = $request->user();
-        $retrievedVerificationCode = Cache::get('verification_code_' . $user->id);
-        if (!$retrievedVerificationCode)
-            return
+
+        if ($user->last_code_created_at->addMinutes(10)->isPast())
             $this->jsonData(
                 false,
                 $user->verify,
                 'Account faild',
-                ['invalid verfication code or expired, click resened for create one' . $retrievedVerificationCode],
+                ['verfication code has expired'],
                 [
                 ]
             );
 
-        if ($request->code == $retrievedVerificationCode) {
+        if ($request->code == $user->last_code) {
             $user->verify = true;
             $user->save();
 
