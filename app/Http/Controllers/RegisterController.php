@@ -327,6 +327,72 @@ class RegisterController extends Controller
         }
     }
 
+    public function forgotPassword(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'code' => 'required|numeric|digits:6',
+            'password' => ['required', 'min:8', 'confirmed'],
+            'email' => ['required', 'email'],
+        ], [
+            'code.required' => 'Please enter your verification code',
+            'code.numeric' => 'The code must be a number',
+            'code.digits' => 'The code must be a 6 digits',
+            'password.required' => 'Please enter a password.',
+            'password.min' => 'Password should be at least 8 characters long.',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->jsondata(false, null, 'Activation failed', [$validator->errors()->first()], []);
+        }
+
+        $user = User::where("email", $request->email)->first();
+
+        if ($user):
+            if (Carbon::parse($user->last_code_created_at)->addMinutes(10)->isPast())
+                $this->jsonData(
+                    false,
+                    $user->verify,
+                    'Account faild',
+                    ['verfication code has expired'],
+                    [
+                    ]
+                );
+
+            if ($request->code == $user->last_code) {
+                $user->password = Hash::make($request->password);
+                $user->save();
+
+                if ($user) :
+                    return
+                        $this->jsonData(
+                            true,
+                            $user->verify,
+                            'Password has been changed successfuly',
+                            [],
+                            []
+                        );
+                endif;
+            } else {
+                return
+                    $this->jsonData(
+                        false,
+                        $user->verify,
+                        'Account faild',
+                        ['The code you entered is not correct, check your email again or click resend'],
+                        []
+                    );
+                }
+        else:
+            return
+                $this->jsonData(
+                    false,
+                    false,
+                    'Account faild',
+                    ['There is no user with this email'],
+                    []
+                );
+        endif;
+    }
+
     public function changePassword(Request $request) {
         $user = $request->user();
 
@@ -470,6 +536,17 @@ class RegisterController extends Controller
             return $this->jsonData(true, $request->user()->verify, '', [], ['user' => $request->user()]);
         else :
             return $this->jsonData(false, null, 'Account Not Found', [], []);
+        endif;
+    }
+
+    public function setNotificationToken(Request $request)
+    {
+        if ($request->user()) :
+            if ($request->notification_token) :
+                $request->user()->notification_token = $request->notification_token;
+                $request->user()->save();
+            endif;
+            return $this->jsonData(true, $request->user()->verify, '', [], []);
         endif;
     }
 

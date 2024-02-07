@@ -22,8 +22,10 @@ Route::group(['middleware' => ['check_api_password']], function () {
     Route::middleware('auth:sanctum')->post('/collect', [RegisterController::class, 'collectPoints']);
     Route::post('/login', [RegisterController::class, 'login']);
     Route::middleware('auth:sanctum')->post('/get-user', [RegisterController::class, 'getUser']);
+    Route::middleware('auth:sanctum')->post('/user/save-notification-token', [RegisterController::class, 'setNotificationToken']);
     Route::middleware('auth:sanctum')->post('/send-code', [RegisterController::class, 'sendVerfication']);
     Route::middleware('auth:sanctum')->post('/active-account', [RegisterController::class, 'activeAccount']);
+    Route::post('/forgot-password', [RegisterController::class, 'forgotPassword']);
     Route::middleware('auth:sanctum')->post('/change-password', [RegisterController::class, 'changePassword']);
     Route::middleware('auth:sanctum')->post('/change-profile-pic', [RegisterController::class, 'editProfilePic']);
     Route::middleware('auth:sanctum')->post('/edit-email', [RegisterController::class, 'editEmail']);

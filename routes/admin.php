@@ -32,6 +32,10 @@ Route::middleware('auth:admin')->group(function () {
     
     //notification
     Route::middleware('admin:Master')->post('/notification/push', [AdminHomeController::class, 'pushNotificationmain'])->name('notification.push');
+
+    Route::middleware('admin:Master')->post('/get-notifications', [AdminHomeController::class, 'getNotifications'])->name("notification.get");
+    Route::middleware('admin:Master')->post('/delete-notification', [AdminHomeController::class, 'DeleteNotifications'])->name("notification.delete");
+    Route::middleware('admin:Master')->post('/resend-notification', [AdminHomeController::class, 'resendNotification'])->name("notification.resend");
     
     // users
     Route::middleware('admin:Moderator')->prefix('users')->group(function () {

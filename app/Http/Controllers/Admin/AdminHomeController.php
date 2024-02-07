@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Coupon;
 use App\Models\User;
+use App\Models\Notification;
 use App\Traits\DataFormController;
 use App\Traits\PushNotificationTrait;
 
@@ -47,21 +48,81 @@ class AdminHomeController extends Controller
 
     public function pushNotificationmain(Request $request) {
         $validator = Validator::make($request->all(), [
-            'msg' => 'required',
             'msg_title' => 'required',
+            'msg' => 'required',
         ], [
             'msg.required' => 'Please Enter Notfication msg',
             'msg_title.required' => 'Please Enter Notification title',
         ]);
 
         if ($validator->fails()) {
-            return $this->jsondata(false, null, 'Login failed', [$validator->errors()->first()], []);
+            return $this->jsondata(false, null, 'push failed', [$validator->errors()->first()], []);
         }
 
-        $usersToken = User::where('notification_token', '!=', null)->pluck('notification_token')->toArray();
-        if ($usersToken) {
-            $response = $this->pushNotification($request->msg_title, $request->msg, $usersToken);
+            $response = $this->pushNotification($request->msg_title, $request->msg, null, null, ["id" => 'djsdf']);
             return $this->jsondata(true, null, 'Notification has pushed successfuly', [], [$response]);
-        }
     }
+    public function resendNotification(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'notification_id' => 'required',
+        ]);
+
+        
+        if ($validator->fails()) {
+            return $this->jsondata(false, null, 'resend failed', [$validator->errors()->first()], []);
+        }
+        $notification = Notification::find($request->notification_id);
+        
+        if ($notification)
+            $response = $this->pushNotification($notification->title, $notification->body, null, $notification->user_id);
+            return $this->jsondata(true, null, 'Notification has resent successfuly', [], [$response]);
+    }
+
+    public function getNotifications(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'type' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->jsondata(false, null, 'get Notifications failed', [$validator->errors()->first()], []);
+        }
+
+        $notifications;
+
+        if ($request->type === "Main")
+            $notifications = Notification::latest()
+            ->where("user_id", null)
+            ->where(function ($query) use ($request) {
+                $query->where('title', 'like', '%' . $request->search_words . '%')
+                    ->orWhere('body', 'like', '%' . $request->search_words . '%');
+            })
+            ->paginate(10);
+        else
+            $notifications = Notification::latest()
+            ->where(function ($query) use ($request) {
+                $query->where('title', 'like', '%' . $request->search_words . '%')
+                    ->orWhere('body', 'like', '%' . $request->search_words . '%');
+            })
+            ->paginate(10);
+
+        return  $this->jsondata(true, null, 'Successful Operation', [], $notifications);
+    }
+
+    public function DeleteNotifications(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'notification_id' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->jsondata(false, null, 'Delete Notifications failed', [$validator->errors()->first()], []);
+        }
+        
+        $notification = Notification::find($request->notification_id);
+        
+        $notification->delete();
+
+        return $this->jsondata(true, null, 'Notification deleted successfuly', [], []);
+    }
+
+    
 }
