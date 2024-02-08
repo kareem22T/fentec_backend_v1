@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\RegisterRequest;
 use App\Models\User;
 use App\Models\Admin;
+use App\Models\Notification;
 use App\Models\Invetation_code;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -548,6 +549,22 @@ class RegisterController extends Controller
             endif;
             return $this->jsonData(true, $request->user()->verify, '', [], []);
         endif;
+    }
+
+    public function getNotification(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required',
+        ]);
+
+        if ($validator->fails())
+            return $this->jsondata(false, $user->verify, 'Get Notification failed', [$validator->errors()->first()], []);
+
+        $notifications = Notification::latest()->where('user_id', $request->user_id)
+        ->orWhereNull('user_id')
+        ->paginate(15);
+
+        return $notifications;
+
     }
 
     public function seenApprovingMsg(Request $request)
