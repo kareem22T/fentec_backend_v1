@@ -271,6 +271,60 @@ class RegisterController extends Controller
         endif;
     }
 
+    public function sendForgotCode(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => ['required', 'email'],
+        ], [
+        ]);
+
+        if ($validator->fails()) {
+            return $this->jsondata(false, null, 'Activation failed', [$validator->errors()->first()], []);
+        }
+
+        $code = rand(100000, 999999);
+
+        $user = User::where("email", $request->email)->first();
+
+        if ($user) :
+            $user->last_code = $code;
+            $user->last_code_created_at = Carbon::now();
+            $user->save();
+
+            $email = $user->email;
+            $msg_title = 'Verfication code';
+            $msg_body = 'Your email verfication code is: <b>' . $code . '</b>';
+
+            $this->sendEmail($email, $msg_title, $msg_body);
+
+            if ($user) :
+                return
+                    $this->jsonData(
+                        true,
+                        $user->verify,
+                        'We have sent you a verification code on your email',
+                        [],
+                        [
+                            'id' => $user->id,
+                            'name' => $user->name,
+                            'email' => $user->email,
+                            'phone' => $user->phone,
+                        ]
+                    );
+            endif;
+        else:
+            return
+                $this->jsonData(
+                    false,
+                    false,
+                    'Account faild',
+                    ['There is no user with this email'],
+                    []
+                );
+        endif;
+
+    }
+
     public function activeAccount(Request $request) {
         $validator = Validator::make($request->all(), [
             'code' => 'required|numeric|digits:6',
