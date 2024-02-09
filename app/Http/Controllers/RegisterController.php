@@ -617,6 +617,12 @@ class RegisterController extends Controller
         ->orWhereNull('user_id')
         ->paginate(15);
 
+        $user = User::find("user_id");
+        if ($user) :
+            $user->has_unseened_notifications = false;
+            $user->save();
+        endif;
+
         return $notifications;
 
     }

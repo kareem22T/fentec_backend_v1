@@ -33,6 +33,7 @@ class User extends Authenticatable
         'rejection_reason',
         'isBanned',
         'ban_reason',
+        'has_unseened_notifications',
         'approving_msg_seen',
         'password',
         'notification_token',
