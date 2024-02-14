@@ -6,21 +6,24 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Traits\DataFormController;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Http;
 
 use App\Models\Zone;
+use App\Models\Scooter;
 
 class ManageScooters extends Controller
 {
     use DataFormController;
 
     public function index () {
+        $this->updateScotersData();
         return view("admin.dashboard.scooters");
     }
     public function zonesIndex () {
         $zones = Zone::all();
         return view("admin.dashboard.zones")->with(compact('zones'));
     }
-    public function add (Request $request) {
+    public function addZone (Request $request) {
         $validator = Validator::make($request->all(), [
             'path' => 'required',
             'type' => 'required',
@@ -42,7 +45,8 @@ class ManageScooters extends Controller
             return $this->jsondata(true, null, 'Zone Has added successfuly', [], []);
 
     }
-    public function delete (Request $request) {
+
+    public function deleteZone (Request $request) {
         $validator = Validator::make($request->all(), [
             'id' => 'required',
         ]);
@@ -57,5 +61,88 @@ class ManageScooters extends Controller
         if ($zone)
             return $this->jsondata(true, null, 'Zone Has deleted successfuly', [], []);
 
+    }
+
+    public function updateScotersData() {
+        $scooters = Scooter::all();
+
+        if ($scooters->count() > 0) {
+            foreach ($scooters as $iot) {
+                $response = Http::post('http://api.uqbike.com/position/getpos.do?machineNO=' . $iot->machine_no . "&token=" . $iot->token);                
+                if ($response->successful()) {
+                    $iot->latitude = $response['data'][0]['latitude'];
+                    $iot->longitude = $response['data'][0]['longitude'];
+                    $iot->save();
+                }
+            }
+        }
+    }
+
+    public function getScooters(Request $request) {
+        $scooters = Scooter::
+        where(function ($query) use ($request) {
+            $query->where('machine_no', 'like', '%' . $request->search_word . '%')
+                ->orWhere('token', 'like', '%' . $request->search_word . '%');
+        })->
+        paginate(15);
+        return  $this->jsondata(true, null, 'Successful Operation', [], $scooters);
+    }
+
+    public function updateScooter(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'iot_id' => 'required',
+            'token' => 'required',
+            'machine_no' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->jsondata(false, null, 'Update failed', [$validator->errors()->first()], []);
+        }
+
+        $iot = Scooter::find($request->iot_id);
+        $iot->token = $request->token;
+        $iot->machine_no = $request->machine_no;
+        $iot->save();
+
+        if ($iot)
+            return $this->jsondata(true, null, 'Scooter updated successfuly', [], []);
+    }
+    public function addScooter(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'machine_no' => 'required',
+            'token' => 'required',
+        ], [
+            "machine_no.required" => "Please Enter Machine Number",
+            "token.required" => "Please Enter Machine token"
+        ]);
+
+        if ($validator->fails()) {
+            return $this->jsondata(false, null, 'Add failed', [$validator->errors()->first()], []);
+        }
+
+        $iot = Scooter::create([
+            "token" => $request->token,
+            "machine_no" => $request->machine_no,
+        ]);
+        $iot->save();
+
+        if ($iot)
+            return $this->jsondata(true, null, 'Scooter has Added successfuly', [], []);
+    }
+    public function deleteScooter(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'iot_id' => 'required',
+        ], [
+        ]);
+
+        if ($validator->fails()) {
+            return $this->jsondata(false, null, 'Delete failed', [$validator->errors()->first()], []);
+        }
+
+        $iot = Scooter::find($request->iot_id);
+        $iot->delete();
+
+        if ($iot)
+            return $this->jsondata(true, null, 'Scooter has deleted successfuly', [], []);
     }
 }
