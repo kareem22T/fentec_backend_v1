@@ -43,7 +43,7 @@ class ScooterController extends Controller
                     'controlType' => 'control'
                 ]
             ]);
-            sleep(1);
+            sleep(.5);
             // Second HTTP POST request
             $unlock_lock_wheel = $client->post('http://api.uqbike.com/terControl/sendControl.do', [
                 'form_params' => [
