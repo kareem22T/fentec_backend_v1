@@ -137,6 +137,8 @@ class ScooterController extends Controller
     }
 
     public function lockScooter(Request $request) {
+        $client = new Client();
+
         // Second HTTP POST request
         $lock_lock_wheel = $client->post('http://api.uqbike.com/terControl/sendControl.do', [
             'form_params' => [
