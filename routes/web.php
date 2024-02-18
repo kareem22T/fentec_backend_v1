@@ -50,8 +50,8 @@ Route::group(['middleware' => ['check_api_password'], 'prefix' => 'sellers'], fu
     Route::middleware('auth:sanctum')->post('/logout', [SellerRigisterController::class, 'logout']);
 });
 
-Route::middleware('auth:sanctum')->get("/unlock-scooter/{scooter_id}", [ScooterController::class, "unlockScooter"]);
-Route::middleware('auth:sanctum')->get("/lock-scooter", [ScooterController::class, "lockScooter"]);
+Route::middleware('auth:sanctum')->post("/unlock-scooter/{scooter_id}", [ScooterController::class, "unlockScooter"]);
+Route::middleware('auth:sanctum')->post("/lock-scooter", [ScooterController::class, "lockScooter"]);
 Route::get("/testNot", [ScooterController::class, "sendRealTimeData"]);
 
 
