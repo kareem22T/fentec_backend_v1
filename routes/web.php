@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\ScooterController;
 use App\Http\Controllers\Seller\RegisterController as SellerRigisterController;
 
 /*
@@ -48,6 +49,11 @@ Route::group(['middleware' => ['check_api_password'], 'prefix' => 'sellers'], fu
     Route::middleware('auth:sanctum')->post('/edit-phone', [SellerRigisterController::class, 'editPhone']);
     Route::middleware('auth:sanctum')->post('/logout', [SellerRigisterController::class, 'logout']);
 });
+
+Route::middleware('auth:sanctum')->get("/unlock-scooter/{scooter_id}", [ScooterController::class, "unlockScooter"]);
+Route::middleware('auth:sanctum')->get("/lock-scooter", [ScooterController::class, "lockScooter"]);
+Route::get("/testNot", [ScooterController::class, "sendRealTimeData"]);
+
 
 Route::get('/', function () {
     return 'welcome';
