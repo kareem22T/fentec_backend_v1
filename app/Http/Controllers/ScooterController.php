@@ -92,6 +92,26 @@ class ScooterController extends Controller
         $lock_lock = Http::post('http://api.uqbike.com/position/getpos.do?machineNO=' . $iot->machine_no . "&token=" . $iot->token . "&paramName=" . 23 . "&controlType=control");                
         $lock_lock_wheel = Http::post('http://api.uqbike.com/position/getpos.do?machineNO=' . $iot->machine_no . "&token=" . $iot->token . "&paramName=" . 12 . "&controlType=control");                
 
+        $serverKey = 'AAAABSRf2YE:APA91bHHsnnNLnjhh6NI6pxCXWv8vH5C1ZQ4wO8qcN3K1Ql-keyWnbP77uTPz21hLgoThi3ni707rt-cufgDY8ismiLCuwbsMjD1C-FSZPgf64nuSTGFE8wP6DecOckgQHrnXauiAIWC';
+        $deviceToken = "/topics/Journey_channel_" . $user->id;
+        $title = "hello";
+        $body = "hello";
+        $data = "hello";
+        $response = Http::withHeaders([
+                'Authorization' => 'key=' . $serverKey,
+                'Content-Type' => 'application/json',
+            ])
+            ->post('https://fcm.googleapis.com/fcm/send', [
+                'to' => $deviceToken,
+                'notification' => [
+                    'title' => $title,
+                    'body' => $body,
+                    'data' => $data,
+                    'icon' => "https://fentecmobility.com/imgs/icon.jpg"
+                ],
+                "data" => ["lock"=> true]
+            ]);
+        
         // send notification to unique channel to remove end pop up and tell him thanks for the journey and ask for rate
 
         // start timer for 5 min to check if image taked if taked send notification to remove take image pop up and end
@@ -104,7 +124,7 @@ class ScooterController extends Controller
 
     public function lockScooter(Request $request) {
         $lock_lock = Http::post('http://api.uqbike.com/position/getpos.do?machineNO=009490566&token=E4A663AD4406DA768300D4EA20BCC4CF'. "&paramName=" . 23 . "&controlType=control");                
-        $lock_lock_wheel = Http::post('http://api.uqbike.com/position/getpos.do?machineNO=' . $iot->machine_no . "&token=" . $iot->token . "&paramName=" . 12 . "&controlType=control");                
+        $lock_lock_wheel = Http::post('http://api.uqbike.com/position/getpos.do?machineNO=009490566&token=E4A663AD4406DA768300D4EA20BCC4CF'. "&paramName=" . 12 . "&controlType=control");                
 
         $user = $request->user();
         $serverKey = 'AAAABSRf2YE:APA91bHHsnnNLnjhh6NI6pxCXWv8vH5C1ZQ4wO8qcN3K1Ql-keyWnbP77uTPz21hLgoThi3ni707rt-cufgDY8ismiLCuwbsMjD1C-FSZPgf64nuSTGFE8wP6DecOckgQHrnXauiAIWC';
