@@ -32,15 +32,15 @@ class ScooterController extends Controller
         if ($userAvilableRideMin < 5)
             return $this->jsondata(false, null, 'Unlock failed', ["You don not have enough points at least " . $minCost * 5 . " for 5 Min" ], []);
 
-        $unlock_lock = Http::post('http://api.uqbike.com/position/getpos.do?machineNO=' . $iot->machine_no . "&token=" . $iot->token . "&paramName=" . 22 . "&controlType=control");                
-        $unlock_lock_wheel = Http::post('http://api.uqbike.com/position/getpos.do?machineNO=' . $iot->machine_no . "&token=" . $iot->token . "&paramName=" . 11 . "&controlType=control");                
+        $unlock_lock = Http::post('http://api.uqbike.com/terControl/sendControl.do?machineNO=' . $iot->machine_no . "&token=" . $iot->token . "&paramName=" . 22 . "&controlType=control");                
+        $unlock_lock_wheel = Http::post('http://api.uqbike.com/terControl/sendControl.do?machineNO=' . $iot->machine_no . "&token=" . $iot->token . "&paramName=" . 11 . "&controlType=control");                
 
         $isOneSuccess = (int) $unlock_lock["ret"];
         $isTwonSuccess = (int) $unlock_lock_wheel["ret"];
 
         if (!$isOneSuccess || !$isTwonSuccess) :
-            $lock_lock = Http::post('http://api.uqbike.com/position/getpos.do?machineNO=' . $iot->machine_no . "&token=" . $iot->token . "&paramName=" . 23 . "&controlType=control");                
-            $lock_lock_wheel = Http::post('http://api.uqbike.com/position/getpos.do?machineNO=' . $iot->machine_no . "&token=" . $iot->token . "&paramName=" . 12 . "&controlType=control");                
+            $lock_lock = Http::post('http://api.uqbike.com/terControl/sendControl.do?machineNO=' . $iot->machine_no . "&token=" . $iot->token . "&paramName=" . 23 . "&controlType=control");                
+            $lock_lock_wheel = Http::post('http://api.uqbike.com/terControl/sendControl.do?machineNO=' . $iot->machine_no . "&token=" . $iot->token . "&paramName=" . 12 . "&controlType=control");                
         
             return $this->jsondata(false, null, 'Unlock failed', ["Faild to Unlock Scooter Try Agin or Call Customer service to solve"], []);
         endif;
@@ -89,8 +89,8 @@ class ScooterController extends Controller
 
         }
 
-        $lock_lock = Http::post('http://api.uqbike.com/position/getpos.do?machineNO=' . $iot->machine_no . "&token=" . $iot->token . "&paramName=" . 23 . "&controlType=control");                
-        $lock_lock_wheel = Http::post('http://api.uqbike.com/position/getpos.do?machineNO=' . $iot->machine_no . "&token=" . $iot->token . "&paramName=" . 12 . "&controlType=control");                
+        $lock_lock = Http::post('http://api.uqbike.com/terControl/sendControl.do?machineNO=' . $iot->machine_no . "&token=" . $iot->token . "&paramName=" . 23 . "&controlType=control");                
+        $lock_lock_wheel = Http::post('http://api.uqbike.com/terControl/sendControl.do?machineNO=' . $iot->machine_no . "&token=" . $iot->token . "&paramName=" . 12 . "&controlType=control");                
 
         // send notification to unique channel to remove end pop up and tell him thanks for the journey and ask for rate
 
@@ -103,8 +103,8 @@ class ScooterController extends Controller
     }
 
     public function lockScooter(Request $request) {
-        $lock_lock = Http::post('http://api.uqbike.com/position/getpos.do?machineNO=009490566&token=E4A663AD4406DA768300D4EA20BCC4CF'. "&paramName=" . 23 . "&controlType=control");                
-        $lock_lock_wheel = Http::post('http://api.uqbike.com/position/getpos.do?machineNO=009490566&token=E4A663AD4406DA768300D4EA20BCC4CF'. "&paramName=" . 12 . "&controlType=control");                
+        $lock_lock = Http::post('http://api.uqbike.com/terControl/sendControl.do?machineNO=009490566&token=E4A663AD4406DA768300D4EA20BCC4CF'. "&paramName=" . 23 . "&controlType=control");                
+        $lock_lock_wheel = Http::post('http://api.uqbike.com/terControl/sendControl.do?machineNO=009490566&token=E4A663AD4406DA768300D4EA20BCC4CF'. "&paramName=" . 12 . "&controlType=control");                
 
         $trips = Trip::all();
         foreach ($trips as $trip) {
