@@ -13,7 +13,8 @@
         "laravel/sanctum": "^3.2",
         "laravel/socialite": "^5.11",
         "laravel/tinker": "^2.8",
-        "phpmailer/phpmailer": "^6.8"
+        "phpmailer/phpmailer": "^6.8",
+        "symfony/psr-http-message-bridge": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

@@ -7,6 +7,7 @@ use App\Models\Trip;
 use App\Models\Scooter;
 use App\Traits\DataFormController;
 use Illuminate\Support\Facades\Http;
+use GuzzleHttp\Client;
 
 class ScooterController extends Controller
 {
@@ -32,18 +33,44 @@ class ScooterController extends Controller
         if ($userAvilableRideMin < 5)
             return $this->jsondata(false, null, 'Unlock failed', ["You don not have enough points at least " . $minCost * 5 . " for 5 Min" ], []);
 
-        $unlock_lock = Http::post('http://api.uqbike.com/terControl/sendControl.do?machineNO=' . $iot->machine_no . "&token=" . $iot->token . "&paramName=" . 22 . "&controlType=control");                
-        $unlock_lock_wheel = Http::post('http://api.uqbike.com/terControl/sendControl.do?machineNO=' . $iot->machine_no . "&token=" . $iot->token . "&paramName=" . 11 . "&controlType=control");                
+            $client = new Client();
+            // First HTTP POST request
+            $unlock_lock = $client->post('http://api.uqbike.com/terControl/sendControl.do', [
+                'form_params' => [
+                    'machineNO' => $iot->machine_no,
+                    'token' => $iot->token,
+                    'paramName' => 22,
+                    'controlType' => 'control'
+                ]
+            ]);
 
-        $isOneSuccess = (int) $unlock_lock["ret"];
-        $isTwonSuccess = (int) $unlock_lock_wheel["ret"];
+            // Second HTTP POST request
+            $unlock_lock_wheel = $client->post('http://api.uqbike.com/terControl/sendControl.do', [
+                'form_params' => [
+                    'machineNO' => $iot->machine_no,
+                    'token' => $iot->token,
+                    'paramName' => 11,
+                    'controlType' => 'control'
+                ]
+            ]);
 
-        if (!$isOneSuccess || !$isTwonSuccess) :
-            $lock_lock = Http::post('http://api.uqbike.com/terControl/sendControl.do?machineNO=' . $iot->machine_no . "&token=" . $iot->token . "&paramName=" . 23 . "&controlType=control");                
-            $lock_lock_wheel = Http::post('http://api.uqbike.com/terControl/sendControl.do?machineNO=' . $iot->machine_no . "&token=" . $iot->token . "&paramName=" . 12 . "&controlType=control");                
+        // $isOneSuccess = (int) $unlock_lock->ret;
+        // $isTwonSuccess = (int) $unlock_lock_wheel->ret;
+
+        // if (!$isOneSuccess || !$isTwonSuccess) :
+
+        //     // Second HTTP POST request
+        //     $lock_lock_wheel = $client->post('http://api.uqbike.com/terControl/sendControl.do', [
+        //         'form_params' => [
+        //             'machineNO' => $iot->machine_no,
+        //             'token' => $iot->token,
+        //             'paramName' => 12,
+        //             'controlType' => 'control'
+        //         ]
+        //     ]);
         
-            return $this->jsondata(false, null, 'Unlock failed', ["Faild to Unlock Scooter Try Agin or Call Customer service to solve"], []);
-        endif;
+        //     return $this->jsondata(false, null, 'Unlock failed', ["Faild to Unlock Scooter Try Agin or Call Customer service to solve"], []);
+        // endif;
         
         $serverKey = 'AAAABSRf2YE:APA91bHHsnnNLnjhh6NI6pxCXWv8vH5C1ZQ4wO8qcN3K1Ql-keyWnbP77uTPz21hLgoThi3ni707rt-cufgDY8ismiLCuwbsMjD1C-FSZPgf64nuSTGFE8wP6DecOckgQHrnXauiAIWC';
         $deviceToken = "/topics/Journey_channel_" . $user->id;
@@ -89,8 +116,15 @@ class ScooterController extends Controller
 
         }
 
-        $lock_lock = Http::post('http://api.uqbike.com/terControl/sendControl.do?machineNO=' . $iot->machine_no . "&token=" . $iot->token . "&paramName=" . 23 . "&controlType=control");                
-        $lock_lock_wheel = Http::post('http://api.uqbike.com/terControl/sendControl.do?machineNO=' . $iot->machine_no . "&token=" . $iot->token . "&paramName=" . 12 . "&controlType=control");                
+        // Second HTTP POST request
+        $lock_lock_wheel = $client->post('http://api.uqbike.com/terControl/sendControl.do', [
+            'form_params' => [
+                'machineNO' => $iot->machine_no,
+                'token' => $iot->token,
+                'paramName' => 12,
+                'controlType' => 'control'
+            ]
+        ]);
 
         // send notification to unique channel to remove end pop up and tell him thanks for the journey and ask for rate
 
@@ -103,8 +137,16 @@ class ScooterController extends Controller
     }
 
     public function lockScooter(Request $request) {
-        $lock_lock = Http::post('http://api.uqbike.com/terControl/sendControl.do?machineNO=009490566&token=E4A663AD4406DA768300D4EA20BCC4CF'. "&paramName=" . 23 . "&controlType=control");                
-        $lock_lock_wheel = Http::post('http://api.uqbike.com/terControl/sendControl.do?machineNO=009490566&token=E4A663AD4406DA768300D4EA20BCC4CF'. "&paramName=" . 12 . "&controlType=control");                
+
+        // Second HTTP POST request
+        $lock_lock_wheel = $client->post('http://api.uqbike.com/terControl/sendControl.do', [
+            'form_params' => [
+                'machineNO' => $iot->machine_no,
+                'token' => $iot->token,
+                'paramName' => 12,
+                'controlType' => 'control'
+            ]
+        ]);
 
         $trips = Trip::all();
         foreach ($trips as $trip) {
