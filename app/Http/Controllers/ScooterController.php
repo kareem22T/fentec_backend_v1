@@ -137,13 +137,11 @@ class ScooterController extends Controller
     }
 
     public function lockScooter(Request $request) {
-
-        $iot = Scooter::first();
         // Second HTTP POST request
         $lock_lock_wheel = $client->post('http://api.uqbike.com/terControl/sendControl.do', [
             'form_params' => [
-                'machineNO' => $iot->machine_no,
-                'token' => $iot->token,
+                'machineNO' => "009490566",
+                'token' => "E4A663AD4406DA768300D4EA20BCC4CF",
                 'paramName' => 12,
                 'controlType' => 'control'
             ]
