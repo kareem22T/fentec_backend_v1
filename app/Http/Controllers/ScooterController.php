@@ -126,6 +126,12 @@ class ScooterController extends Controller
         $lock_lock = Http::post('http://api.uqbike.com/position/getpos.do?machineNO=009490566&token=E4A663AD4406DA768300D4EA20BCC4CF'. "&paramName=" . 23 . "&controlType=control");                
         $lock_lock_wheel = Http::post('http://api.uqbike.com/position/getpos.do?machineNO=009490566&token=E4A663AD4406DA768300D4EA20BCC4CF'. "&paramName=" . 12 . "&controlType=control");                
 
+        $trips = Trip::all();
+        foreach ($trips as $trip) {
+            $trip->ended_at = now();
+            $trip->save();
+        }
+
         $user = $request->user();
         $serverKey = 'AAAABSRf2YE:APA91bHHsnnNLnjhh6NI6pxCXWv8vH5C1ZQ4wO8qcN3K1Ql-keyWnbP77uTPz21hLgoThi3ni707rt-cufgDY8ismiLCuwbsMjD1C-FSZPgf64nuSTGFE8wP6DecOckgQHrnXauiAIWC';
         $deviceToken = "/topics/Journey_channel_" . $user->id;
