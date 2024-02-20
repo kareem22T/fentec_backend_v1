@@ -87,7 +87,13 @@
                         <div class="btns flex-center">
                             <button class="button success" @click="handleEditIot(iot)"><i class='bx bx-edit'></i></button>
                             <button class="button danger" @click="deleteIot(iot.id, iot.machine_no)"><i class='bx bx-trash'></i></button>
-                            <button class="button primary" @click="unlockBattary(iot.id, iot.machine_no)"><i class='bx bxs-battery-charging' ></i></button>
+                            <div class="button primary" style="position: relative;margin: 0;" @click="showBattaryPopup[iot.id] ? showBattaryPopup[iot.id] = !showBattaryPopup[iot.id] : showBattaryPopup[iot.id] = true">
+                                <i class='bx bxs-battery-charging' ></i>
+                                <div class="battary-pop-up" v-if="showBattaryPopup[iot.id] && showBattaryPopup[iot.id] === true" style="position: absolute;bottom: 100%;padding-bottom: 10px;display: flex;gap: 10px;">
+                                    <button class="button success" @click="unlockBattary(iot.id, iot.machine_no)">Unlock</button>
+                                    <button class="button danger" @click="lockBattary(iot.id, iot.machine_no)">Lock</button>
+                                </div>
+                            </div>
                             <button class="button secondary" @click="lockWheel(iot.id, iot.machine_no)"><i class='bx bx-lock' ></i></button>
                         </div>
                     </td>
@@ -188,7 +194,8 @@ createApp({
         search: "",
         iot_current_page: 1,
         iot_last_page: 1,
-        scooters: null
+        scooters: null,
+        showBattaryPopup: {},
     }
   },
   methods: {
@@ -447,11 +454,11 @@ createApp({
                 }
         }
     },
-    async unlockBattary(id, serial) {
-        if(confirm("Are You Sure you want to unlock battary " + serial + " Scooter")) {
+    async lockBattary(id, serial) {
+        if(confirm("Are You Sure you want to lock battary " + serial + " Scooter")) {
             $('.loader').fadeIn().css('display', 'flex')
                 try {
-                    const response = await axios.post(`{{ route('scooter.unlock.battary') }}`, {
+                    const response = await axios.post(`{{ route('scooter.lock.battary') }}`, {
                         iot_id: id,
                     },
                     {

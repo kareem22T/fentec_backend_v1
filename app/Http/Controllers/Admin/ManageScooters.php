@@ -172,6 +172,32 @@ class ManageScooters extends Controller
         if ($iot)
             return $this->jsondata(true, null, 'Scooter battary has unlocked successfuly', [], []);
     }
+    public function lockbattary(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'iot_id' => 'required',
+        ], [
+        ]);
+
+        if ($validator->fails()) {
+            return $this->jsondata(false, null, 'Lock failed', [$validator->errors()->first()], []);
+        }
+
+        $iot = Scooter::find($request->iot_id);
+
+        $client = new Client();
+        // First HTTP POST request
+        $unlock_lock = $client->post('http://api.uqbike.com/terControl/sendControl.do', [
+            'form_params' => [
+                'machineNO' => $iot->machine_no,
+                'token' => $iot->token,
+                'paramName' => 16,
+                'controlType' => 'control'
+            ]
+        ]);
+
+        if ($iot)
+            return $this->jsondata(true, null, 'Scooter battary has Locked successfuly', [], []);
+    }
     public function lockWheel(Request $request) {
         $validator = Validator::make($request->all(), [
             'iot_id' => 'required',

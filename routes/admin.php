@@ -66,6 +66,7 @@ Route::middleware('auth:admin')->group(function () {
         Route::post('/add', [ManageScooters::class, 'addScooter'])->name('scooter.add');
         Route::post('/delete', [ManageScooters::class, 'deleteScooter'])->name('scooter.delete');
         Route::post('/unlock-battary', [ManageScooters::class, 'unlockBattary'])->name('scooter.unlock.battary');
+        Route::post('/lock-battary', [ManageScooters::class, 'lockbattary'])->name('scooter.lock.battary');
         Route::post('/lock-wheel', [ManageScooters::class, 'lockWheel'])->name('scooter.lock.wheel');
     });
     
