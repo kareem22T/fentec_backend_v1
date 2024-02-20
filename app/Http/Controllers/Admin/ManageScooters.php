@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Traits\DataFormController;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Http;
+use GuzzleHttp\Client;
 
 use App\Models\Zone;
 use App\Models\Scooter;
@@ -144,5 +145,57 @@ class ManageScooters extends Controller
 
         if ($iot)
             return $this->jsondata(true, null, 'Scooter has deleted successfuly', [], []);
+    }
+    public function unlockBattary(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'iot_id' => 'required',
+        ], [
+        ]);
+
+        if ($validator->fails()) {
+            return $this->jsondata(false, null, 'Delete failed', [$validator->errors()->first()], []);
+        }
+
+        $iot = Scooter::find($request->iot_id);
+
+        $client = new Client();
+        // First HTTP POST request
+        $unlock_lock = $client->post('http://api.uqbike.com/terControl/sendControl.do', [
+            'form_params' => [
+                'machineNO' => $iot->machine_no,
+                'token' => $iot->token,
+                'paramName' => 15,
+                'controlType' => 'control'
+            ]
+        ]);
+
+        if ($iot)
+            return $this->jsondata(true, null, 'Scooter battary has unlocked successfuly', [], []);
+    }
+    public function lockWheel(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'iot_id' => 'required',
+        ], [
+        ]);
+
+        if ($validator->fails()) {
+            return $this->jsondata(false, null, 'lock failed', [$validator->errors()->first()], []);
+        }
+
+        $iot = Scooter::find($request->iot_id);
+
+        $client = new Client();
+        // First HTTP POST request
+        $unlock_lock = $client->post('http://api.uqbike.com/terControl/sendControl.do', [
+            'form_params' => [
+                'machineNO' => $iot->machine_no,
+                'token' => $iot->token,
+                'paramName' => 12,
+                'controlType' => 'control'
+            ]
+        ]);
+
+        if ($iot)
+            return $this->jsondata(true, null, 'Scooter wheel has locked successfuly', [], []);
     }
 }

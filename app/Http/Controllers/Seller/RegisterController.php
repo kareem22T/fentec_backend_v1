@@ -278,24 +278,6 @@ class RegisterController extends Controller
             'seller_name' => $request->user()->name,
         ]);
 
-        if ($client->notification_token) {
-
-            $expo = Expo::driver('file');
-            $message = (new ExpoMessage([
-                'title' => 'تم شحن حسابك',
-                'body' => 'تم اضافة عدد' . $request->ammount . 'نقاط الي حسابك',
-                ]))
-                ->setChannelId('default')
-                ->setBadge(0)
-                ->playSound();
-
-                $recipients = [
-                    $client->notification_token,
-                ];
-                
-            $response = $expo->send($message)->to($recipients)->push();
-        }
-
         if ($client)
             return $this->jsondata(true, null, 'تم التحويل بنجاح', [], []);
 
