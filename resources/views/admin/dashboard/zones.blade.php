@@ -145,7 +145,7 @@ $zones = \App\Models\Zone::all();
             }
         }
 
-        function initMap() {
+        async function initMap() {
             const map = new google.maps.Map(document.getElementById("map"), {
                 center: { lat: 30.10811445920852, lng: 31.33138500000002 },
                 zoom: 15,
@@ -180,7 +180,20 @@ $zones = \App\Models\Zone::all();
 
             polygon.setMap(map);
 
-
+            const response = await fetch("/admin/scooters/get-zones");
+            const zones = await response.json();
+            zones.map((zone, index) => {
+                const polygon2 = new google.maps.Polygon({
+                    paths: JSON.parse(zone.path),
+                    strokeColor: "#000",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 2,
+                    fillColor: zone.type === 0 ? "#ff0000" : (zone.type === 1 ? "#00ff00" : "#ffa500"),
+                    fillOpacity: 0.35,
+                });
+                polygon2.setMap(map)
+            })
+            
 
             const svgPath =
             "M15 11.586V6h2V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2h2v5.586l-2.707 1.707A.996.996 0 0 0 6 14v2a1 1 0 0 0 1 1h4v3l1 2 1-2v-3h4a1 1 0 0 0 1-1v-2a.996.996 0 0 0-.293-.707L15 11.586z";

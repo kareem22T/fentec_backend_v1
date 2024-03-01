@@ -59,6 +59,8 @@ Route::middleware('auth:admin')->group(function () {
     Route::middleware('admin:Technician')->prefix('scooters')->group(function () {
         Route::get('/', [ManageScooters::class, 'index'])->name('scooters.manage');
         Route::get('/zones', [ManageScooters::class, 'zonesIndex'])->name('zones.manage');
+        Route::get('/get-zones', [ManageScooters::class, 'getZones'])->name('zones.get');
+        Route::get('/get-scooters', [ManageScooters::class, 'getAllScooters'])->name('scooters.all.get');
         Route::post('/zones-add', [ManageScooters::class, 'addZone'])->name('zones.add');
         Route::post('/zones-delete', [ManageScooters::class, 'deleteZone'])->name('zones.delete');
         Route::get('/get', [ManageScooters::class, 'getScooters'])->name('scooters.get');

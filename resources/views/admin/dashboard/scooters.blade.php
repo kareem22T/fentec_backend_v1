@@ -8,9 +8,9 @@
     <section class="main">
         <div class="statistics side">
             <div class="card">
-                <h1>
+                <h1 v-if="scooters && scooters.length">
                     Total devices <br>
-                    <span>45</span>                    
+                    <span>@{{ scooters.length}}</span>                    
                 </h1>
             </div>
             <div class="card">
@@ -147,10 +147,9 @@
     $(function () {
         $('.loader').fadeOut()
     })
-    const markers = [];
-    function initMap () {
+    async function initMap () {
         const map = new google.maps.Map(document.getElementById('map'), {
-            zoom: 10,
+            zoom: 8,
             center: { lat: 30.10811445920852, lng: 31.33138500000002 },
         });
         const markersList = [
@@ -159,17 +158,63 @@
             { lat: 37.4269, lng: -122.0811 },
         ];
 
-        for (const marker of markersList) {
-            // Create a new marker object with the current lat and lng
-            const currentMarker = new google.maps.Marker({
-                position: { lat: marker.lat, lng: marker.lng },
-                map, // Set the map property to the current map object
-            });
-            // Add the marker to the markers array
-            markers.push(currentMarker);
-        }
 
-    }
+        let markers = []; // Array to store the markers
+    // Remove all markers from the map
+    markers.forEach(marker => {
+        marker.setMap(null); // This will remove the marker from the map
+    });
+
+    markers = []; // Empty the array
+
+    let scooters = await fetch("/admin/scooters/get-scooters");
+    let scooters_data = await scooters.json();
+
+    scooters_data.forEach((scooter, index) => {
+        // Create a new marker for each scooter
+        if (index === 0) {
+                map.setCenter({ lat: parseFloat(scooter.latitude), lng: parseFloat(scooter.longitude) });
+            }
+
+        const marker = new google.maps.Marker({
+            position: { lat: parseFloat(scooter.latitude), lng: parseFloat(scooter.longitude) },
+            map: map, // Assuming 'map' is your Google Maps instance
+            icon: {
+                url: "{{ asset('/images/high_charge.png') }}", // Set the custom marker icon URL
+                scaledSize: new google.maps.Size(40, 50) // Set the width and height
+            },
+            title: `Scooter ${index + 1}` // Optionally set a title for the marker
+        });
+
+        markers.push(marker); // Add the marker to the array
+    });
+
+setInterval(async () => {
+    // Remove all markers from the map
+    markers.forEach(marker => {
+        marker.setMap(null); // This will remove the marker from the map
+    });
+
+    markers = []; // Empty the array
+
+    let scooters = await fetch("/admin/scooters/get-scooters");
+    let scooters_data = await scooters.json();
+
+    scooters_data.forEach((scooter, index) => {
+        // Create a new marker for each scooter
+        const marker = new google.maps.Marker({
+            position: { lat: parseFloat(scooter.latitude), lng: parseFloat(scooter.longitude) },
+            map: map, // Assuming 'map' is your Google Maps instance
+            icon: {
+                url: "{{ asset('/images/high_charge.png') }}", // Set the custom marker icon URL
+                scaledSize: new google.maps.Size(40, 50) // Set the width and height
+            },
+            title: `Scooter ${index + 1}` // Optionally set a title for the marker
+        });
+
+        markers.push(marker); // Add the marker to the array
+    });
+}, 5000);    }
 </script>
 <script
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyADMSyZQR7V38GWvZ3MEl_DcDsn0pTS0WU&callback=initMap&libraries=places&v=weekly"

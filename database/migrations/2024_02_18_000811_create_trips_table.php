@@ -17,6 +17,9 @@ return new class extends Migration
             $table->integer('user_id');
             $table->integer('scooter_id');
             $table->dateTime('started_at');
+            $table->string('duration')->nullable();
+            $table->text('starting_location')->nullable()->default('Undefined');
+            $table->text('ending_location')->nullable()->default('Undefined');
             $table->dateTime('ended_at')->nullable();
         });
     }

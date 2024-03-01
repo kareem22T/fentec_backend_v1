@@ -53,24 +53,6 @@ class ScooterController extends Controller
                     'controlType' => 'control'
                 ]
             ]);
-
-        // $isOneSuccess = (int) $unlock_lock->ret;
-        // $isTwonSuccess = (int) $unlock_lock_wheel->ret;
-
-        // if (!$isOneSuccess || !$isTwonSuccess) :
-
-        //     // Second HTTP POST request
-        //     $lock_lock_wheel = $client->post('http://api.uqbike.com/terControl/sendControl.do', [
-        //         'form_params' => [
-        //             'machineNO' => $iot->machine_no,
-        //             'token' => $iot->token,
-        //             'paramName' => 12,
-        //             'controlType' => 'control'
-        //         ]
-        //     ]);
-        
-        //     return $this->jsondata(false, null, 'Unlock failed', ["Faild to Unlock Scooter Try Agin or Call Customer service to solve"], []);
-        // endif;
         
         $serverKey = 'AAAABSRf2YE:APA91bHHsnnNLnjhh6NI6pxCXWv8vH5C1ZQ4wO8qcN3K1Ql-keyWnbP77uTPz21hLgoThi3ni707rt-cufgDY8ismiLCuwbsMjD1C-FSZPgf64nuSTGFE8wP6DecOckgQHrnXauiAIWC';
         $deviceToken = "/topics/Journey_channel_" . $user->id;
@@ -98,6 +80,9 @@ class ScooterController extends Controller
             "started_at" => now()
         ]);
 
+        $trip_duration = 0;
+        
+
         while ($userAvilableRideMin) {
             $trip = Trip::find($create_trip->id);
             if (!$trip->ended_at) {
@@ -108,10 +93,12 @@ class ScooterController extends Controller
                 }
                 $user->coins = (int) $user->coins - 10;
                 $user->save();
+                $trip_duration += 1;
                 $userAvilableRideMin -= 1;
                 sleep(58);
             } else {
                 $userAvilableRideMin = 0;
+                
             }
 
         }
@@ -123,8 +110,13 @@ class ScooterController extends Controller
                 'token' => $iot->token,
                 'paramName' => 12,
                 'controlType' => 'control'
-            ]
-        ]);
+                ]
+            ]);
+            
+        $trip = Trip::find($create_trip->id);
+        $trip->duration = $trip_duration;
+        $trip->save();
+
 
         // send notification to unique channel to remove end pop up and tell him thanks for the journey and ask for rate
 

@@ -13,6 +13,9 @@ class Trip extends Model
         "user_id",
         "scooter_id",
         "started_at",
+        "ending_location",
+        "starting_location",
+        "duration",
         "ended_at"
     ];
 

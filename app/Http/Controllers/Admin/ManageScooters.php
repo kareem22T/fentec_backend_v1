@@ -64,6 +64,20 @@ class ManageScooters extends Controller
 
     }
 
+    public function getZones () {
+        $zones = Zone::all();
+        return $zones;
+    }
+
+    public function getAllScooters () {
+        $Scooters = Scooter::all();
+        try {
+            $this->updateScotersData();
+        } catch (\Throwable $th) {
+        }
+        return $Scooters;
+    }
+
     public function updateScotersData() {
         $scooters = Scooter::all();
 
