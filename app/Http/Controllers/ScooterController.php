@@ -39,24 +39,24 @@ class ScooterController extends Controller
 
             $client = new Client();
             // First HTTP POST request
-            // $unlock_lock = $client->post('http://api.uqbike.com/terControl/sendControl.do', [
-            //     'form_params' => [
-            //         'machineNO' => $iot->machine_no,
-            //         'token' => $iot->token,
-            //         'paramName' => 22,
-            //         'controlType' => 'control'
-            //     ]
-            // ]);
+            $unlock_lock = $client->post('http://api.uqbike.com/terControl/sendControl.do', [
+                'form_params' => [
+                    'machineNO' => $iot->machine_no,
+                    'token' => $iot->token,
+                    'paramName' => 22,
+                    'controlType' => 'control'
+                ]
+            ]);
             
-            // // Second HTTP POST request
-            // $unlock_lock_wheel = $client->post('http://api.uqbike.com/terControl/sendControl.do', [
-            //     'form_params' => [
-            //         'machineNO' => $iot->machine_no,
-            //         'token' => $iot->token,
-            //         'paramName' => 11,
-            //         'controlType' => 'control'
-            //     ]
-            // ]);
+            // Second HTTP POST request
+            $unlock_lock_wheel = $client->post('http://api.uqbike.com/terControl/sendControl.do', [
+                'form_params' => [
+                    'machineNO' => $iot->machine_no,
+                    'token' => $iot->token,
+                    'paramName' => 11,
+                    'controlType' => 'control'
+                ]
+            ]);
 
 
         $create_trip = Trip::create([
@@ -78,19 +78,19 @@ class ScooterController extends Controller
         $trip = Trip::find($user->current_trip_id);
         if (!$trip)
             return false;
-        
+
         $iot = Scooter::find($trip->scooter_id);
 
         if ($iot) {
             // Second HTTP POST request
-            // $lock_lock_wheel = $client->post('http://api.uqbike.com/terControl/sendControl.do', [
-            //     'form_params' => [
-            //         'machineNO' => $iot->machine_no,
-            //         'token' => $iot->token,
-            //         'paramName' => 12,
-            //         'controlType' => 'control'
-            //     ]
-            // ]);
+            $lock_lock_wheel = $client->post('http://api.uqbike.com/terControl/sendControl.do', [
+                'form_params' => [
+                    'machineNO' => $iot->machine_no,
+                    'token' => $iot->token,
+                    'paramName' => 12,
+                    'controlType' => 'control'
+                ]
+            ]);
         }
 
         if ($trip) {
