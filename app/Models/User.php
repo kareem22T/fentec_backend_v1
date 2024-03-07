@@ -37,6 +37,7 @@ class User extends Authenticatable
         'approving_msg_seen',
         'password',
         'notification_token',
+        'current_trip_id',
     ];
 
     /**

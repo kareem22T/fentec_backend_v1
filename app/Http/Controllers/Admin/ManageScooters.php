@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Http;
 use GuzzleHttp\Client;
 
+use App\Jobs\TestJob;
+
 use App\Models\Zone;
 use App\Models\Scooter;
 

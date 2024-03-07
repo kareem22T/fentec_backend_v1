@@ -15,7 +15,7 @@ use App\Http\Controllers\Seller\RegisterController as SellerRigisterController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
+use App\Http\Controllers\Admin\ManageScooters;
 
 Route::group(['middleware' => ['check_api_password']], function () {
     Route::post('/register', [RegisterController::class, 'register']);
@@ -50,7 +50,7 @@ Route::group(['middleware' => ['check_api_password'], 'prefix' => 'sellers'], fu
     Route::middleware('auth:sanctum')->post('/logout', [SellerRigisterController::class, 'logout']);
 });
 
-Route::middleware('auth:sanctum')->post("/unlock-scooter/{scooter_id}", [ScooterController::class, "unlockScooter"]);
+Route::middleware('auth:sanctum')->post("/unlock-scooter", [ScooterController::class, "unlockScooter"]);
 Route::middleware('auth:sanctum')->post("/lock-scooter", [ScooterController::class, "lockScooter"]);
 Route::get("/testNot", [ScooterController::class, "sendRealTimeData"]);
 

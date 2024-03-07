@@ -33,6 +33,7 @@ return new class extends Migration
             $table->integer('coins')->default(0);
             $table->string('notification_token', 100)->nullable();
             $table->boolean('has_unseened_notifications')->default(false);
+            $table->integer('current_trip_id')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
