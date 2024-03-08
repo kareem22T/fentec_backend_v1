@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use App\Traits\SavePhotoTrait;
+use App\Jobs\CheckTripPhoto;
 
 class ScooterController extends Controller
 {
@@ -42,25 +43,25 @@ class ScooterController extends Controller
             return $this->jsondata(false, null, 'Unlock failed', ["You don not have enough points at least " . $minCost * 10 . " for 10 Min" ], []);
 
             $client = new Client();
-            // First HTTP POST request
-            $unlock_lock = $client->post('http://api.uqbike.com/terControl/sendControl.do', [
-                'form_params' => [
-                    'machineNO' => $iot->machine_no,
-                    'token' => $iot->token,
-                    'paramName' => 22,
-                    'controlType' => 'control'
-                ]
-            ]);
+            // // First HTTP POST request
+            // $unlock_lock = $client->post('http://api.uqbike.com/terControl/sendControl.do', [
+            //     'form_params' => [
+            //         'machineNO' => $iot->machine_no,
+            //         'token' => $iot->token,
+            //         'paramName' => 22,
+            //         'controlType' => 'control'
+            //     ]
+            // ]);
             
-            // Second HTTP POST request
-            $unlock_lock_wheel = $client->post('http://api.uqbike.com/terControl/sendControl.do', [
-                'form_params' => [
-                    'machineNO' => $iot->machine_no,
-                    'token' => $iot->token,
-                    'paramName' => 11,
-                    'controlType' => 'control'
-                ]
-            ]);
+            // // Second HTTP POST request
+            // $unlock_lock_wheel = $client->post('http://api.uqbike.com/terControl/sendControl.do', [
+            //     'form_params' => [
+            //         'machineNO' => $iot->machine_no,
+            //         'token' => $iot->token,
+            //         'paramName' => 11,
+            //         'controlType' => 'control'
+            //     ]
+            // ]);
 
 
         $create_trip = Trip::create([
@@ -83,17 +84,16 @@ class ScooterController extends Controller
 
         if ($trip) {
             $iot = Scooter::find($trip->scooter_id);
-    
             if ($iot) {
                 // Second HTTP POST request
-                $lock_lock_wheel = $client->post('http://api.uqbike.com/terControl/sendControl.do', [
-                    'form_params' => [
-                        'machineNO' => $iot->machine_no,
-                        'token' => $iot->token,
-                        'paramName' => 12,
-                        'controlType' => 'control'
-                    ]
-                ]);
+                // $lock_lock_wheel = $client->post('http://api.uqbike.com/terControl/sendControl.do', [
+                //     'form_params' => [
+                //         'machineNO' => $iot->machine_no,
+                //         'token' => $iot->token,
+                //         'paramName' => 12,
+                //         'controlType' => 'control'
+                //     ]
+                // ]);
             }
     
             if ($trip) {
@@ -112,7 +112,7 @@ class ScooterController extends Controller
                 }
         
             }
-
+            dispatch(new CheckTripPhoto($user->current_trip_id));
         }    
         return $this->jsondata(true, null, 'Scooter Has Locked please take a photo to confirm', [], []);
     }
