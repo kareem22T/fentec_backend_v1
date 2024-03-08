@@ -71,4 +71,9 @@ class User extends Authenticatable
         return $this->hasMany('App\Models\Seller_history', 'user_id');
     }
 
+    public function trips()
+    {
+        return $this->hasMany('App\Models\Trip', 'user_id');
+    }
+
 }

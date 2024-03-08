@@ -63,12 +63,20 @@ class ScooterController extends Controller
             //     ]
             // ]);
 
-
         $create_trip = Trip::create([
             "user_id" => $user->id,
             "scooter_id" => $iot->id,
             "started_at" => now()
         ]);
+            
+        $response = Http::post('http://api.uqbike.com/position/getpos.do?machineNO=' . $iot->machine_no . "&token=" . $iot->token);                
+        if ($response->successful()) {
+            $start_lat = $response['data'][0]['latitude'];
+            $start_lng = $response['data'][0]['longitude'];
+            $address = Http::post('https://maps.googleapis.com/maps/api/geocode/json?latlng=' . $start_lat . ',' . $start_lng . '&key=AIzaSyADMSyZQR7V38GWvZ3MEl_DcDsn0pTS0WU&language=ar');                
+            $create_trip->starting_location = $address["results"][0]['formatted_address'];
+            $create_trip->save();
+        }
 
         $user->current_trip_id = $create_trip->id;
         $user->save();
@@ -105,6 +113,13 @@ class ScooterController extends Controller
                 $timeInterval = $endedAt->diffInMinutes($startedAt);
                 $trip->ended_at = $endedAt;
                 $trip->duration = $timeInterval;
+                $response = Http::post('http://api.uqbike.com/position/getpos.do?machineNO=' . $iot->machine_no . "&token=" . $iot->token);                
+                if ($response->successful()) {
+                    $start_lat = $response['data'][0]['latitude'];
+                    $start_lng = $response['data'][0]['longitude'];
+                    $address = Http::post('https://maps.googleapis.com/maps/api/geocode/json?latlng=' . $start_lat . ',' . $start_lng . '&key=AIzaSyADMSyZQR7V38GWvZ3MEl_DcDsn0pTS0WU&language=ar');                
+                    $trip->ending_location = $address["results"][0]['formatted_address'];
+                }        
                 $trip->save();
                 if ($user) {
                     $user->coins = (int) $user->coins - ($timeInterval * 5) - 10;
@@ -150,5 +165,10 @@ class ScooterController extends Controller
             endif;    
         }
         return $this->jsondata(true, null, 'Trip has submited successfuly, Thanks!', [], []);
+    }
+
+    public function getUserTrips(Request $request) {
+        $user = $request->user();
+        return $user->trips()->paginate(15);
     }
 }
