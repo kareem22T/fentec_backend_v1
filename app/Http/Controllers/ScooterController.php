@@ -9,9 +9,13 @@ use App\Traits\DataFormController;
 use Illuminate\Support\Facades\Http;
 use GuzzleHttp\Client;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
+use App\Traits\SavePhotoTrait;
 
 class ScooterController extends Controller
 {
+    use SavePhotoTrait;
     use DataFormController;
 
     public function unlockScooter(Request $request) {
@@ -112,5 +116,40 @@ class ScooterController extends Controller
         }
 
         return $this->jsondata(true, null, 'Scooter Has Locked please take a photo to confirm', [], []);
+    }
+
+    public function submitTrpPhoto(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'photo' => 'required',
+        ], [
+        ]);
+
+        if ($validator->fails()) {
+            return $this->jsondata(false, null, 'Lock failed', [$validator->errors()->first()], []);
+        }
+
+        $user = $request->user();
+        $trip = Trip::find($user->current_trip_id);
+
+        if ($trip) {
+            if ($request->photo) :
+                $disk = 'public';
+    
+                // Specify the path to the image within the storage disk
+                $path = 'images/uploads/' . $trip->lock_photo;
+                if (Storage::disk($disk)->exists($path)) 
+                    Storage::disk($disk)->delete($path);  
+    
+                $profile_pic = $this->saveImg($request->photo, 'images/uploads', 'trip_' . $trip->id . "_" . time());
+                $trip->lock_photo = $profile_pic;
+                $trip->save();
+
+                if ($trip) {
+                    $user->current_trip_id = 0;
+                    $user->save();
+                }
+            endif;    
+        }
+        return $this->jsondata(true, null, 'Trip has submited successfuly, Thanks!', [], []);
     }
 }
