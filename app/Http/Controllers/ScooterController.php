@@ -109,7 +109,6 @@ class ScooterController extends Controller
             $trip->save();
             if ($user) {
                 $user->coins = (int) $user->coins - ($timeInterval * 5) - 10;
-                $user->current_trip_id = 0;
                 $user->save();
             }
     
