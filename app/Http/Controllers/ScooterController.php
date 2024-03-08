@@ -80,40 +80,40 @@ class ScooterController extends Controller
         $client = new Client();
         $user = $request->user();
         $trip = Trip::find($user->current_trip_id);
-        if (!$trip)
-            return false;
-
-        $iot = Scooter::find($trip->scooter_id);
-
-        if ($iot) {
-            // Second HTTP POST request
-            $lock_lock_wheel = $client->post('http://api.uqbike.com/terControl/sendControl.do', [
-                'form_params' => [
-                    'machineNO' => $iot->machine_no,
-                    'token' => $iot->token,
-                    'paramName' => 12,
-                    'controlType' => 'control'
-                ]
-            ]);
-        }
 
         if ($trip) {
-            $startedAt = Carbon::parse($trip->started_at);
-
-            // Assuming ended_at is available in your model or variable
-            $endedAt = Carbon::now();  // Replace with your actual ended_at
-
-            $timeInterval = $endedAt->diffInMinutes($startedAt);
-            $trip->ended_at = $endedAt;
-            $trip->duration = $timeInterval;
-            $trip->save();
-            if ($user) {
-                $user->coins = (int) $user->coins - ($timeInterval * 5) - 10;
-                $user->save();
+            $iot = Scooter::find($trip->scooter_id);
+    
+            if ($iot) {
+                // Second HTTP POST request
+                $lock_lock_wheel = $client->post('http://api.uqbike.com/terControl/sendControl.do', [
+                    'form_params' => [
+                        'machineNO' => $iot->machine_no,
+                        'token' => $iot->token,
+                        'paramName' => 12,
+                        'controlType' => 'control'
+                    ]
+                ]);
             }
     
-        }
+            if ($trip) {
+                $startedAt = Carbon::parse($trip->started_at);
+    
+                // Assuming ended_at is available in your model or variable
+                $endedAt = Carbon::now();  // Replace with your actual ended_at
+    
+                $timeInterval = $endedAt->diffInMinutes($startedAt);
+                $trip->ended_at = $endedAt;
+                $trip->duration = $timeInterval;
+                $trip->save();
+                if ($user) {
+                    $user->coins = (int) $user->coins - ($timeInterval * 5) - 10;
+                    $user->save();
+                }
+        
+            }
 
+        }    
         return $this->jsondata(true, null, 'Scooter Has Locked please take a photo to confirm', [], []);
     }
 
