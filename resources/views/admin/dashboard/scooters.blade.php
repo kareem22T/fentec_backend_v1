@@ -74,7 +74,7 @@
         <table class="normal_table">
             <thead>
                 <tr>
-                    <th>Machine Number</th>
+                    <th>Machine No.</th>
                     <th>Token</th>
                     <th>Charge</th>
                     <th>Controls</th>
