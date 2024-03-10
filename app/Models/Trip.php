@@ -20,4 +20,18 @@ class Trip extends Model
     ];
 
     public $timestamps = false;
+
+    /**
+     * Get the user associated with the Trip
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function user()
+    {
+        return $this->hasOne("App\Models\User", 'id', 'user_id');
+    }
+    public function scooter()
+    {
+        return $this->hasOne("App\Models\Scooter", 'id', 'scooter_id');
+    }
 }

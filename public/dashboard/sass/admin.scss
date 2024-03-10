@@ -79,11 +79,11 @@ body {
             &:hover {
                 background-color: #fff;
 
-                .scooter_icon path {
+                .scooter_icon path, .icon-tabler-route-x path {
                     stroke: rgba(255, 115, 0, 1);
                 }
 
-                svg:not(.scooter_icon) path {
+                svg:not(.scooter_icon, .icon-tabler-route-x) path {
                     fill: rgba(255, 115, 0, 1)
                 }
             }
@@ -925,4 +925,9 @@ body {
             }
         }
     }
+}
+
+.table_wrapper .normal_table{
+    overflow: auto;
+    display: block;
 }

@@ -79,10 +79,10 @@ body nav a {
 body nav a.active, body nav a:hover {
   background-color: #fff;
 }
-body nav a.active .scooter_icon path, body nav a:hover .scooter_icon path {
+body nav a.active .scooter_icon path, body nav a.active .icon-tabler-route-x path, body nav a:hover .scooter_icon path, body nav a:hover .icon-tabler-route-x path {
   stroke: rgb(255, 115, 0);
 }
-body nav a.active svg:not(.scooter_icon) path, body nav a:hover svg:not(.scooter_icon) path {
+body nav a.active svg:not(.scooter_icon, .icon-tabler-route-x) path, body nav a:hover svg:not(.scooter_icon, .icon-tabler-route-x) path {
   fill: rgb(255, 115, 0);
 }
 body nav a img,
@@ -785,6 +785,11 @@ body main {
 }
 .statistics_wrapper button.primary:hover {
   background-color: rgb(215, 98, 2);
+}
+
+.table_wrapper .normal_table {
+  overflow: auto;
+  display: block;
 }
 
 /*# sourceMappingURL=admin.css.map */

@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\ManageUsersController;
 use App\Http\Controllers\Admin\ManageAdminControler;
 use App\Http\Controllers\Admin\ManageScooters;
 use App\Http\Controllers\Admin\StatisticsController;
+use App\Http\Controllers\Admin\TripsController;
 use App\Http\Controllers\Seller\ManageSellersController;
 
 Route::middleware(['admin_guest'])->group(function () {
@@ -44,6 +45,14 @@ Route::middleware('auth:admin')->group(function () {
         Route::post('/approve', [ManageUsersController::class, 'approve'])->name('user.approve');
         Route::post('/reject', [ManageUsersController::class, 'reject'])->name('user.reject');
         Route::post('/ban', [ManageUsersController::class, 'ban'])->name('user.ban');
+    });
+    
+    // Trips
+    Route::middleware('admin:Moderator')->prefix('trips')->group(function () {
+        Route::get('/', [TripsController::class, 'index'])->name('prev.trips');
+        Route::get('/get-trips', [TripsController::class, 'getTrips'])->name('get.trips');
+        Route::post('/search-trips', [TripsController::class, 'getTripsBySearch'])->name('search.trips');
+        Route::post('/fillter-trips', [TripsController::class, 'fillterTripsByDate'])->name('fillter.trip');
     });
     
     // admins
