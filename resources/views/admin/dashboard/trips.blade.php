@@ -76,7 +76,7 @@
             <tbody>
                 <tr v-if="trips && trips.length > 0" v-for="trip in trips" :key="trip.id">
                     <td>
-                        <a href="'/images/uploads/' + trip.lock_photo" download class="img trip_photo" v-if="trip.lock_photo" style="display: block;position: relative;width: 70px;height: 70px;padding: 5px;background: white;border-radius: 5px;border: 2px solid rgba(255, 115, 0,1);">
+                        <a :href="'/images/uploads/' + trip.lock_photo" download class="img trip_photo" v-if="trip.lock_photo" style="display: block;position: relative;width: 70px;height: 70px;padding: 5px;background: white;border-radius: 5px;border: 2px solid rgba(255, 115, 0,1);">
                             <div class="after" style="position: absolute;top: 0;left: 0;width: 100%;height: 100%;display: flex;justify-content: center;align-items: center;background: white;border-radius: 5px;opacity: 0;transition: 0.3s all ease-in">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-download" width="40" height="40" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ff7300" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                     {{-- <path stroke="none" d="M0 0h24v24H0z" fill="none"/> --}}
