@@ -114,7 +114,7 @@
         <h1>Add @{{ iot_title }}</h1>
         <br>
         <div class="form-group">
-            <input type="text" name="machine_no" id="machine_no" class="form-control input" v-model="machine_no" placeholder="Machine Number">
+            <input type="text" name="machine_no" id="machine_no" class="form-control input" v-model="machine_no" placeholder="Machine No.">
         </div>
         <br>
         <div class="form-group">
