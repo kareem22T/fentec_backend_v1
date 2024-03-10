@@ -76,6 +76,7 @@
                 <tr>
                     <th>Machine Number</th>
                     <th>Token</th>
+                    <th>Charge</th>
                     <th>Controls</th>
                 </tr>
             </thead>
@@ -83,6 +84,7 @@
                 <tr v-if="scooters && scooters.length > 0" v-for="iot in scooters" :key="iot.id">
                     <td>@{{iot.machine_no}}</td>
                     <td>@{{iot.token}}</td>
+                    <td>@{{iot.battary_charge}}%</td>
                     <td>
                         <div class="btns flex-center">
                             <button class="button success" @click="handleEditIot(iot)"><i class='bx bx-edit'></i></button>
@@ -95,6 +97,7 @@
                                 </div>
                             </div>
                             <button class="button secondary" @click="lockWheel(iot.id, iot.machine_no)"><i class='bx bx-lock' ></i></button>
+                            <button class="button gray" @click="unlockWheelandlock(iot.id, iot.machine_no)"><i class='bx bx-lock-open' ></i></button>
                         </div>
                     </td>
                 </tr>
@@ -562,6 +565,64 @@ createApp({
             $('.loader').fadeIn().css('display', 'flex')
                 try {
                     const response = await axios.post(`{{ route('scooter.lock.wheel') }}`, {
+                        iot_id: id,
+                    },
+                    {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    }
+                    );
+                    if (response.data.status === true) {
+                        document.getElementById('errors').innerHTML = ''
+                        let error = document.createElement('div')
+                        error.classList = 'success'
+                        error.innerHTML = response.data.message
+                        document.getElementById('errors').append(error)
+                        $('#errors').fadeIn('slow')
+                        $('.loader').fadeOut()
+                        setTimeout(() => {
+                            $('#errors').fadeOut('slow')
+                            // window.location.reload()
+                        }, 2000);
+                    } else {
+                        $('.loader').fadeOut()
+                        document.getElementById('errors').innerHTML = ''
+                        $.each(response.data.errors, function (key, value) {
+                            let error = document.createElement('div')
+                            error.classList = 'error'
+                            error.innerHTML = value
+                            document.getElementById('errors').append(error)
+                        });
+                        $('#errors').fadeIn('slow')
+                        setTimeout(() => {
+                            $('input').css('outline', 'none')
+                            $('#errors').fadeOut('slow')
+                        }, 5000);
+                    }
+
+                } catch (error) {
+                    document.getElementById('errors').innerHTML = ''
+                    let err = document.createElement('div')
+                    err.classList = 'error'
+                    err.innerHTML = 'server error try again later'
+                    document.getElementById('errors').append(err)
+                    $('#errors').fadeIn('slow')
+                    $('.loader').fadeOut()
+
+                    setTimeout(() => {
+                    $('#errors').fadeOut('slow')
+                    }, 3500);
+
+                    console.error(error);
+                }
+        }
+    },
+    async unlockWheelandlock(id, serial) {
+        if(confirm("Are You Sure you want to unlock " + serial + " Scooter")) {
+            $('.loader').fadeIn().css('display', 'flex')
+                try {
+                    const response = await axios.post(`{{ route('scooter.unlock.wheel.lock') }}`, {
                         iot_id: id,
                     },
                     {

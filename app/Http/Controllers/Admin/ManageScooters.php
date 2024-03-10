@@ -89,6 +89,7 @@ class ManageScooters extends Controller
                 if ($response->successful()) {
                     $iot->latitude = $response['data'][0]['latitude'];
                     $iot->longitude = $response['data'][0]['longitude'];
+                    $iot->battary_charge = $response['data'][0]['batteryPower'];
                     $iot->save();
                 }
             }
@@ -239,5 +240,41 @@ class ManageScooters extends Controller
 
         if ($iot)
             return $this->jsondata(true, null, 'Scooter wheel has locked successfuly', [], []);
+    }
+    public function unlockWheelAndLock(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'iot_id' => 'required',
+        ], [
+        ]);
+
+        if ($validator->fails()) {
+            return $this->jsondata(false, null, 'lock failed', [$validator->errors()->first()], []);
+        }
+
+        $iot = Scooter::find($request->iot_id);
+
+        $client = new Client();
+            // // First HTTP POST request
+            // $unlock_lock = $client->post('http://api.uqbike.com/terControl/sendControl.do', [
+            //     'form_params' => [
+            //         'machineNO' => $iot->machine_no,
+            //         'token' => $iot->token,
+            //         'paramName' => 22,
+            //         'controlType' => 'control'
+            //     ]
+            // ]);
+            
+            // // Second HTTP POST request
+            // $unlock_lock_wheel = $client->post('http://api.uqbike.com/terControl/sendControl.do', [
+            //     'form_params' => [
+            //         'machineNO' => $iot->machine_no,
+            //         'token' => $iot->token,
+            //         'paramName' => 11,
+            //         'controlType' => 'control'
+            //     ]
+            // ]);
+
+        if ($iot)
+            return $this->jsondata(true, null, 'Scooter wheel has unlocked successfuly', [], []);
     }
 }
