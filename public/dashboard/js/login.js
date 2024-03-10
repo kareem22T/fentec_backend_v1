@@ -32,7 +32,7 @@ createApp({
                                 break;
 
                             case "Accountant":
-                                window.location.href = '/admin/sellers'
+                                window.location.href = '/admin/statistics'
                                 break;
 
                             case "Technician":
