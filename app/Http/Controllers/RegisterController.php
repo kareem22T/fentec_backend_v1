@@ -585,13 +585,11 @@ class RegisterController extends Controller
     public function getUser(Request $request)
     {
         if ($request->user()) :
-            $user = $request->user();
             if ($request->notification_token) :
                 $request->user()->notification_token = $request->notification_token;
                 $request->user()->save();
-                $user->tripsNo = $user->trips()->count();
             endif;
-            return $this->jsonData(true, $request->user()->verify, '', [], ['user' => $user]);
+            return $this->jsonData(true, $request->user()->verify, '', [], ['user' => $request->user()]);
         else :
             return $this->jsonData(false, null, 'Account Not Found', [], []);
         endif;
