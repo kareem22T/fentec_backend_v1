@@ -45,17 +45,21 @@
     </section>
     <section class="row-2 table_wrapper">
         <h1>Coupon Codes</h1>
-        <table>
+        <table  class="normal_table">
             <thead>
                 <tr>
 
                     <th>
                         <label for="title">Title</label>
-                        <input type="text" name="title" id="title" placeholder="Title" class="input" v-model="title">
+                        <input type="text" name="title" id="title" placeholder="Title" class="input" v-model="title" style="min-width: 170px">
                     </th>
                     <th>
                         <label for="code">Code</label>
-                        <input type="text" name="code" id="code" placeholder="Code" class="input" v-model="code">
+                        <input type="text" name="code" id="code" placeholder="Code" class="input" v-model="code" style="min-width: 170px">
+                    </th>
+                    <th>
+                        <label for="gift">Gift</label>
+                        <input type="number" name="gift" id="gift" placeholder="Gift Coins" class="input" v-model="gift" style="min-width: 170px">
                     </th>
                     <th>
                         <label for="start">Start in</label>
@@ -80,6 +84,7 @@
                     <tr>
                         <td>{{ $coupon->title }}</td>
                         <td>{{ $coupon->code }}</td>
+                        <td>{{ $coupon->gift }}</td>
                         <td>{{ $coupon->start_in }}</td>
                         <td>{{ $coupon->end_in }}</td>
                     </tr>
@@ -111,7 +116,7 @@
                 <i class='bx bx-search'></i>
             </div>
         </div>
-        <table class="normal_table">
+        <table class="normal_table" style="display: table">
             <thead>
                 <tr>
                     <th>Title</th>
@@ -158,6 +163,7 @@ createApp({
     return {
         title: null,
         code: null,
+        gift: null,
         start_in: null,
         end_in: null,
         msg_title: null,
@@ -346,6 +352,7 @@ createApp({
             const response = await axios.post(`{{ route('coupon.put') }}`, {
                 title: this.title,
                 code: this.code,
+                gift: this.gift,
                 start_in: this.start_in,
                 end_in: this.end_in,
             },

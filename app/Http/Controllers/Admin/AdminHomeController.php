@@ -23,6 +23,7 @@ class AdminHomeController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'required',
             'code' => 'required',
+            'gift' => 'required',
             'start_in' => 'required',
             'end_in' => 'required',
         ], [
@@ -39,11 +40,14 @@ class AdminHomeController extends Controller
         $coupon = Coupon::create([
             'title' => $request->title,
             'code' => $request->code,
+            'gift' => $request->gift,
             'start_in' => $request->start_in,
             'end_in' => $request->end_in,
         ]);
 
-        return $this->jsondata(true, null, 'Coupon added successfuly', [], []);
+        $response = $this->pushNotification("New Coupon Code", "Get " . $request->gift . " Coins by using the copoun " . $request->code, null, null, ["id" => 'djsdf']);
+
+        return $this->jsondata(true, null, 'Coupon pushed successfuly', [], []);
     }
 
     public function pushNotificationmain(Request $request) {

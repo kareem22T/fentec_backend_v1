@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\RegisterRequest;
 use App\Models\User;
+use App\Models\Coupon;
 use App\Models\Admin;
 use App\Models\Notification;
 use App\Models\Invetation_code;
@@ -634,6 +635,44 @@ class RegisterController extends Controller
                 $request->user()->save();
             return $this->jsonData(true, $request->user()->verify, '', [], []);
         endif;
+    }
+
+    public function useCoupon(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'code' => 'required',
+        ]);
+
+        if ($validator->fails())
+            return $this->jsondata(false, null, 'Use Coupon failed', [$validator->errors()->first()], []);
+        
+        $coupon = Coupon::where("code", $request->code)->first();
+        
+        if (!$coupon)
+            return $this->jsondata(false, null, 'Use Coupon failed', ["Invalid Coupon"], []);
+        
+        if ($coupon->hasExpired())
+            return $this->jsondata(false, null, 'Use Coupon failed', ["Coupon Expired"], []);
+
+        if ($coupon->hasExpired())
+            return $this->jsondata(false, null, 'Use Coupon failed', ["Coupon Expired"], []);
+
+        if ($coupon->hasNotStarted())
+            return $this->jsondata(false, null, 'Use Coupon failed', ["Coupon Will start in " . $coupon->start_in], []);
+
+        $user = $request->user();
+
+        // Check if the user already has the coupon attached
+        if (!$user->coupons->contains($coupon->id)) {
+            // If the coupon is not already attached, attach it
+            $user->coupons()->attach([$coupon->id]);
+            $user->coins = (int) $user->coins + (int) $coupon->gift;
+            $user->save();
+            // Return a response
+            return $this->jsondata(true, null, 'You win ' . $coupon->gift . ' Coins', [], []);
+        } else {
+            // If the coupon is already attached, return a response indicating that
+            return $this->jsondata(false, 'You have use this coupon before', null, [], []);
+        }
     }
 
     public function logout (Request $request) {

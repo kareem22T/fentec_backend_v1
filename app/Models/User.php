@@ -75,5 +75,9 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Models\Trip', 'user_id');
     }
+    public function coupons()
+    {
+        return $this->belongsToMany('App\Models\Coupon', 'users_coupons', 'user_id', 'coupon_id', 'id', 'id');
+    }
 
 }

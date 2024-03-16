@@ -54,6 +54,7 @@ Route::middleware('auth:sanctum')->post("/unlock-scooter", [ScooterController::c
 Route::middleware('auth:sanctum')->post("/lock-scooter", [ScooterController::class, "lockScooter"]);
 Route::middleware('auth:sanctum')->post("/submit-trip", [ScooterController::class, "submitTrpPhoto"]);
 Route::middleware('auth:sanctum')->post("/get-trips", [ScooterController::class, "getUserTrips"]);
+Route::middleware('auth:sanctum')->post("/use-coupon", [RegisterController::class, "useCoupon"]);
 Route::get("/testNot", [ScooterController::class, "sendRealTimeData"]);
 
 

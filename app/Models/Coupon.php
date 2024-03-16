@@ -12,9 +12,17 @@ class Coupon extends Model
     protected $fillable = [
         'title',
         'code',
+        'gift',
         'start_in',
         'end_in'
     ];
-
+    public function hasExpired()
+    {
+        return now()->gt($this->end_in);
+    }
+    public function hasNotStarted()
+    {
+        return now()->lt($this->start_in);
+    }
     public $timestamps = false;
 }
