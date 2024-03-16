@@ -45,7 +45,7 @@ class AdminHomeController extends Controller
             'end_in' => $request->end_in,
         ]);
 
-        $response = $this->pushNotification("New Coupon Code", "Get " . $request->gift . " Coins by using the copoun " . $request->code, null, null, ["id" => 'djsdf']);
+        $response = $this->pushNotification($coupon->title . " Coupon code", "Get " . $request->gift . " Coins by using the copoun " . $request->code, null, null, ["id" => 'djsdf']);
 
         return $this->jsondata(true, null, 'Coupon pushed successfuly', [], []);
     }

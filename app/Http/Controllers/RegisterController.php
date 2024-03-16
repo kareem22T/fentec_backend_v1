@@ -668,7 +668,7 @@ class RegisterController extends Controller
             $user->coins = (int) $user->coins + (int) $coupon->gift;
             $user->save();
             // Return a response
-            return $this->jsondata(true, null, 'You win ' . $coupon->gift . ' Coins', [], []);
+            return $this->jsondata(true, null, 'You win ' . $coupon->gift . ' Coins', [], [$coupon->gift]);
         } else {
             // If the coupon is already attached, return a response indicating that
             return $this->jsondata(false, 'You have use this coupon before', null, [], []);
