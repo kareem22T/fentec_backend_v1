@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Trip;
+use App\Models\Zone;
 use App\Models\Scooter;
 use App\Traits\DataFormController;
 use Illuminate\Support\Facades\Http;
@@ -176,5 +177,10 @@ class ScooterController extends Controller
         $trips = $user->trips();
 
         return $trips->count();
+    }
+    public function getZones(Request $request) {
+        $zones = Zone::all();
+
+        return $zones;
     }
 }
