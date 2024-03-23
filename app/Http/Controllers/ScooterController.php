@@ -171,4 +171,10 @@ class ScooterController extends Controller
         $user = $request->user();
         return $user->trips()->paginate(15);
     }
+    public function getUserTripsNum(Request $request) {
+        $user = $request->user();
+        $trips = $user->trips();
+
+        return $trip->count();
+    }
 }
