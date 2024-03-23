@@ -57,6 +57,7 @@ Route::middleware('auth:sanctum')->post("/get-trips", [ScooterController::class,
 Route::middleware('auth:sanctum')->post("/get-trips-num", [ScooterController::class, "getUserTripsNum"]);
 Route::middleware('auth:sanctum')->post("/use-coupon", [RegisterController::class, "useCoupon"]);
 Route::get("/testNot", [ScooterController::class, "sendRealTimeData"]);
+Route::get("/get-zones", [ScooterController::class, "getZones"]);
 
 
 Route::get('/', function () {
