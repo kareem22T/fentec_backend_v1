@@ -95,14 +95,14 @@ class ScooterController extends Controller
             $iot = Scooter::find($trip->scooter_id);
             if ($iot) {
                 // Second HTTP POST request
-                // $lock_lock_wheel = $client->post('http://api.uqbike.com/terControl/sendControl.do', [
-                //     'form_params' => [
-                //         'machineNO' => $iot->machine_no,
-                //         'token' => $iot->token,
-                //         'paramName' => 12,
-                //         'controlType' => 'control'
-                //     ]
-                // ]);
+                $lock_lock_wheel = $client->post('http://api.uqbike.com/terControl/sendControl.do', [
+                    'form_params' => [
+                        'machineNO' => $iot->machine_no,
+                        'token' => $iot->token,
+                        'paramName' => 12,
+                        'controlType' => 'control'
+                    ]
+                ]);
             }
     
             if ($trip) {
