@@ -101,14 +101,14 @@ class RegisterController extends Controller
         $user->rejected = 0;
         $user->rejection_reason = null;
         $user->approving_msg_seen = 0;
-        
+
         if ($request->photo) :
             $disk = 'public';
 
             // Specify the path to the image within the storage disk
             $path = 'images/uploads/' . $user->photo_path;
-            if (Storage::disk($disk)->exists($path)) 
-                Storage::disk($disk)->delete($path);  
+            if (Storage::disk($disk)->exists($path))
+                Storage::disk($disk)->delete($path);
 
             $profile_pic = $this->saveImg($request->photo, 'images/uploads', 'profile' . $user->id . "_" . time());
             $user->photo_path = $profile_pic;
@@ -119,8 +119,8 @@ class RegisterController extends Controller
 
             // Specify the path to the image within the storage disk
             $path = 'images/uploads/' . $user->identity_path;
-            if (Storage::disk($disk)->exists($path)) 
-                Storage::disk($disk)->delete($path);  
+            if (Storage::disk($disk)->exists($path))
+                Storage::disk($disk)->delete($path);
 
             $identity_pic = $this->saveImg($request->identity, 'images/uploads', 'identity' . $user->id . "_" . time());
             $user->identity_path = $identity_pic;
@@ -132,9 +132,9 @@ class RegisterController extends Controller
             foreach ($admins as $admin) {
                 $email = $admin->email;
                 $msg_title = 'New Registeration Request';
-                $msg_body = 
+                $msg_body =
                     $user->name . " is waiting for review their account. <a href=''>Show request</a>" . "<br>" . "<br>" .
-                    "<strong>User Information: </strong>" . "<br>" . 
+                    "<strong>User Information: </strong>" . "<br>" .
                     "Name: " . $user->name . "<br>" .
                     "Name: " . $user->email . "<br>" .
                     "Name: " . $user->phone . "<br>";
@@ -496,12 +496,12 @@ class RegisterController extends Controller
         endif;
 
         if ($user)
-            return 
+            return
                 $this->jsondata(
-                    true, 
+                    true,
                     $user->verify, '
-                    Your email has changed successfully!', 
-                    [], 
+                    Your email has changed successfully!',
+                    [],
                     [
                         'name' => $user->name,
                         'phone' => $user->phone,
@@ -528,12 +528,12 @@ class RegisterController extends Controller
         endif;
 
         if ($user)
-            return 
+            return
                 $this->jsondata(
-                    true, 
-                    $user->verify, 
-                    'Your phone number has changed successfully!', 
-                    [], 
+                    true,
+                    $user->verify,
+                    'Your phone number has changed successfully!',
+                    [],
                     [
                         'name' => $user->name,
                         'phone' => $user->phone,
@@ -558,8 +558,8 @@ class RegisterController extends Controller
 
             // Specify the path to the image within the storage disk
             $path = 'images/uploads/' . $user->photo_path;
-            if (Storage::disk($disk)->exists($path)) 
-                Storage::disk($disk)->delete($path);  
+            if (Storage::disk($disk)->exists($path))
+                Storage::disk($disk)->delete($path);
 
             $profile_pic = $this->saveImg($request->profile_img, 'images/uploads', 'profile' . $user->id . "_" . time());
             $user->photo_path = $profile_pic;
@@ -567,12 +567,12 @@ class RegisterController extends Controller
         endif;
 
         if ($user)
-            return 
+            return
                 $this->jsondata(
-                    true, 
-                    $user->verify, 
-                    'Your profile pic changed successfully!', 
-                    [], 
+                    true,
+                    $user->verify,
+                    'Your profile pic changed successfully!',
+                    [],
                     [
                         'name' => $user->name,
                         'phone' => $user->phone,
@@ -610,12 +610,14 @@ class RegisterController extends Controller
         $validator = Validator::make($request->all(), [
             'user_id' => 'required',
         ]);
+        $user = User::find($request->user_id);
 
         if ($validator->fails())
             return $this->jsondata(false, $user->verify, 'Get Notification failed', [$validator->errors()->first()], []);
 
         $notifications = Notification::latest()->where('user_id', $request->user_id)
         ->orWhereNull('user_id')
+        ->where("created_at", '>=', $user->created_at)
         ->paginate(15);
 
         $user = User::find("user_id");
@@ -644,12 +646,12 @@ class RegisterController extends Controller
 
         if ($validator->fails())
             return $this->jsondata(false, null, 'Use Coupon failed', [$validator->errors()->first()], []);
-        
+
         $coupon = Coupon::where("code", $request->code)->first();
-        
+
         if (!$coupon)
             return $this->jsondata(false, null, 'Use Coupon failed', ["Invalid Coupon"], []);
-        
+
         if ($coupon->hasExpired())
             return $this->jsondata(false, null, 'Use Coupon failed', ["Coupon Expired"], []);
 

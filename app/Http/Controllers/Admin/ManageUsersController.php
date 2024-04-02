@@ -33,7 +33,7 @@ class ManageUsersController extends Controller
             $incompleteUsers = User::where('name', null)->paginate(15);
             $rejectedUsers = User::where('rejected', true)->paginate(15);
             $bannedUsers = User::where('isBanned', true)->paginate(15);
-            
+
             return  $this->jsondata(true, null, 'Successful Operation', [], [
                 "usersRequests" => $usersRequests,
                 "usersList" => $usersList,
@@ -127,12 +127,12 @@ class ManageUsersController extends Controller
         if ($user) :
             $email = $user->email;
             $msg_title = 'Fentec Account Approved';
-            $msg_body = 
-                "Hello " . $user->name . " <br>You Account has been approved now you can enjoy the journy with us";
+            $msg_body =
+                "Hello " . $user->name . " <br>Your Account has been approved now you can enjoy the journy with us";
 
             $this->sendEmail($email, $msg_title, $msg_body);
             if ($user->notification_token)
-                $response = $this->pushNotification($msg_title, $msg_body, $user->notification_token, $user->id);
+                $response = $this->pushNotification($msg_title, "Hello " . $user->name . " Your Account has been approved now you can enjoy the journy with us", $user->notification_token, $user->id);
             return  $this->jsondata(true, null, 'User Approved Successfuly', [], []);
         endif;
     }
@@ -159,12 +159,12 @@ class ManageUsersController extends Controller
         if ($user) :
             $email = $user->email;
             $msg_title = 'Fentec Account Rejected';
-            $msg_body = 
-                "Hello " . $user->name . " <br>You Account has been rejected because: <br>" . $user->rejection_reason;
+            $msg_body =
+                "Hello " . $user->name . " <br>Your Account has been rejected because: <br>" . $user->rejection_reason;
 
             $this->sendEmail($email, $msg_title, $msg_body);
             if ($user->notification_token)
-                $response = $this->pushNotification($msg_title, $msg_body, $user->notification_token, $user->id);
+                $response = $this->pushNotification($msg_title, "Hello " . $user->name . " Your Account has been rejected because: " . $user->rejection_reason, $user->notification_token, $user->id);
             return  $this->jsondata(true, null, 'User Rejected Successfuly', [], []);
         endif;
     }
@@ -191,13 +191,14 @@ class ManageUsersController extends Controller
         if ($user) :
             $email = $user->email;
             $msg_title = 'Fentec Account Banned';
-            $msg_body = 
+            $msg_body =
                 "Hello " . $user->name . " <br>You Account has been banned because: <br>" . $user->ban_reason
                 . "<br> Call Customer Service for more details: 123456789";
 
             $this->sendEmail($email, $msg_title, $msg_body);
             if ($user->notification_token)
-                $response = $this->pushNotification($msg_title, $msg_body, $user->notification_token, $user->id);
+                $response = $this->pushNotification($msg_title, "Hello " . $user->name . " You Account has been banned because: " . $user->ban_reason
+                . " Call Customer Service for more details: 123456789", $user->notification_token, $user->id);
             return  $this->jsondata(true, null, 'User Banned Successfuly', [], []);
         endif;
     }
