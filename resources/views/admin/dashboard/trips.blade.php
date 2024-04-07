@@ -97,9 +97,9 @@
                             <path d="M17 22l5 -5" />
                         </svg>
                     </td>
-                    <td>@{{trip.user.name}}</td>
-                    <td>@{{trip.user.phone}}</td>
-                    <td>@{{trip.user.email}}</td>
+                    <td v-if="trip.user">@{{trip.user.name}}</td>
+                    <td v-if="trip.user">@{{trip.user.phone}}</td>
+                    <td v-if="trip.user">@{{trip.user.email}}</td>
                     <td>@{{trip.scooter.machine_no}}</td>
                     <td>
                         @{{new Date(trip.started_at).toLocaleDateString("en-US", {
@@ -185,7 +185,7 @@ createApp({
         search: null,
         trips_current_page: 1,
         trips_last_page: 1,
-        
+
     }
   },
   methods: {
@@ -198,23 +198,23 @@ createApp({
     },
     handlePrevInTrips () {
         if (this.trips_current_page > 1) {
-            this.trips_current_page -= 1; 
+            this.trips_current_page -= 1;
             if (!this.search)
                 this.getTrips()
             else
                 this.getTripsbySearch()
         }
-        
+
     },
     handleNextInTrips () {
         if (this.trips_current_page < this.trips_last_page) {
-            this.trips_current_page += 1; 
+            this.trips_current_page += 1;
             if (!this.search)
                 this.getTrips()
             else
                 this.getTripsbySearch()
         }
-        
+
     },
     async getTrips() {
       $('.loader').fadeIn().css('display', 'flex')
