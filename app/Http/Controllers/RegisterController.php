@@ -214,7 +214,7 @@ class RegisterController extends Controller
 
     public function login(Request $request)
     {
-        return $lang = $request->lang || 'en';
+        $lang = $request->lang ? $request->lang :  'en';
 
         $error_msgs = [
             "email_required" => [
