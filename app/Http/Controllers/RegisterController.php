@@ -214,11 +214,21 @@ class RegisterController extends Controller
 
     public function login(Request $request)
     {
+        $lang = $request->lang || 'en';
+
+        $error_msgs = [
+            "email_required" => [
+                "en" => "Please enter your email or phone number",
+                "fr" => "Veuillez entrer votre email ou votre numéro de téléphone",
+                "ar" => "الرجاء إدخال البريد الإلكتروني الخاص بك أو رقم الهاتف",
+            ]
+            ];
+
         $validator = Validator::make($request->all(), [
             'emailorphone' => 'required',
             'password' => 'required|min:8',
         ], [
-            'emailorphone.required' => 'please enter your email or phone number',
+            'emailorphone.required' => $error_msgs["email_required"][$lang],
             'password.required' => 'please enter your password',
         ]);
 

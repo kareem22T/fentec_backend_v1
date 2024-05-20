@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\ZonesController;
 use App\Http\Controllers\ScooterController;
 use App\Http\Controllers\Seller\RegisterController as SellerRigisterController;
 
@@ -58,6 +59,7 @@ Route::middleware('auth:sanctum')->post("/get-trips-num", [ScooterController::cl
 Route::middleware('auth:sanctum')->post("/use-coupon", [RegisterController::class, "useCoupon"]);
 Route::get("/testNot", [ScooterController::class, "sendRealTimeData"]);
 Route::get("/get-zones", [ScooterController::class, "getZones"]);
+Route::get("/check-zones", [ZonesController::class, "whereIot"]);
 
 
 Route::get('/', function () {
