@@ -26,18 +26,63 @@ class RegisterController extends Controller
 
     public function register(Request $request)
     {
+        $lang = $request->lang ? $request->lang :  'en';
+
+        $error_msgs = [
+            "email_required" => [
+                "en" => "Please enter your email address.",
+                "fr" => "Veuillez entrer votre adresse e-mail.",
+                "ar" => "الرجاء إدخال عنوان البريد الإلكتروني الخاص بك.",
+            ],
+            "email_email" => [
+                "en" => "Please enter a valid email address.",
+                "fr" => "S'il vous plaît, mettez une adresse email valide.",
+                "ar" => "يرجى إدخال عنوان بريد إلكتروني صالح.",
+            ],
+            "phone_required" => [
+                "en" => "Please enter your phone number.",
+                "fr" => "Veuillez entrer votre numéro de téléphone.",
+                "ar" => "يرجى إدخال رقم الهاتف الخاص بك.",
+            ],
+            "password_required" => [
+                "en" => "Please enter a password.",
+                "fr" => "Veuillez entrer un mot de passe.",
+                "ar" => "الرجاء إدخال كلمة المرور.",
+            ],
+            "password_min" => [
+                "en" => "Password should be at least 8 characters long.",
+                "fr" => "Le mot de passe doit comporter au moins 8 caractères.",
+                "ar" => "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل.",
+            ],
+            "email_unique" => [
+                "en" => "This email address already exists.",
+                "fr" => "Cette adresse email existe déja.",
+                "ar" => "عنوان البريد الإلكتروني هذا موجود من قبل.",
+            ],
+            "phone_unique" => [
+                "en" => "This phone number already exists.",
+                "fr" => "Ce numéro de téléphone existe déjà.",
+                "ar" => "رقم الهاتف هذا موجود بالفعل.",
+            ],
+            "register_successfuly" => [
+                "en" => "Register successfuly",
+                "fr" => "Inscrivez-vous avec succès",
+                "ar" => "تم التسجيل بنجاح",
+            ],
+        ];
+
         $validator = Validator::make($request->all(), [
             'email' => ['required', 'unique:users,email', 'email'],
             'phone' => 'required|unique:users,phone',
             'password' => ['required', 'min:8'],
         ], [
-            'email.required' => 'Please enter your email address.',
-            'email.email' => 'Please enter a valid email address.',
-            'phone.required' => 'Please enter your phone number.',
-            'email.unique' => 'This email address already exists.',
-            'phone.unique' => 'This phone number already exists.',
-            'password.required' => 'Please enter a password.',
-            'password.min' => 'Password should be at least 8 characters long.',
+            'email.required' => $error_msgs["email_required"][$lang],
+            'email.email' => $error_msgs["email_email"][$lang],
+            'phone.required' => $error_msgs["phone_required"][$lang],
+            'email.unique' => $error_msgs["email_unique"][$lang],
+            'phone.unique' => $error_msgs["phone_unique"][$lang],
+            'password.required' => $error_msgs["password_required"][$lang],
+            'password.min' => $error_msgs["password_min"][$lang],
         ]);
 
         if ($validator->fails()) {
@@ -56,7 +101,7 @@ class RegisterController extends Controller
                 $this->jsonData(
                     true,
                     $createUser->verify,
-                    'Register successfuly',
+                    $error_msgs["register_successfuly"][$lang],
                     [],
                     [
                         'id' => $createUser->id,
@@ -221,7 +266,17 @@ class RegisterController extends Controller
                 "en" => "Please enter your email or phone number",
                 "fr" => "Veuillez entrer votre email ou votre numéro de téléphone",
                 "ar" => "الرجاء إدخال البريد الإلكتروني الخاص بك أو رقم الهاتف",
-            ]
+            ],
+            "password_required" => [
+                "en" => "Please enter your password",
+                "fr" => "s'il vous plait entrez votre mot de passe",
+                "ar" => "من فضلك أدخل رقمك السري",
+            ],
+            "incorrect_info" => [
+                "en" => "Your email/phone number or password are incorrect",
+                "fr" => "s'ilVotre nom d'utilisateur ou mot de passe sont incorrects",
+                "ar" => "اسم المستخدم أو كلمة المرور غير صحيحة",
+            ],
         ];
 
         $validator = Validator::make($request->all(), [
@@ -229,7 +284,7 @@ class RegisterController extends Controller
             'password' => 'required|min:8',
         ], [
             'emailorphone.required' => $error_msgs["email_required"][$lang],
-            'password.required' => 'please enter your password',
+            'password.required' => $error_msgs["password_required"][$lang],
         ]);
 
         if ($validator->fails()) {
@@ -247,7 +302,7 @@ class RegisterController extends Controller
             $token = $user->createToken('token')->plainTextToken;
             return $this->jsonData(true, $user->verify, 'Successfully Operation', [], ['token' => $token]);
         }
-        return $this->jsonData(false, null, 'Faild Operation', ['Your email/phone number or password are incorrect'], []);
+        return $this->jsonData(false, null, 'Faild Operation', [$error_msgs["incorrect_info"][$lang]], []);
     }
 
     public function sendVerfication(Request $request)
