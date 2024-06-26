@@ -121,6 +121,11 @@ abstract class CheckScooterZone extends Command
                                 ]
                             ]);
                         }
+                        $msg_title = 'Fentec Zone Warning';
+                        $msg_body2 =
+                            "User " . $trip->user->name . ' - ' . $trip->user->phone . " have entered orange zone and does not returned back";
+
+                        $this->sendEmail("fentec.dev@gmail.com", $msg_title, $msg_body2);
 
                         if ($trip) {
                             $startedAt = Carbon::parse($trip->started_at);

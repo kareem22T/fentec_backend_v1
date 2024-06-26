@@ -22,6 +22,7 @@ class User extends Authenticatable
         'email',
         'phone',
         'dob',
+        'join_type',
         'identity_path',
         'photo_path',
         'last_code',
