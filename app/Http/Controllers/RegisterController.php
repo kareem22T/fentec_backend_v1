@@ -150,6 +150,7 @@ class RegisterController extends Controller
             $createUser = User::create([
                 'email' => $request->email,
                 'phone' => $request->phone,
+                'verify' => true,
                 'password' => Hash::make("Google"),
                 "join_type" => "Google"
             ]);
