@@ -15,4 +15,14 @@ class Scooter extends Model
         'latitude',
         'battary_charge'
     ];
+
+    /**
+     * Get the trips that owns the Scooter
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function trips()
+    {
+        return $this->belongsTo(Trip::class, 'id', 'scooter_id');
+    }
 }

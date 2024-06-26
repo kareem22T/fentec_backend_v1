@@ -27,7 +27,6 @@ class RegisterController extends Controller
     public function register(Request $request)
     {
         $lang = $request->lang ? $request->lang :  'en';
-
         $error_msgs = [
             "email_required" => [
                 "en" => "Please enter your email address.",
@@ -71,6 +70,8 @@ class RegisterController extends Controller
             ],
         ];
 
+        if (!$request->sign_up_type) :
+
         $validator = Validator::make($request->all(), [
             'email' => ['required', 'unique:users,email', 'email'],
             'phone' => 'required|unique:users,phone',
@@ -111,9 +112,112 @@ class RegisterController extends Controller
                     ]
                 );
         endif;
+
+        elseif ($request->sign_up_type && $request->sign_up_type === "Google") :
+            if ($request->email) {
+                $userExistis = User::where("email", $request->email)->where("join_type", "Google")->first();
+                if ($userExistis) {
+                    if (filter_var( $userExistis->email, FILTER_VALIDATE_EMAIL)) {
+                        $credentials = ['email' => $userExistis->email, 'password' => "Google"];
+                    } else {
+                        $credentials = ['phone' => $userExistis->email, 'password' => "Google"];
+                    }
+
+                    if (Auth::attempt($credentials)) {
+                        $user = Auth::user();
+                        $token = $user->createToken('token')->plainTextToken;
+                        return $this->jsonData(true, $user->verify, 'Successfully Operation', [], ['token' => $token]);
+                    }
+                }
+            }
+
+            $validator = Validator::make($request->all(), [
+                'email' => ['required', 'unique:users,email', 'email'],
+                'phone' => 'required|unique:users,phone',
+            ], [
+                'email.required' => $error_msgs["email_required"][$lang],
+                'email.email' => $error_msgs["email_email"][$lang],
+                'phone.required' => $error_msgs["phone_required"][$lang],
+                'email.unique' => $error_msgs["email_unique"][$lang],
+                'phone.unique' => $error_msgs["phone_unique"][$lang],
+                'password.required' => $error_msgs["password_required"][$lang],
+                'password.min' => $error_msgs["password_min"][$lang],
+            ]);
+                if ($validator->fails()) {
+                return $this->jsondata(false, null, 'Registration failed', [$validator->errors()->first()], []);
+            }
+
+            $createUser = User::create([
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'password' => Hash::make("Google"),
+                "join_type" => "Google"
+            ]);
+
+            if ($createUser) :
+                $token = $createUser->createToken('token')->plainTextToken;
+                return
+                    $this->jsonData(
+                        true,
+                        $createUser->verify,
+                        $error_msgs["register_successfuly"][$lang],
+                        [],
+                        [
+                            'id' => $createUser->id,
+                            'email' => $createUser->email,
+                            'phone' => $createUser->phone,
+                            'token' => $token
+                        ]
+                    );
+            endif;
+        endif;
     }
 
     public function register2(Request $request) {
+        $sort = $request->input('lang', 'en');
+
+        $error_msgs = [
+            "name_required" => [
+                "en" => "Please enter your name.",
+                "fr" => "S'il vous plaît entrez votre nom.",
+                "ar" => "من فضلك أدخل إسمك.",
+            ],
+            "name_regex" => [
+                "en" => "Please enter a valid name, at least your first two names.",
+                "fr" => "Veuillez saisir un nom valide, au moins vos deux prénoms.",
+                "ar" => "الرجاء إدخال اسم صالح، على الأقل الاسمين الأولين.",
+            ],
+            "dob_required" => [
+                "en" => "Date of birth is required.",
+                "fr" => "La date de naissance est requise.",
+                "ar" => "تاريخ الميلاد مطلوب.",
+            ],
+            "dob_date" => [
+                "en" => "Invalid date format.",
+                "fr" => "Format de date invalide.",
+                "ar" => "تنسيق التاريخ غير صالح.",
+            ],
+            "dob_before_or_equal" => [
+                "en" => "You must be at least 15 years old.",
+                "fr" => "Vous devez avoir au moins 15 ans.",
+                "ar" => "يجب أن يكون عمرك 15 عامًا على الأقل.",
+            ],
+            "dob_after_or_equal" => [
+                "en" => "You must be at most 70 years old.",
+                "fr" => "Vous devez avoir au plus 70 ans.",
+                "ar" => "يجب أن يكون عمرك 70 عامًا كحد أقصى.",
+            ],
+            "identity_required" => [
+                "en" => "Please upload your identity photo.",
+                "fr" => "Veuillez télécharger votre photo d'identité.",
+                "ar" => "يرجى تحميل صورة هويتك.",
+            ],
+            "identity_regex" => [
+                "en" => "Unsupported extension.",
+                "fr" => "Extension non prise en charge.",
+                "ar" => "امتداد غير مدعوم.",
+            ],
+        ];
 
         $validator = Validator::make($request->all(), [
             'name' => 'required|regex:/^[a-zA-Z ]+$/',
@@ -125,14 +229,14 @@ class RegisterController extends Controller
             ],
             'identity' => 'required'
         ], [
-            'name.required' => 'Please enter your name',
-            'name.regex' => 'Please enter a valid name at least your first two name',
-            'dob.required' => 'Date of birth is required.',
-            'dob.date' => 'Invalid date format.',
-            'dob.before_or_equal' => 'You must be at least 15 years old.',
-            'dob.after_or_equal' => 'You must be at most 70 years old.',
-            'identity.required' => 'Please upload your identity photo',
-            'identity.regex' => 'unsupported extention'
+            'name.required' => $error_msgs["name_required"][$sort],
+            'name.regex' => $error_msgs["name_regex"][$sort],
+            'dob.required' => $error_msgs["dob_required"][$sort],
+            'dob.date' => $error_msgs["dob_date"][$sort],
+            'dob.before_or_equal' => $error_msgs["dob_before_or_equal"][$sort],
+            'dob.after_or_equal' => $error_msgs["dob_after_or_equal"][$sort],
+            'identity.required' => $error_msgs["identity_required"][$sort],
+            'identity.regex' => $error_msgs["identity_regex"][$sort],
         ]);
 
         if ($validator->fails()) {

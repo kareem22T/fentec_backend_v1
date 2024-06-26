@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Traits\DataFormController;
-use App\Traits\SendEmailTrait;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use App\Traits\SendEmailTrait;
 use App\Traits\PushNotificationTrait;
 use App\Models\User;
 

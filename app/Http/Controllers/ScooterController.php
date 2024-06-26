@@ -10,10 +10,10 @@ use App\Traits\DataFormController;
 use Illuminate\Support\Facades\Http;
 use GuzzleHttp\Client;
 use Carbon\Carbon;
+use App\Jobs\CheckTripPhoto;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use App\Traits\SavePhotoTrait;
-use App\Jobs\CheckTripPhoto;
 
 class ScooterController extends Controller
 {
@@ -23,7 +23,7 @@ class ScooterController extends Controller
     public function unlockScooter(Request $request) {
         $minCost = 5; //coins
         $user = $request->user();
-        
+
         $iot = Scooter::where("machine_no", $request->scooter_serial)->first();
 
         if (!$iot)
@@ -53,7 +53,7 @@ class ScooterController extends Controller
                     'controlType' => 'control'
                 ]
             ]);
-            
+
             // Second HTTP POST request
             $unlock_lock_wheel = $client->post('http://api.uqbike.com/terControl/sendControl.do', [
                 'form_params' => [
@@ -69,12 +69,12 @@ class ScooterController extends Controller
             "scooter_id" => $iot->id,
             "started_at" => now()
         ]);
-            
-        $response = Http::post('http://api.uqbike.com/position/getpos.do?machineNO=' . $iot->machine_no . "&token=" . $iot->token);                
+
+        $response = Http::post('http://api.uqbike.com/position/getpos.do?machineNO=' . $iot->machine_no . "&token=" . $iot->token);
         if ($response->successful()) {
             $start_lat = $response['data'][0]['latitude'];
             $start_lng = $response['data'][0]['longitude'];
-            $address = Http::post('https://maps.googleapis.com/maps/api/geocode/json?latlng=' . $start_lat . ',' . $start_lng . '&key=AIzaSyADMSyZQR7V38GWvZ3MEl_DcDsn0pTS0WU&language=ar');                
+            $address = Http::post('https://maps.googleapis.com/maps/api/geocode/json?latlng=' . $start_lat . ',' . $start_lng . '&key=AIzaSyADMSyZQR7V38GWvZ3MEl_DcDsn0pTS0WU&language=ar');
             $create_trip->starting_location = $address["results"][0]['formatted_address'];
             $create_trip->save();
         }
@@ -104,32 +104,32 @@ class ScooterController extends Controller
                     ]
                 ]);
             }
-    
+
             if ($trip) {
                 $startedAt = Carbon::parse($trip->started_at);
-    
+
                 // Assuming ended_at is available in your model or variable
                 $endedAt = Carbon::now();  // Replace with your actual ended_at
-    
+
                 $timeInterval = $endedAt->diffInMinutes($startedAt);
                 $trip->ended_at = $endedAt;
                 $trip->duration = $timeInterval;
-                $response = Http::post('http://api.uqbike.com/position/getpos.do?machineNO=' . $iot->machine_no . "&token=" . $iot->token);                
+                $response = Http::post('http://api.uqbike.com/position/getpos.do?machineNO=' . $iot->machine_no . "&token=" . $iot->token);
                 if ($response->successful()) {
                     $start_lat = $response['data'][0]['latitude'];
                     $start_lng = $response['data'][0]['longitude'];
-                    $address = Http::post('https://maps.googleapis.com/maps/api/geocode/json?latlng=' . $start_lat . ',' . $start_lng . '&key=AIzaSyADMSyZQR7V38GWvZ3MEl_DcDsn0pTS0WU&language=ar');                
+                    $address = Http::post('https://maps.googleapis.com/maps/api/geocode/json?latlng=' . $start_lat . ',' . $start_lng . '&key=AIzaSyADMSyZQR7V38GWvZ3MEl_DcDsn0pTS0WU&language=ar');
                     $trip->ending_location = $address["results"][0]['formatted_address'];
-                }        
+                }
                 $trip->save();
                 if ($user) {
                     $user->coins = (int) $user->coins - ($timeInterval * 5) - 10;
                     $user->save();
                 }
-        
+
             }
             dispatch(new CheckTripPhoto($user->current_trip_id));
-        }    
+        }
         return $this->jsondata(true, null, 'Scooter Has Locked please take a photo to confirm', [], []);
     }
 
@@ -149,12 +149,12 @@ class ScooterController extends Controller
         if ($trip) {
             if ($request->photo) :
                 $disk = 'public';
-    
+
                 // Specify the path to the image within the storage disk
                 $path = 'images/uploads/' . $trip->lock_photo;
-                if (Storage::disk($disk)->exists($path)) 
-                    Storage::disk($disk)->delete($path);  
-    
+                if (Storage::disk($disk)->exists($path))
+                    Storage::disk($disk)->delete($path);
+
                 $profile_pic = $this->saveImg($request->photo, 'images/uploads', 'trip_' . $trip->id . "_" . time());
                 $trip->lock_photo = $profile_pic;
                 $trip->save();
@@ -163,7 +163,7 @@ class ScooterController extends Controller
                     $user->current_trip_id = 0;
                     $user->save();
                 }
-            endif;    
+            endif;
         }
         return $this->jsondata(true, null, 'Trip has submited successfuly, Thanks!', [], []);
     }

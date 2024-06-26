@@ -4,11 +4,33 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Zone;
+use App\Models\Scooter;
+use Illuminate\Support\Facades\Http;
+
 class ZonesController extends Controller
 {
+    public function updateScotersData() {
+        $scooters = Scooter::all();
+
+        if ($scooters->count() > 0) {
+            foreach ($scooters as $iot) {
+                $response = Http::post('http://api.uqbike.com/position/getpos.do?machineNO=' . $iot->machine_no . "&token=" . $iot->token);
+                if ($response->successful()) {
+                    $iot->latitude = $response['data'][0]['latitude'];
+                    $iot->longitude = $response['data'][0]['longitude'];
+                    $iot->battary_charge = $response['data'][0]['batteryPower'];
+                    $iot->save();
+                }
+            }
+        }
+    }
+
     public function whereIot() {
+        $this->updateScotersData();
+
+        $scooter = Scooter::first();
         // Assume $points is an array containing the latitude and longitude of the point to check
-        $point = [35.555651468582454, 6.184567020457852];
+        $point = [$scooter->latitude, $scooter->longitude];
 
         // Assume $polygonsJson is the JSON data containing the polygons
         $polygons = Zone::all();

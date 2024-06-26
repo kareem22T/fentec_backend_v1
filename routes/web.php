@@ -5,7 +5,6 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ZonesController;
 use App\Http\Controllers\ScooterController;
 use App\Http\Controllers\Seller\RegisterController as SellerRigisterController;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
