@@ -248,7 +248,7 @@ $zones = \App\Models\Zone::all();
                     map.fitBounds(place.geometry.viewport);
                 } else {
                     map.setCenter(place.geometry.location);
-                    map.setZoom(10);
+                    map.setZoom(17);
                 }
             });
             document.getElementById('add_point').addEventListener('click', () => {
