@@ -22,14 +22,14 @@
                 <button class="button" onclick="add()">Save Zone</button>
             </div>
             <br>
-                    
+
             <div class="autocomplete-map">
                 <div class="pac-card" id="pac-card">
                     <div id="pac-container">
                         <input id="pac-input" type="text" class="input" placeholder="Enter a location" />
                     </div>
                 </div>
-                <div id="map" class="map auto_complete_map"></div>    
+                <div id="map" class="map auto_complete_map"></div>
             </div>
 
         </div>
@@ -147,7 +147,7 @@ $zones = \App\Models\Zone::all();
 
         async function initMap() {
             const map = new google.maps.Map(document.getElementById("map"), {
-                center: { lat: 30.10811445920852, lng: 31.33138500000002 },
+                center: { lat: 35.54754277777778, lng: 6.149226666666666 },
                 zoom: 15,
                 mapTypeControl: false,
             });
@@ -193,7 +193,7 @@ $zones = \App\Models\Zone::all();
                 });
                 polygon2.setMap(map)
             })
-            
+
 
             const svgPath =
             "M15 11.586V6h2V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2h2v5.586l-2.707 1.707A.996.996 0 0 0 6 14v2a1 1 0 0 0 1 1h4v3l1 2 1-2v-3h4a1 1 0 0 0 1-1v-2a.996.996 0 0 0-.293-.707L15 11.586z";
@@ -209,7 +209,7 @@ $zones = \App\Models\Zone::all();
                 strokeWeight: 1,
                 strokeColor: "black",
             };
-               
+
             document.getElementById("zone_type").addEventListener("change", (event) => {
                 const selectedValue = event.target.value;
 
@@ -227,7 +227,7 @@ $zones = \App\Models\Zone::all();
                     break;
                 }
             });
-            
+
             autocomplete.addListener("place_changed", () => {
 
                 const place = autocomplete.getPlace();

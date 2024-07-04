@@ -10,25 +10,25 @@
             <div class="card">
                 <h1 v-if="scooters && scooters.length">
                     Total devices <br>
-                    <span>@{{ scooters.length}}</span>                    
+                    <span>@{{ scooters.length}}</span>
                 </h1>
             </div>
             <div class="card">
                 <h1>
                     Activated <br>
-                    <span>20</span>                    
+                    <span>20</span>
                 </h1>
             </div>
             <div class="card">
                 <h1>
                     Locked <br>
-                    <span>25</span>                    
+                    <span>25</span>
                 </h1>
             </div>
             <div class="card">
                 <h1>
                     Battery less 20% <br>
-                    <span>10</span>                    
+                    <span>10</span>
                 </h1>
             </div>
         </div>
@@ -39,7 +39,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="transform: ;msFilter:;"><path d="M3 5v14c0 1.103.897 2 2 2h14c1.103 0 2-.897 2-2V5c0-1.103-.897-2-2-2H5c-1.103 0-2 .897-2 2zm16.002 14H5V5h14l.002 14z"></path><path d="M15 12h2V7h-5v2h3zm-3 3H9v-3H7v5h5z"></path></svg>
                     Zones
                 </a>
-                
+
             </div>
             <br>
             <div class="map" id="map"></div>
@@ -153,7 +153,7 @@
     async function initMap () {
         const map = new google.maps.Map(document.getElementById('map'), {
             zoom: 8,
-            center: { lat: 30.10811445920852, lng: 31.33138500000002 },
+            center: { lat: 35.54754277777778, lng: 6.149226666666666 },
         });
         const markersList = [
             { lat: 37.4221, lng: -122.0841 },
@@ -259,17 +259,17 @@ createApp({
     },
     handlePrevInIot () {
         if (this.iot_current_page > 1) {
-            this.iot_current_page -= 1; 
+            this.iot_current_page -= 1;
             this.getScooters()
         }
-        
+
     },
     handleNextIniot () {
         if (this.iot_current_page < this.iot_last_page) {
-            this.iot_current_page += 1; 
+            this.iot_current_page += 1;
             this.getScooters()
         }
-        
+
     },
     async editIot() {
       $('.loader').fadeIn().css('display', 'flex')
