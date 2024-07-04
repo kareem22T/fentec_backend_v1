@@ -148,7 +148,7 @@ $zones = \App\Models\Zone::all();
         async function initMap() {
             const map = new google.maps.Map(document.getElementById("map"), {
                 center: { lat: 35.54754277777778, lng: 6.149226666666666 },
-                zoom: 15,
+                zoom: 10,
                 mapTypeControl: false,
             });
             const card = document.getElementById("pac-card");
@@ -248,7 +248,7 @@ $zones = \App\Models\Zone::all();
                     map.fitBounds(place.geometry.viewport);
                 } else {
                     map.setCenter(place.geometry.location);
-                    map.setZoom(17);
+                    map.setZoom(10);
                 }
             });
             document.getElementById('add_point').addEventListener('click', () => {
