@@ -56,7 +56,7 @@ abstract class CheckScooterZone extends Command
 
                 // Assume $polygonsJson is the JSON data containing the polygons
                 $polygons = Zone::all();
-                $zone;
+                $zone = null;
 
                 foreach ($polygons as $polygon) {
                     // Parse the path of the polygon
@@ -144,13 +144,13 @@ abstract class CheckScooterZone extends Command
                                 $trip->ending_location = $address["results"][0]['formatted_address'];
                             }
                             $trip->save();
-                            if ($user) {
-                                $user->coins = (int) $user->coins - ($timeInterval * 5) - 10;
-                                $user->save();
+                            if ($trip->user) {
+                                $trip->user->coins = (int) $trip->user->coins - ($timeInterval * 5) - 10;
+                                $trip->user->save();
                             }
 
                         }
-                        dispatch(new CheckTripPhoto($user->current_trip_id));
+                        dispatch(new CheckTripPhoto($trip->user->current_trip_id));
                     }
                 }  else if ($zone == 0) {
                         $client = new Client();
@@ -184,13 +184,13 @@ abstract class CheckScooterZone extends Command
                                 $trip->ending_location = $address["results"][0]['formatted_address'];
                             }
                             $trip->save();
-                            if ($user) {
-                                $user->coins = (int) $user->coins - ($timeInterval * 5) - 10;
-                                $user->save();
+                            if ($trip->user) {
+                                $trip->user->coins = (int) $trip->user->coins - ($timeInterval * 5) - 10;
+                                $trip->user->save();
                             }
 
                         }
-                        dispatch(new CheckTripPhoto($user->current_trip_id));
+                        dispatch(new CheckTripPhoto($trip->user->current_trip_id));
                 }
 
             }
