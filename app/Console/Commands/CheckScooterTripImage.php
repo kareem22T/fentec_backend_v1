@@ -4,11 +4,14 @@ namespace App\Console\Commands;
 
 use App\Models\Admin;
 use App\Models\User;
+use App\Traits\PushNotificationTrait;
+use App\Traits\SendEmailTrait;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 
 abstract class CheckScooterTripImage extends Command
 {
+    use PushNotificationTrait, SendEmailTrait;
     /**
      * The name and signature of the console command.
      *
