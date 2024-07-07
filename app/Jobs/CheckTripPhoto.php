@@ -8,9 +8,9 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use App\Models\Trip; 
-use App\Models\Admin; 
-use App\Models\User; 
+use App\Models\Trip;
+use App\Models\Admin;
+use App\Models\User;
 use Carbon\Carbon;
 use App\Traits\SendEmailTrait;
 use App\Traits\PushNotificationTrait;
@@ -51,9 +51,9 @@ class CheckTripPhoto implements ShouldQueue
                         }
                     }
                     if ($user->notification_token)
-                        $response = $this->pushNotification("Warning", "You violated the trip termination policy by not taking a parking photo, Call 12344 to avoid ban", $user->notification_token, $user->id);
-    
-                    $this->sendEmail($user->email, "Warning", "You violated the trip termination policy by not taking a parking photo, Call 12344 to avoid ban");
+                        $response = $this->pushNotification("Warning", "You violated the trip termination policy by not taking a parking photo, Call 0660980645 to avoid ban", $user->notification_token, $user->id);
+
+                    $this->sendEmail($user->email, "Warning", "You violated the trip termination policy by not taking a parking photo, Call 0660980645 to avoid ban");
                 } else {
                     sleep(60);
                     $trip2 = Trip::find($this->trip_id);
@@ -70,9 +70,9 @@ class CheckTripPhoto implements ShouldQueue
                             }
                         }
                         if ($user->notification_token)
-                            $response = $this->pushNotification("Warning", "You violated the trip termination policy by not taking a parking photo, Call 12344 to avoid ban", $user->notification_token, $user->id);
-        
-                        $this->sendEmail($user->email, "Warning", "You violated the trip termination policy by not taking a parking photo, Call 12344 to avoid ban");
+                            $response = $this->pushNotification("Warning", "You violated the trip termination policy by not taking a parking photo, Call 0660980645 to avoid ban", $user->notification_token, $user->id);
+
+                        $this->sendEmail($user->email, "Warning", "You violated the trip termination policy by not taking a parking photo, Call 0660980645 to avoid ban");
                     }
                 }
             }

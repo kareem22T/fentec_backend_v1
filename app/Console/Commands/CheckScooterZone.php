@@ -190,7 +190,6 @@ abstract class CheckScooterZone extends Command
                             }
 
                         }
-                        dispatch(new CheckTripPhoto($trip->user->current_trip_id));
                 }
 
             }

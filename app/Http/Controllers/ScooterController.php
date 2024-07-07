@@ -128,7 +128,7 @@ class ScooterController extends Controller
                 }
 
             }
-            dispatch(new CheckTripPhoto($user->current_trip_id));
+            // dispatch(new CheckTripPhoto($user->current_trip_id));
         }
         return $this->jsondata(true, null, 'Scooter Has Locked please take a photo to confirm', [], []);
     }
