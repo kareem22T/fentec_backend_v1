@@ -28,6 +28,7 @@ class SurveyController extends Controller
         $user = $request->user();
 
         $sur = Survey::create([
+            "user_id" => $user->id,
             "reaction" => $request->reaction,
             "comment" => $request->comment ??  null,
         ]);
