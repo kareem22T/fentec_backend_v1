@@ -16,6 +16,7 @@ use App\Http\Controllers\Seller\RegisterController as SellerRigisterController;
 |
 */
 use App\Http\Controllers\Admin\ManageScooters;
+use App\Http\Controllers\SurveyController;
 
 Route::group(['middleware' => ['check_api_password']], function () {
     Route::post('/register', [RegisterController::class, 'register']);
@@ -48,6 +49,7 @@ Route::group(['middleware' => ['check_api_password'], 'prefix' => 'sellers'], fu
     Route::middleware('auth:sanctum')->post('/edit-email', [SellerRigisterController::class, 'editEmail']);
     Route::middleware('auth:sanctum')->post('/edit-phone', [SellerRigisterController::class, 'editPhone']);
     Route::middleware('auth:sanctum')->post('/logout', [SellerRigisterController::class, 'logout']);
+    Route::middleware('auth:sanctum')->post('/put-survey', [SurveyController::class, 'putSurvey']);
 });
 
 Route::middleware('auth:sanctum')->post("/unlock-scooter", [ScooterController::class, "unlockScooter"]);
