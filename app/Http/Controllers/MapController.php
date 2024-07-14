@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use App\Models\Scooter;
 use Exception;
+use GuzzleHttp\Client;
 
 class MapController extends Controller
 {
@@ -176,5 +177,25 @@ class MapController extends Controller
 
         }
 
+    }
+    public function notifyScooter(Request $request) {
+        $iot = Scooter::find($request->id);
+        if ($iot) {
+            $client = new Client();
+            $use_alarm = $client->post('http://api.uqbike.com/terControl/sendControl.do', [
+                'form_params' => [
+                    'machineNO' => $iot->machine_no,
+                    'token' => $iot->token,
+                    'paramName' => 9,
+                    'controlType' => 'control'
+                ]
+            ]);
+            return response()->json([
+                "status" => true,
+            ], 200);
+        }
+        return response()->json([
+            "status" => false,
+        ], 200);
     }
 }
