@@ -49,9 +49,9 @@ Route::group(['middleware' => ['check_api_password'], 'prefix' => 'sellers'], fu
     Route::middleware('auth:sanctum')->post('/edit-email', [SellerRigisterController::class, 'editEmail']);
     Route::middleware('auth:sanctum')->post('/edit-phone', [SellerRigisterController::class, 'editPhone']);
     Route::middleware('auth:sanctum')->post('/logout', [SellerRigisterController::class, 'logout']);
-    Route::middleware('auth:sanctum')->post('/put-survey', [SurveyController::class, 'putSurvey']);
 });
 
+Route::middleware('auth:sanctum')->post('/put-survey', [SurveyController::class, 'putSurvey']);
 Route::middleware('auth:sanctum')->post("/unlock-scooter", [ScooterController::class, "unlockScooter"]);
 Route::middleware('auth:sanctum')->post("/lock-scooter", [ScooterController::class, "lockScooter"]);
 Route::middleware('auth:sanctum')->post("/submit-trip", [ScooterController::class, "submitTrpPhoto"]);
