@@ -115,6 +115,67 @@ class RegisterController extends Controller
         endif;
     }
 
+    public function testAccountExists(Request $request) {
+        $lang = $request->lang ? $request->lang :  'en';
+        $error_msgs = [
+            "email_required" => [
+                "en" => "Please enter your email address.",
+                "fr" => "Veuillez entrer votre adresse e-mail.",
+                "ar" => "الرجاء إدخال عنوان البريد الإلكتروني الخاص بك.",
+            ],
+            "not_google" => [
+                "en" => "This account is not registered with google.",
+                "fr" => "Ce compte n'est pas enregistré sur Google.",
+                "ar" => "هذا الحساب ليس مسجل بواسطة جوجل.",
+            ],
+            "not_exists" => [
+                "en" => "This account is not registered.",
+                "fr" => "Ce compte n'est pas enregistré.",
+                "ar" => "هذا الحساب ليس مسجل .",
+            ],
+            "email_email" => [
+                "en" => "Please enter a valid email address.",
+                "fr" => "S'il vous plaît, mettez une adresse email valide.",
+                "ar" => "يرجى إدخال عنوان بريد إلكتروني صالح.",
+            ],
+            "phone_required" => [
+                "en" => "Please enter your phone number.",
+                "fr" => "Veuillez entrer votre numéro de téléphone.",
+                "ar" => "يرجى إدخال رقم الهاتف الخاص بك.",
+            ],
+            "password_required" => [
+                "en" => "Please enter a password.",
+                "fr" => "Veuillez entrer un mot de passe.",
+                "ar" => "الرجاء إدخال كلمة المرور.",
+            ],
+            "password_min" => [
+                "en" => "Password should be at least 8 characters long.",
+                "fr" => "Le mot de passe doit comporter au moins 8 caractères.",
+                "ar" => "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل.",
+            ],
+            "email_unique" => [
+                "en" => "This email address already exists.",
+                "fr" => "Cette adresse email existe déja.",
+                "ar" => "عنوان البريد الإلكتروني هذا موجود من قبل.",
+            ],
+            "phone_unique" => [
+                "en" => "This phone number already exists.",
+                "fr" => "Ce numéro de téléphone existe déjà.",
+                "ar" => "رقم الهاتف هذا موجود بالفعل.",
+            ],
+            "register_successfuly" => [
+                "en" => "Register successfuly",
+                "fr" => "Inscrivez-vous avec succès",
+                "ar" => "تم التسجيل بنجاح",
+            ],
+        ];
+
+        $user = User::where('email', $request->email)->first();
+        if ($user) {
+            return $this->jsondata(false, null, '', $error_msgs["email_unique"][$lang], []);
+        }
+    }
+
     public function regWithGoogle(Request $request) {
         $lang = $request->lang ? $request->lang :  'en';
         $error_msgs = [

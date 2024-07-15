@@ -21,6 +21,7 @@ use App\Http\Controllers\SurveyController;
 Route::group(['middleware' => ['check_api_password']], function () {
     Route::post('/register', [RegisterController::class, 'register']);
     Route::post('/register-google', [RegisterController::class, 'regWithGoogle']);
+    Route::post('/test-google', [RegisterController::class, 'testAccountExists']);
     Route::post('/login-google', [RegisterController::class, 'loginWithGoogle']);
     Route::middleware('auth:sanctum')->post('/register_2', [RegisterController::class, 'register2']);
     Route::middleware('auth:sanctum')->post('/collect', [RegisterController::class, 'collectPoints']);
