@@ -246,6 +246,11 @@ class RegisterController extends Controller
                 "fr" => "Veuillez entrer votre adresse e-mail.",
                 "ar" => "الرجاء إدخال عنوان البريد الإلكتروني الخاص بك.",
             ],
+            "not_google" => [
+                "en" => "This account is not registered with google.",
+                "fr" => "Ce compte n'est pas enregistré sur Google.",
+                "ar" => "هذا الحساب ليس مسجل بواسطة جوجل.",
+            ],
             "email_email" => [
                 "en" => "Please enter a valid email address.",
                 "fr" => "S'il vous plaît, mettez une adresse email valide.",
@@ -313,11 +318,14 @@ class RegisterController extends Controller
                         $user = Auth::user();
                         $token = $user->createToken('token')->plainTextToken;
                         return $this->jsonData(true, $user->verify, 'Successfully Operation', [], ['token' => $token]);
+                    } else {
+                        return $this->jsonData(false, null, 'Registration failed', [$error_msgs['not_google'][$lang]], []);
                     }
                 }
             }
         endif;
-        return $this->jsonData(false, null, 'Successfully Operation', [], []);
+
+        return $this->jsonData(false, null, 'Successfully Operation', [$error_msgs['not_exists'][$lang]], []);
     }
 
     public function register2(Request $request) {
