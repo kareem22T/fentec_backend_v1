@@ -112,8 +112,72 @@ class RegisterController extends Controller
                     ]
                 );
         endif;
+        endif;
+    }
 
-        elseif ($request->sign_up_type && $request->sign_up_type === "Google") :
+    public function regWithGoogle(Request $request) {
+        $lang = $request->lang ? $request->lang :  'en';
+        $error_msgs = [
+            "email_required" => [
+                "en" => "Please enter your email address.",
+                "fr" => "Veuillez entrer votre adresse e-mail.",
+                "ar" => "الرجاء إدخال عنوان البريد الإلكتروني الخاص بك.",
+            ],
+            "email_email" => [
+                "en" => "Please enter a valid email address.",
+                "fr" => "S'il vous plaît, mettez une adresse email valide.",
+                "ar" => "يرجى إدخال عنوان بريد إلكتروني صالح.",
+            ],
+            "phone_required" => [
+                "en" => "Please enter your phone number.",
+                "fr" => "Veuillez entrer votre numéro de téléphone.",
+                "ar" => "يرجى إدخال رقم الهاتف الخاص بك.",
+            ],
+            "password_required" => [
+                "en" => "Please enter a password.",
+                "fr" => "Veuillez entrer un mot de passe.",
+                "ar" => "الرجاء إدخال كلمة المرور.",
+            ],
+            "password_min" => [
+                "en" => "Password should be at least 8 characters long.",
+                "fr" => "Le mot de passe doit comporter au moins 8 caractères.",
+                "ar" => "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل.",
+            ],
+            "email_unique" => [
+                "en" => "This email address already exists.",
+                "fr" => "Cette adresse email existe déja.",
+                "ar" => "عنوان البريد الإلكتروني هذا موجود من قبل.",
+            ],
+            "phone_unique" => [
+                "en" => "This phone number already exists.",
+                "fr" => "Ce numéro de téléphone existe déjà.",
+                "ar" => "رقم الهاتف هذا موجود بالفعل.",
+            ],
+            "register_successfuly" => [
+                "en" => "Register successfuly",
+                "fr" => "Inscrivez-vous avec succès",
+                "ar" => "تم التسجيل بنجاح",
+            ],
+        ];
+
+        $validator = Validator::make($request->all(), [
+            'email' => ['required'],
+            'phone' => 'required|unique:users,phone',
+        ], [
+            'email.required' => $error_msgs["email_required"][$lang],
+            'email.email' => $error_msgs["email_email"][$lang],
+            'phone.required' => $error_msgs["phone_required"][$lang],
+            'email.unique' => $error_msgs["email_unique"][$lang],
+            'phone.unique' => $error_msgs["phone_unique"][$lang],
+            'password.required' => $error_msgs["password_required"][$lang],
+            'password.min' => $error_msgs["password_min"][$lang],
+        ]);
+
+        if ($validator->fails()) {
+            return $this->jsondata(false, null, 'Registration failed', [$validator->errors()->first()], []);
+        }
+
+        if ($request->sign_up_type && $request->sign_up_type === "Google") :
             if ($request->email) {
                 $userExistis = User::where("email", $request->email)->where("join_type", "Google")->first();
                 if ($userExistis) {
@@ -172,6 +236,88 @@ class RegisterController extends Controller
                     );
             endif;
         endif;
+    }
+
+    public function loginWithGoogle(Request $request) {
+        $lang = $request->lang ? $request->lang :  'en';
+        $error_msgs = [
+            "email_required" => [
+                "en" => "Please enter your email address.",
+                "fr" => "Veuillez entrer votre adresse e-mail.",
+                "ar" => "الرجاء إدخال عنوان البريد الإلكتروني الخاص بك.",
+            ],
+            "email_email" => [
+                "en" => "Please enter a valid email address.",
+                "fr" => "S'il vous plaît, mettez une adresse email valide.",
+                "ar" => "يرجى إدخال عنوان بريد إلكتروني صالح.",
+            ],
+            "phone_required" => [
+                "en" => "Please enter your phone number.",
+                "fr" => "Veuillez entrer votre numéro de téléphone.",
+                "ar" => "يرجى إدخال رقم الهاتف الخاص بك.",
+            ],
+            "password_required" => [
+                "en" => "Please enter a password.",
+                "fr" => "Veuillez entrer un mot de passe.",
+                "ar" => "الرجاء إدخال كلمة المرور.",
+            ],
+            "password_min" => [
+                "en" => "Password should be at least 8 characters long.",
+                "fr" => "Le mot de passe doit comporter au moins 8 caractères.",
+                "ar" => "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل.",
+            ],
+            "email_unique" => [
+                "en" => "This email address already exists.",
+                "fr" => "Cette adresse email existe déja.",
+                "ar" => "عنوان البريد الإلكتروني هذا موجود من قبل.",
+            ],
+            "phone_unique" => [
+                "en" => "This phone number already exists.",
+                "fr" => "Ce numéro de téléphone existe déjà.",
+                "ar" => "رقم الهاتف هذا موجود بالفعل.",
+            ],
+            "register_successfuly" => [
+                "en" => "Register successfuly",
+                "fr" => "Inscrivez-vous avec succès",
+                "ar" => "تم التسجيل بنجاح",
+            ],
+        ];
+
+        $validator = Validator::make($request->all(), [
+            'email' => ['required'],
+        ], [
+            'email.required' => $error_msgs["email_required"][$lang],
+            'email.email' => $error_msgs["email_email"][$lang],
+            'phone.required' => $error_msgs["phone_required"][$lang],
+            'email.unique' => $error_msgs["email_unique"][$lang],
+            'phone.unique' => $error_msgs["phone_unique"][$lang],
+            'password.required' => $error_msgs["password_required"][$lang],
+            'password.min' => $error_msgs["password_min"][$lang],
+        ]);
+
+        if ($validator->fails()) {
+            return $this->jsondata(false, null, 'Registration failed', [$validator->errors()->first()], []);
+        }
+
+        if ($request->sign_up_type && $request->sign_up_type === "Google") :
+            if ($request->email) {
+                $userExistis = User::where("email", $request->email)->where("join_type", "Google")->first();
+                if ($userExistis) {
+                    if (filter_var( $userExistis->email, FILTER_VALIDATE_EMAIL)) {
+                        $credentials = ['email' => $userExistis->email, 'password' => "Google"];
+                    } else {
+                        $credentials = ['phone' => $userExistis->email, 'password' => "Google"];
+                    }
+
+                    if (Auth::attempt($credentials)) {
+                        $user = Auth::user();
+                        $token = $user->createToken('token')->plainTextToken;
+                        return $this->jsonData(true, $user->verify, 'Successfully Operation', [], ['token' => $token]);
+                    }
+                }
+            }
+        endif;
+        return $this->jsonData(false, null, 'Successfully Operation', [], []);
     }
 
     public function register2(Request $request) {
