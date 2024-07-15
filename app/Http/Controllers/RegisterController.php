@@ -251,6 +251,11 @@ class RegisterController extends Controller
                 "fr" => "Ce compte n'est pas enregistré sur Google.",
                 "ar" => "هذا الحساب ليس مسجل بواسطة جوجل.",
             ],
+            "not_exists" => [
+                "en" => "This account is not registered.",
+                "fr" => "Ce compte n'est pas enregistré.",
+                "ar" => "هذا الحساب ليس مسجل .",
+            ],
             "email_email" => [
                 "en" => "Please enter a valid email address.",
                 "fr" => "S'il vous plaît, mettez une adresse email valide.",
