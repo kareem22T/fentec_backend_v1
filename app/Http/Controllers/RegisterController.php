@@ -172,7 +172,7 @@ class RegisterController extends Controller
 
         $user = User::where('email', $request->email)->first();
         if ($user) {
-            return $this->jsondata(false, null, '', $error_msgs["email_unique"][$lang], []);
+            return $this->jsondata(false, null, '', [$error_msgs["email_unique"][$lang]], []);
         }
     }
 
