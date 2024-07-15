@@ -131,14 +131,11 @@
           </svg>
         </a>
         <a href="{{ route('prev.rates') }}" class="@yield('rates_active')">
-          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-route-x" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
-            {{-- <path stroke="none" d="M0 0h24v24H0z" fill="none"/> --}}
-            <path d="M3 17l4 4" />
-            <path d="M7 17l-4 4" />
-            <path d="M17 3l4 4" />
-            <path d="M21 3l-4 4" />
-            <path d="M11 19h5.5a3.5 3.5 0 0 0 0 -7h-8a3.5 3.5 0 0 1 0 -7h4.5" />
-          </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-stars" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#fffff" fill="#fff" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17.8 19.817l-2.172 1.138a.392 .392 0 0 1 -.568 -.41l.415 -2.411l-1.757 -1.707a.389 .389 0 0 1 .217 -.665l2.428 -.352l1.086 -2.193a.392 .392 0 0 1 .702 0l1.086 2.193l2.428 .352a.39 .39 0 0 1 .217 .665l-1.757 1.707l.414 2.41a.39 .39 0 0 1 -.567 .411l-2.172 -1.138z" />
+                <path d="M6.2 19.817l-2.172 1.138a.392 .392 0 0 1 -.568 -.41l.415 -2.411l-1.757 -1.707a.389 .389 0 0 1 .217 -.665l2.428 -.352l1.086 -2.193a.392 .392 0 0 1 .702 0l1.086 2.193l2.428 .352a.39 .39 0 0 1 .217 .665l-1.757 1.707l.414 2.41a.39 .39 0 0 1 -.567 .411l-2.172 -1.138z" />
+                <path d="M12 9.817l-2.172 1.138a.392 .392 0 0 1 -.568 -.41l.415 -2.411l-1.757 -1.707a.389 .389 0 0 1 .217 -.665l2.428 -.352l1.086 -2.193a.392 .392 0 0 1 .702 0l1.086 2.193l2.428 .352a.39 .39 0 0 1 .217 .665l-1.757 1.707l.414 2.41a.39 .39 0 0 1 -.567 .411l-2.172 -1.138z" />
+              </svg>
         </a>
         <a href="{{ route("statistics.manage") }}" class="@yield('reports_active')">
             <svg  viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
