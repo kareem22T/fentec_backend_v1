@@ -442,7 +442,7 @@ class RegisterController extends Controller
         ];
 
         $validator = Validator::make($request->all(), [
-            'name' => 'required|regex:/^[a-zA-Z ]+$/',
+            'name' => 'required',
             'dob' => [
                 'required',
                 'date',
