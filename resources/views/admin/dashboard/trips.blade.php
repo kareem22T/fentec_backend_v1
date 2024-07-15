@@ -124,7 +124,7 @@
                     <td>@{{!trip.ended_at ? "Ongoing" : (trip.lock_photo ? "Completed" : "Not Submited")}}</td>
                 </tr>
                 <tr v-if="!trips || trips.length == 0" style="font-size: 20px; font-weight: 700; text-align: center">
-                    <td colspan="6"><h2>There is no Sellsers!</h2></td>
+                    <td colspan="6"><h2>There is no Trips!</h2></td>
                 </tr>
             </tbody>
         </table>

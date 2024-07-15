@@ -37,4 +37,9 @@ class SurveyController extends Controller
             return $this->jsondata(true, $sur, 'Survey created successfully', [], []);
 
     }
+
+    public function getRates() {
+        $trips = Survey::with(["user"])->paginate(15);
+        return  $this->jsondata(true, null, 'Successful Operation', [], $trips);
+    }
 }

@@ -13,4 +13,9 @@ class Survey extends Model
         "reaction",
         "comment",
     ];
+    public function user()
+    {
+        return $this->hasOne("App\Models\User", 'id', 'user_id');
+    }
+
 }
