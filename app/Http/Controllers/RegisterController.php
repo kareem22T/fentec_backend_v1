@@ -543,10 +543,10 @@ class RegisterController extends Controller
             if (!$code)
                 return $this->jsondata(false, null, 'invalid invetation code', ['Invaled invetation code'], []);
 
-            $request->user()->coins = ((int) $request->user()->coins) + 10;
+            $request->user()->coins = ((float) $request->user()->coins) + 10;
             $request->user()->save();
             $user_owner = User::find($code->user_owner->id);
-            $user_owner->coins = ((int) $user_owner->coins) + 10;
+            $user_owner->coins = ((float) $user_owner->coins) + 10;
             $user_owner->save();
 
             return
@@ -559,7 +559,7 @@ class RegisterController extends Controller
                 );
 
         } else {
-            $request->user()->coins = ((int) $request->user()->coins) + 10;
+            $request->user()->coins = ((float) $request->user()->coins) + 10;
             $request->user()->save();
 
             return
@@ -633,6 +633,16 @@ class RegisterController extends Controller
 
     public function sendVerfication(Request $request)
     {
+        $lang = $request->lang ? $request->lang :  'en';
+
+        $error_msgs = [
+            "msg" => [
+                "en" => "The verification code has been sent to your E-MAIL",
+                "fr" => "Le code de vérification a été envoyé à votre adresse E-MAIL",
+                "ar" => "لقد تم ارسال رمزاالثباتالى بريدك االلكتروني",
+            ],
+        ];
+
         $code = rand(100000, 999999);
 
         $user = $request->user();
@@ -642,7 +652,21 @@ class RegisterController extends Controller
 
         $email = $user->email;
         $msg_title = 'Verfication code';
-        $msg_body = 'Your email verfication code is: <b>' . $code . '</b>';
+        $msg_body = 'عزيزي المستخدم';
+        $msg_body .= '<br>';
+        $msg_body .= 'شكرا لاختيارك FenTec Mobility للتنقل الذكي والصديق للبيئة';
+        $msg_body .= '<br>';
+        $msg_body .= 'رمز الاثبات الخاص بك هو: <b>' . $code . '</b>';
+        $msg_body .= '<br>';
+        $msg_body .= 'استمتع بيومك و حافظ على مركبتك';
+        $msg_body .= '<br>';
+        $msg_body .= 'Dear user';
+        $msg_body .= '<br>';
+        $msg_body .= 'Thank you for choosing FenTec Mobility for Smart and environmentally friendly mobility';
+        $msg_body .= '<br>';
+        $msg_body .= 'Your verification code is: <b>' . $code . '</b>';
+        $msg_body .= '<br>';
+        $msg_body .= 'Enjoy Your Day and maintain YOUR SCOOTER';
 
         $this->sendEmail($email, $msg_title, $msg_body);
 
@@ -651,7 +675,7 @@ class RegisterController extends Controller
                 $this->jsonData(
                     true,
                     $user->verify,
-                    'We have sent you a verification code on your email',
+                    $error_msgs['msg'][$lang],
                     [],
                     [
                         'id' => $user->id,
@@ -775,95 +799,184 @@ class RegisterController extends Controller
     }
 
     public function forgotPassword(Request $request) {
+        $lang = $request->lang ? $request->lang : 'en';
+
+        $error_msgs = [
+            "code_req" => [
+                "en" => "Please enter your verification code",
+                "fr" => "Veuillez entrer votre code de vérification",
+                "ar" => "الرجاء إدخال رمز التحقق الخاص بك",
+            ],
+            "code_numeric" => [
+                "en" => "The code must be a number",
+                "fr" => "Le code doit être un nombre",
+                "ar" => "يجب أن يكون الرمز رقماً",
+            ],
+            "code_digits" => [
+                "en" => "The code must be 6 digits",
+                "fr" => "Le code doit comporter 6 chiffres",
+                "ar" => "يجب أن يتكون الرمز من 6 أرقام",
+            ],
+            "password_required" => [
+                "en" => "Please enter a password.",
+                "fr" => "Veuillez entrer un mot de passe.",
+                "ar" => "يرجى إدخال كلمة مرور.",
+            ],
+            "password_min" => [
+                "en" => "Password should be at least 8 characters long.",
+                "fr" => "Le mot de passe doit comporter au moins 8 caractères.",
+                "ar" => "يجب أن تكون كلمة المرور مكونة من 8 أحرف على الأقل.",
+            ],
+            "activation_failed" => [
+                "en" => "Activation failed",
+                "fr" => "L'activation a échoué",
+                "ar" => "فشل التفعيل",
+            ],
+            "verification_expired" => [
+                "en" => "Verification code has expired",
+                "fr" => "Le code de vérification a expiré",
+                "ar" => "انتهت صلاحية رمز التحقق",
+            ],
+            "password_changed" => [
+                "en" => "Password has been changed successfully",
+                "fr" => "Le mot de passe a été modifié avec succès",
+                "ar" => "تم تغيير كلمة المرور بنجاح",
+            ],
+            "code_incorrect" => [
+                "en" => "The code you entered is not correct, check your email again or click resend",
+                "fr" => "Le code que vous avez entré est incorrect, vérifiez votre email ou cliquez sur renvoyer",
+                "ar" => "الرمز الذي أدخلته غير صحيح، تحقق من بريدك الإلكتروني مرة أخرى أو انقر على إعادة الإرسال",
+            ],
+            "no_user" => [
+                "en" => "There is no user with this email",
+                "fr" => "Il n'y a pas d'utilisateur avec cet e-mail",
+                "ar" => "لا يوجد مستخدم بهذا البريد الإلكتروني",
+            ],
+        ];
+
         $validator = Validator::make($request->all(), [
             'code' => 'required|numeric|digits:6',
             'password' => ['required', 'min:8', 'confirmed'],
             'email' => ['required', 'email'],
         ], [
-            'code.required' => 'Please enter your verification code',
-            'code.numeric' => 'The code must be a number',
-            'code.digits' => 'The code must be a 6 digits',
-            'password.required' => 'Please enter a password.',
-            'password.min' => 'Password should be at least 8 characters long.',
+            'code.required' => $error_msgs["code_req"][$lang],
+            'code.numeric' => $error_msgs["code_numeric"][$lang],
+            'code.digits' => $error_msgs["code_digits"][$lang],
+            'password.required' => $error_msgs["password_required"][$lang],
+            'password.min' => $error_msgs["password_min"][$lang],
         ]);
 
         if ($validator->fails()) {
-            return $this->jsondata(false, null, 'Activation failed', [$validator->errors()->first()], []);
+            return $this->jsondata(false, null, $error_msgs["activation_failed"][$lang], [$validator->errors()->first()], []);
         }
 
         $user = User::where("email", $request->email)->first();
 
-        if ($user):
-            if (Carbon::parse($user->last_code_created_at)->addMinutes(10)->isPast())
-                $this->jsonData(
+        if ($user) {
+            if (Carbon::parse($user->last_code_created_at)->addMinutes(10)->isPast()) {
+                return $this->jsonData(
                     false,
                     $user->verify,
-                    'Account faild',
-                    ['verfication code has expired'],
-                    [
-                    ]
+                    $error_msgs["activation_failed"][$lang],
+                    [$error_msgs["verification_expired"][$lang]],
+                    []
                 );
+            }
 
             if ($request->code == $user->last_code) {
                 $user->password = Hash::make($request->password);
                 $user->save();
 
-                if ($user) :
-                    return
-                        $this->jsonData(
-                            true,
-                            $user->verify,
-                            'Password has been changed successfuly',
-                            [],
-                            []
-                        );
-                endif;
-            } else {
-                return
-                    $this->jsonData(
-                        false,
+                if ($user) {
+                    return $this->jsonData(
+                        true,
                         $user->verify,
-                        'Account faild',
-                        ['The code you entered is not correct, check your email again or click resend'],
+                        $error_msgs["password_changed"][$lang],
+                        [],
                         []
                     );
                 }
-        else:
-            return
-                $this->jsonData(
+            } else {
+                return $this->jsonData(
                     false,
-                    false,
-                    'Account faild',
-                    ['There is no user with this email'],
+                    $user->verify,
+                    $error_msgs["activation_failed"][$lang],
+                    [$error_msgs["code_incorrect"][$lang]],
                     []
                 );
-        endif;
+            }
+        } else {
+            return $this->jsonData(
+                false,
+                false,
+                $error_msgs["activation_failed"][$lang],
+                [$error_msgs["no_user"][$lang]],
+                []
+            );
+        }
     }
-
     public function changePassword(Request $request) {
         $user = $request->user();
+        $lang = $request->lang ? $request->lang : 'en';
+
+        $error_msgs = [
+            "old_password_required" => [
+                "en" => "Please enter your old password",
+                "fr" => "Veuillez entrer votre ancien mot de passe",
+                "ar" => "يرجى إدخال كلمة المرور القديمة",
+            ],
+            "new_password_required" => [
+                "en" => "Please enter a new password",
+                "fr" => "Veuillez entrer un nouveau mot de passe",
+                "ar" => "يرجى إدخال كلمة مرور جديدة",
+            ],
+            "new_password_min" => [
+                "en" => "New password should be at least 8 characters long",
+                "fr" => "Le nouveau mot de passe doit comporter au moins 8 caractères",
+                "ar" => "يجب أن تكون كلمة المرور الجديدة مكونة من 8 أحرف على الأقل",
+            ],
+            "change_password_failed" => [
+                "en" => "Change password failed",
+                "fr" => "Échec du changement de mot de passe",
+                "ar" => "فشل تغيير كلمة المرور",
+            ],
+            "incorrect_old_password" => [
+                "en" => "Incorrect old password",
+                "fr" => "Ancien mot de passe incorrect",
+                "ar" => "كلمة المرور القديمة غير صحيحة",
+            ],
+            "password_changed" => [
+                "en" => "You have changed your password successfully",
+                "fr" => "Vous avez changé votre mot de passe avec succès",
+                "ar" => "لقد قمت بتغيير كلمة المرور بنجاح",
+            ],
+        ];
 
         $validator = Validator::make($request->all(), [
             'old_password' => 'required',
             'new_password' => 'required|min:8|confirmed',
+        ], [
+            'old_password.required' => $error_msgs["old_password_required"][$lang],
+            'new_password.required' => $error_msgs["new_password_required"][$lang],
+            'new_password.min' => $error_msgs["new_password_min"][$lang],
         ]);
 
         if ($validator->fails()) {
-            return $this->jsondata(false, $user->verify, 'Change password failed', [$validator->errors()->first()], []);
+            return $this->jsondata(false, $user->verify, $error_msgs["change_password_failed"][$lang], [$validator->errors()->first()], []);
         }
 
         $currentPassword = $request->old_password;
 
         if (!Hash::check($currentPassword, $user->password)) {
-            return $this->jsondata(false, $user->verify, 'Change password', ['Incorrect old password'], []);
+            return $this->jsondata(false, $user->verify, $error_msgs["change_password_failed"][$lang], [$error_msgs["incorrect_old_password"][$lang]], []);
         }
 
         $user->password = Hash::make($request->new_password);
         $user->save();
 
-        if ($user)
-            return $this->jsondata(true, $user->verify, 'You have changed your password successfuly', [], []);
-
+        if ($user) {
+            return $this->jsondata(true, $user->verify, $error_msgs["password_changed"][$lang], [], []);
+        }
     }
 
     public function editEmail(Request $request) {
@@ -1058,7 +1171,7 @@ class RegisterController extends Controller
         if (!$user->coupons->contains($coupon->id)) {
             // If the coupon is not already attached, attach it
             $user->coupons()->attach([$coupon->id]);
-            $user->coins = (int) $user->coins + (int) $coupon->gift;
+            $user->coins = (float) $user->coins + (float) $coupon->gift;
             $user->save();
             // Return a response
             return $this->jsondata(true, null, 'You win ' . $coupon->gift . ' Coins', [], [$coupon->gift]);

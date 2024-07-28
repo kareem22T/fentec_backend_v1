@@ -21,48 +21,87 @@ class ScooterController extends Controller
     use DataFormController;
 
     public function unlockScooter(Request $request) {
+        $lang = $request->lang ? $request->lang : 'en';
         $minCost = 5; //coins
         $user = $request->user();
+
+        $error_msgs = [
+            "invalid_serial" => [
+                "en" => "Invalid Serial Number",
+                "fr" => "Numéro de série invalide",
+                "ar" => "رقم تسلسلي غير صالح",
+            ],
+            "account_banned" => [
+                "en" => "Your account is banned, call customer service for more details",
+                "fr" => "Votre compte est banni, appelez le service client pour plus de détails",
+                "ar" => "تم حظر حسابك، اتصل بخدمة العملاء للحصول على مزيد من التفاصيل",
+            ],
+            "account_rejected" => [
+                "en" => "Your account is rejected, please update your information to get approved",
+                "fr" => "Votre compte est rejeté, veuillez mettre à jour vos informations pour être approuvé",
+                "ar" => "تم رفض حسابك، يرجى تحديث معلوماتك للحصول على الموافقة",
+            ],
+            "account_under_review" => [
+                "en" => "Your account is under review and not approved yet",
+                "fr" => "Votre compte est en cours de révision et n'est pas encore approuvé",
+                "ar" => "حسابك قيد المراجعة ولم يتم الموافقة عليه بعد",
+            ],
+            "not_enough_points" => [
+                "en" => "You do not have enough points, at least " . $minCost * 10 . " coins are required for 10 minutes",
+                "fr" => "Vous n'avez pas assez de points, au moins " . $minCost * 10 . " pièces sont nécessaires pour 10 minutes",
+                "ar" => "ليس لديك نقاط كافية، مطلوب على الأقل " . $minCost * 10 . " قطعة لـ 10 دقائق",
+            ],
+            "trip_started" => [
+                "en" => "Your trip has started successfully. Enjoy",
+                "fr" => "Votre parcours a commencé avec succès. Profitez",
+                "ar" => "لقد بدأت رحلتك بنجاح. إستمتع",
+            ],
+            "unlock_failed" => [
+                "en" => "Unlock failed",
+                "fr" => "Échec du déverrouillage",
+                "ar" => "فشل في الفتح",
+            ],
+        ];
 
         $iot = Scooter::where("machine_no", $request->scooter_serial)->first();
 
         if (!$iot)
-            return $this->jsondata(false, null, 'Unlock failed', ["Invalid Serial Number"], []);
+            return $this->jsondata(false, null, $error_msgs["unlock_failed"][$lang], [$error_msgs["invalid_serial"][$lang]], []);
 
         if ($user->isBanned)
-            return $this->jsondata(false, null, 'Unlock failed', ["Your Account is banned call customer service for more details"], []);
+            return $this->jsondata(false, null, $error_msgs["unlock_failed"][$lang], [$error_msgs["account_banned"][$lang]], []);
 
         if ($user->rejected)
-            return $this->jsondata(false, null, 'Unlock failed', ["Your Account is rejected please update your information to get approved"], []);
+            return $this->jsondata(false, null, $error_msgs["unlock_failed"][$lang], [$error_msgs["account_rejected"][$lang]], []);
 
         if (!$user->approved)
-            return $this->jsondata(false, null, 'Unlock failed', ["Your Account is under review and not approved yet"], []);
+            return $this->jsondata(false, null, $error_msgs["unlock_failed"][$lang], [$error_msgs["account_under_review"][$lang]], []);
 
-        $userAvilableRideMin = (int) $user->coins /$minCost;
+        $userAvailableRideMin = (float) $user->coins / $minCost;
 
-        if ($userAvilableRideMin < 10)
-            return $this->jsondata(false, null, 'Unlock failed', ["You don not have enough points at least " . $minCost * 10 . " for 10 Min" ], []);
+        if ($userAvailableRideMin < 10)
+            return $this->jsondata(false, null, $error_msgs["unlock_failed"][$lang], [$error_msgs["not_enough_points"][$lang]], []);
 
-            $client = new Client();
-            // First HTTP POST request
-            $unlock_lock = $client->post('http://api.uqbike.com/terControl/sendControl.do', [
-                'form_params' => [
-                    'machineNO' => $iot->machine_no,
-                    'token' => $iot->token,
-                    'paramName' => 22,
-                    'controlType' => 'control'
-                ]
-            ]);
+        $client = new Client();
+        // First HTTP POST request
+        $unlock_lock = $client->post('http://api.uqbike.com/terControl/sendControl.do', [
+            'form_params' => [
+                'machineNO' => $iot->machine_no,
+                'token' => $iot->token,
+                'paramName' => 22,
+                'controlType' => 'control'
+            ]
+        ]);
 
-            // Second HTTP POST request
-            $unlock_lock_wheel = $client->post('http://api.uqbike.com/terControl/sendControl.do', [
-                'form_params' => [
-                    'machineNO' => $iot->machine_no,
-                    'token' => $iot->token,
-                    'paramName' => 11,
-                    'controlType' => 'control'
-                ]
-            ]);
+        // Second HTTP POST request
+        $unlock_lock_wheel = $client->post('http://api.uqbike.com/terControl/sendControl.do', [
+            'form_params' => [
+                'machineNO' => $iot->machine_no,
+                'token' => $iot->token,
+                'paramName' => 11,
+                'controlType' => 'control'
+            ]
+        ]);
 
         $create_trip = Trip::create([
             "user_id" => $user->id,
@@ -82,10 +121,8 @@ class ScooterController extends Controller
         $user->current_trip_id = $create_trip->id;
         $user->save();
 
-        return $this->jsondata(true, null, 'Scooter Has Unlocked Successfuly', [], []);
-
+        return $this->jsondata(true, null, $error_msgs["trip_started"][$lang], [], []);
     }
-
     public function lockScooter(Request $request) {
         $client = new Client();
         $user = $request->user();
@@ -123,7 +160,7 @@ class ScooterController extends Controller
                 }
                 $trip->save();
                 if ($user) {
-                    $user->coins = (int) $user->coins - ($timeInterval * 5) - 10;
+                    $user->coins = (float) $user->coins - ($timeInterval * 9.99) - 10;
                     $user->save();
                 }
 

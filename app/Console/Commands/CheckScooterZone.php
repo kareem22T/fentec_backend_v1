@@ -145,7 +145,7 @@ abstract class CheckScooterZone extends Command
                             }
                             $trip->save();
                             if ($trip->user) {
-                                $trip->user->coins = (int) $trip->user->coins - ($timeInterval * 5) - 10;
+                                $trip->user->coins = (float) $trip->user->coins - ($timeInterval * 9.99) - 10;
                                 $trip->user->save();
                             }
 
@@ -185,7 +185,7 @@ abstract class CheckScooterZone extends Command
                             }
                             $trip->save();
                             if ($trip->user) {
-                                $trip->user->coins = (int) $trip->user->coins - ($timeInterval * 5) - 10;
+                                $trip->user->coins = (float) $trip->user->coins - ($timeInterval * 9.99) - 10;
                                 $trip->user->save();
                             }
 

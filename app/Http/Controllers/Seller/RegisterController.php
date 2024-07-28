@@ -154,12 +154,12 @@ class RegisterController extends Controller
         $token = $user->createToken('token')->plainTextToken;
 
         if ($user)
-            return 
+            return
                 $this->jsondata(
-                    true, 
+                    true,
                     $user->verify, '
-                    seller email has changed successfully!', 
-                    [], 
+                    seller email has changed successfully!',
+                    [],
                     [
                         'name' => $token,
                         'phone' => $user->phone,
@@ -190,12 +190,12 @@ class RegisterController extends Controller
         $token = $user->createToken('token')->plainTextToken;
 
         if ($user)
-            return 
+            return
                 $this->jsondata(
-                    true, 
-                    $user->verify, 
-                    'seller phone number has changed successfully!', 
-                    [], 
+                    true,
+                    $user->verify,
+                    'seller phone number has changed successfully!',
+                    [],
                     [
                         'name' => $token,
                         'phone' => $user->phone,
@@ -263,11 +263,11 @@ class RegisterController extends Controller
         if(!$request->user())
             return $this->jsondata(false, null, 'خطاء في التاكيد', ["خطاء في التاكيد"], []);
 
-        $request->user()->unbilled_points = ((int) $request->user()->unbilled_points) + $request->amount;
+        $request->user()->unbilled_points = ((float) $request->user()->unbilled_points) + $request->amount;
         $request->user()->save();
 
         $client = User::find($request->clientId);
-        $client->coins = ((int) $client->coins) + $request->amount;
+        $client->coins = ((float) $client->coins) + $request->amount;
         $client->save();
 
         $addTohistory = Seller_history::create([

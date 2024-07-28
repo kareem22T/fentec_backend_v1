@@ -26,7 +26,7 @@ class StatisticsController extends Controller
         foreach ($sellers as $seller) {
             $seller_soldPoints = 0;
             foreach ($seller->history as $result) {
-                $seller_soldPoints += (int) $result->amount;
+                $seller_soldPoints += (float) $result->amount;
             }
             $seller->sold_points = $seller_soldPoints;
         }
@@ -37,13 +37,13 @@ class StatisticsController extends Controller
         foreach ($sellers as $seller) {
             $seller_soldPoints = 0;
             foreach ($seller->history as $result) {
-                $seller_soldPoints += (int) $result->amount;
+                $seller_soldPoints += (float) $result->amount;
             }
             $seller->sold_points = $seller_soldPoints;
         }
         return  $this->jsondata(true, null, 'Successful Operation', [], $sellers);
     }
-    
+
     public function createSeller(Request $request) {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
@@ -146,7 +146,7 @@ class StatisticsController extends Controller
         foreach ($sellers as $seller) {
             $seller_soldPoints = 0;
             foreach ($seller->history as $result) {
-                $seller_soldPoints += (int) $result->amount;
+                $seller_soldPoints += (float) $result->amount;
             }
             $seller->sold_points = $seller_soldPoints;
         }

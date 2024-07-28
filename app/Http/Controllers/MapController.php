@@ -11,17 +11,25 @@ use GuzzleHttp\Client;
 class MapController extends Controller
 {
     public function getAllScooters() {
-        $scooters = Scooter::all();
+        $scooters = Scooter::with(['trips' => function($query) {
+            $query;
+        }])->get();
 
-        if ($scooters && $scooters->count() > 0) {
+
+        $filteredScooters = $scooters->filter(function($scooter) {
+            $latestTrip = $scooter->trips()->orderBy('id', 'desc')->get()->first();
+            return $latestTrip && $latestTrip->ended_at;
+        });
+
+        if ($filteredScooters && $filteredScooters->count() > 0) {
             return response()->json([
                 "status" => true,
                 "account_status" => true,
                 "message" => "successfuly operation",
                 "errors" => [],
-                "data" => $scooters
+                "data" => $filteredScooters
             ]);
-        } elseif ($scooters && $scooters->count() == 0) {
+        } elseif ($filteredScooters && $filteredScooters->count() == 0) {
             return response()->json([
                 "status" => false,
                 "account_status" => true,

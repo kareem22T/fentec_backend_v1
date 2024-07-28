@@ -38,7 +38,7 @@ class StartTrip implements ShouldQueue
         ]);
 
         $trip_duration = 0;
-        
+
 
         while ($this->userAvilableRideMin) {
             $trip = Trip::find($create_trip->id);
@@ -48,7 +48,7 @@ class StartTrip implements ShouldQueue
                     $trip->save();
                     // push warning notification
                 }
-                $this->user->coins = (int) $this->user->coins - 10;
+                $this->user->coins = (float) $this->user->coins - 10;
                 $this->user->save();
                 $trip_duration += 1;
                 $this->userAvilableRideMin -= 1;
