@@ -24,7 +24,7 @@ abstract class CheckScooterTripImage extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Command to check if scooter trip image is submitted';
 
     /**
      * Execute the console command.
@@ -34,28 +34,46 @@ abstract class CheckScooterTripImage extends Command
         $scooter = $this->getScooter();
         $trip = $scooter->trips()->orderBy("started_at", "desc")->first();
 
-        if ($trip->ended_at) {
-            if ($trip->lock_photo == null) {
-                $now = Carbon::now();  // Replace with your actual ended_at
-                $timeInterval = $now->diffInMinutes($trip->ended_at);
-                if ($timeInterval >= 2) {
-                    $admins = Admin::where("role", "Master")->get();
-                    $user = User::find($trip->user_id);
-                    if ($user) {
-                        $content = "This user Does Not ended his Trip <br />";
-                        $content .= "Name: " . $user->name . "<br />";
-                        $content .= "Phone: " . $user->phone . "<br />";
-                        $content .= "Email: " . $user->email . "<br />";
-                        foreach ($admins as $admin) {
-                            $this->sendEmail($admin->email, "Un Submitid Trip!", $content);
-                        }
-                    }
-                    if ($user->notification_token)
-                        $response = $this->pushNotification("Warning", "You violated the trip termination policy by not taking a parking photo, Call 0660980645 to avoid ban", $user->notification_token, $user->id);
+        if ($trip && $trip->ended_at && $trip->lock_photo == null) {
+            $now = Carbon::now();
+            $timeInterval = $now->diffInMinutes($trip->ended_at);
 
-                    $this->sendEmail($user->email, "Warning", "You violated the trip termination policy by not taking a parking photo, Call 0660980645 to avoid ban");
+            if ($timeInterval < 5) {
+                $admins = Admin::where("role", "Master")->get();
+                $user = User::find($trip->user_id);
+
+                if ($user) {
+                    $content = "This user did not end their trip correctly:<br />";
+                    $content .= "Name: " . $user->name . "<br />";
+                    $content .= "Phone: " . $user->phone . "<br />";
+                    $content .= "Email: " . $user->email . "<br />";
+
+                    foreach ($admins as $admin) {
+                        $this->sendEmail($admin->email, "Unsubmitted Trip!", $content);
+                    }
+
+                    if ($user->notification_token) {
+                        $this->pushNotification(
+                            "Warning",
+                            "You violated the trip termination policy by not taking a parking photo. Call 0660980645 to avoid a ban.",
+                            $user->notification_token,
+                            $user->id
+                        );
+                    }
+
+                    $this->sendEmail(
+                        $user->email,
+                        "Warning",
+                        "You violated the trip termination policy by not taking a parking photo. Call 0660980645 to avoid a ban."
+                    );
                 }
             }
         }
     }
+
+    /**
+     * Retrieve the scooter instance.
+     * You need to implement this method based on your application logic.
+     */
+    abstract protected function getScooter();
 }
