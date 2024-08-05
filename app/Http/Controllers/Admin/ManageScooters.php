@@ -38,12 +38,12 @@ class ManageScooters extends Controller
 
         if (count(json_decode($request->path)) < 3)
             return $this->jsondata(false, null, 'Add failed', ["please select at least 3 points"], []);
-        
+
         $zone = Zone::create([
             'path' => $request->path,
             "type" => $request->type
         ]);
-        
+
         if ($zone)
             return $this->jsondata(true, null, 'Zone Has added successfuly', [], []);
 
@@ -57,10 +57,10 @@ class ManageScooters extends Controller
         if ($validator->fails()) {
             return $this->jsondata(false, null, 'Add failed', [$validator->errors()->first()], []);
         }
-        
+
         $zone = Zone::find($request->id);
         $zone->delete();
-        
+
         if ($zone)
             return $this->jsondata(true, null, 'Zone Has deleted successfuly', [], []);
 
@@ -85,11 +85,11 @@ class ManageScooters extends Controller
 
         if ($scooters->count() > 0) {
             foreach ($scooters as $iot) {
-                $response = Http::post('http://api.uqbike.com/position/getpos.do?machineNO=' . $iot->machine_no . "&token=" . $iot->token);                
+                $response = Http::post('http://api.uqbike.com/position/getpos.do?machineNO=' . $iot->machine_no . "&token=" . $iot->token);
                 if ($response->successful()) {
-                    $iot->latitude = $response['data'][0]['latitude'];
-                    $iot->longitude = $response['data'][0]['longitude'];
-                    $iot->battary_charge = $response['data'][0]['batteryPower'];
+                    $iot->latitude = $response['data'][0]['latitude'] ?? null;
+                    $iot->longitude = $response['data'][0]['longitude'] ?? null;
+                    $iot->battary_charge = $response['data'][0]['batteryPower'] ?? null;
                     $iot->save();
                 }
             }
@@ -263,7 +263,7 @@ class ManageScooters extends Controller
             //         'controlType' => 'control'
             //     ]
             // ]);
-            
+
             // // Second HTTP POST request
             // $unlock_lock_wheel = $client->post('http://api.uqbike.com/terControl/sendControl.do', [
             //     'form_params' => [
