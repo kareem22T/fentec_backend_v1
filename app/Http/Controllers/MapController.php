@@ -50,23 +50,15 @@ class MapController extends Controller
     public function getNearstScooter(Request $request) {
         $scooters = Scooter::all();
 
-        if ($scooters->count() == 0)
-            return  response()->json(
-
-                array(
-
-                    "status" => false,
-
-                    "account_status" => true,
-
-                    "message" => "",
-
-                    "errors" => array("there is no avilable scooters now"),
-
-                    "data" => array()
-                )
-
-            );
+        if ($scooters->count() == 0) {
+            return response()->json([
+                "status" => false,
+                "account_status" => true,
+                "message" => "",
+                "errors" => ["There are no available scooters now"],
+                "data" => []
+            ]);
+        }
 
         $destinations = "";
         foreach ($scooters as $scooter) {
@@ -75,116 +67,73 @@ class MapController extends Controller
         $origins = $request->lat . ',' . $request->lng . "|";
 
         try {
-
-            $response = Http::get('https://maps.googleapis.com/maps/api/distancematrix/json?destinations='. $destinations .'&origins=' . $origins . 'departure_time=now&key=AIzaSyD92ePxBG5Jk6mM3djSW49zs3dRKJroWRk');
+            $response = Http::get('https://maps.googleapis.com/maps/api/distancematrix/json', [
+                'destinations' => rtrim($destinations, "|"),
+                'origins' => $origins,
+                'departure_time' => 'now',
+                'key' => 'YOUR_API_KEY_HERE',
+            ]);
 
             $distances = $response->json();
-
         } catch (Exception $e) {
-
-            $distances = [
-
-                'status' => 'error',
-
+            return response()->json([
+                'status' => false,
                 'message' => $e->getMessage(),
-
-            ];
-
+            ]);
         }
-        $nearest_distance_b_user_scooter = 0;
 
+        if (!isset($distances['rows'][0]['elements']) || empty($distances['rows'][0]['elements'])) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Error in fetching distances',
+                'errors' => [],
+                'data' => []
+            ]);
+        }
+
+        $nearest_distance_b_user_scooter = null;
         $nearest_distance_b_user_scooter_km = "";
-
         $distanceIndex = 0;
 
-        $i = 0;
+        foreach ($distances['rows'][0]['elements'] as $i => $distance) {
+            if (isset($distance['distance']['value'])) {
+                $dis = $distance['distance']['value'];
+                $km = $distance['distance']['text'];
 
-        foreach ($distances['rows'][0]['elements'] as $distance) {
-
-            $dis = $distance['distance']['value'];
-
-            $km = $distance['distance']['text'];
-
-            if ($i == 0) {
-
-                $nearest_distance_b_user_scooter = $dis;
-
-                $nearest_distance_b_user_scooter_km = $km;
-
-            } else {
-
-                if ($dis < $nearest_distance_b_user_scooter) {
-
+                if ($nearest_distance_b_user_scooter === null || $dis < $nearest_distance_b_user_scooter) {
                     $nearest_distance_b_user_scooter = $dis;
-
                     $nearest_distance_b_user_scooter_km = $km;
-
                     $distanceIndex = $i;
-
                 }
-
             }
-
-
-            $i++;
-
         }
 
+        if ($nearest_distance_b_user_scooter === null) {
+            return response()->json([
+                'status' => false,
+                'message' => 'No valid distance data found',
+                'errors' => [],
+                'data' => []
+            ]);
+        }
 
         if ($nearest_distance_b_user_scooter > 3000) {
-
-            // Replace with your response sending function
-
-            return  response()->json(
-
-                array(
-
-                    "status" => true,
-
-                    "account_status" => true,
-
-                    "message" => "There are no nearest scooters to your location. The nearest one is about {$nearest_distance_b_user_scooter_km}",
-
-                    "errors" => array(),
-
-                    "data" => array(
-
-                        "scooter" => $scooters[$distanceIndex]
-
-                    )
-
-                )
-
-            );
-
+            return response()->json([
+                "status" => true,
+                "account_status" => true,
+                "message" => "There are no nearest scooters to your location. The nearest one is about {$nearest_distance_b_user_scooter_km}",
+                "errors" => [],
+                "data" => ["scooter" => $scooters[$distanceIndex]]
+            ]);
         } else {
-
-            // Replace with your response sending function
-
-            return  response()->json(
-
-                array(
-
-                    "status" => true,
-
-                    "account_status" => true,
-
-                    "message" => "The nearest scooters to your location is about {$nearest_distance_b_user_scooter_km}",
-
-                    "errors" => array(),
-
-                    "data" => array(
-
-                        "scooter" => $scooters[$distanceIndex]
-
-                    )
-
-                )
-
-            );
-
+            return response()->json([
+                "status" => true,
+                "account_status" => true,
+                "message" => "The nearest scooter to your location is about {$nearest_distance_b_user_scooter_km}",
+                "errors" => [],
+                "data" => ["scooter" => $scooters[$distanceIndex]]
+            ]);
         }
-
     }
     public function notifyScooter(Request $request) {
         $iot = Scooter::find($request->id);
