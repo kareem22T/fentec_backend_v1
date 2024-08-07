@@ -15,17 +15,16 @@ class MapController extends Controller
             $query;
         }])->get();
 
-
         $filteredScooters = $scooters->filter(function($scooter) {
-            $latestTrip = $scooter->trips()->orderBy('id', 'desc')->get()->first();
-            return $latestTrip && $latestTrip->ended_at;
+            $latestTrip = $scooter->trips()->orderBy('id', 'desc')->first();
+            return !$latestTrip || $latestTrip->ended_at;
         });
 
         if ($filteredScooters && $filteredScooters->count() > 0) {
             return response()->json([
                 "status" => true,
                 "account_status" => true,
-                "message" => "successfuly operation",
+                "message" => "Operation successful",
                 "errors" => [],
                 "data" => $filteredScooters
             ]);
@@ -33,8 +32,8 @@ class MapController extends Controller
             return response()->json([
                 "status" => false,
                 "account_status" => true,
-                "message" => "No scooters founded",
-                "errors" => ['There is no any scooter'],
+                "message" => "No scooters found",
+                "errors" => ['There are no scooters available'],
                 "data" => []
             ], 200);
         } else {
@@ -42,7 +41,7 @@ class MapController extends Controller
                 "status" => false,
                 "account_status" => true,
                 "message" => "Could not fetch scooters",
-                "errors" => ['Server error could not fetch scooters'],
+                "errors" => ['Server error: could not fetch scooters'],
                 "data" => []
             ], 500);
         }
