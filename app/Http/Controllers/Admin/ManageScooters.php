@@ -19,16 +19,6 @@ class ManageScooters extends Controller
     use DataFormController;
 
     public function index () {
-        // return $scooters = Scooter::whereHas('trips', function ($query) {
-        //     $query->whereNull('ended_at')
-        //           ->whereColumn('trips.id', '=', function ($subquery) {
-        //               $subquery->select('id')
-        //                        ->from('trips')
-        //                        ->whereColumn('scooter_id', 'scooters.id')
-        //                        ->orderByDesc('created_at')
-        //                        ->limit(1);
-        //           });
-        // })->get();
 
         $this->updateScotersData();
         return view("admin.dashboard.scooters")->with(compact('activated_scooters'));

@@ -16,7 +16,7 @@
             <div class="card">
                 <h1>
                     Activated <br>
-                    <span>{{$activated_scooters->count()}}</span>
+                    {{-- <span>{{$activated_scooters->count()}}</span> --}}
                 </h1>
             </div>
             <div class="card">
