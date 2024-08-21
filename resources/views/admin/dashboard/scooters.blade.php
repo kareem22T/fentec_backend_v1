@@ -23,7 +23,7 @@
             <div class="card">
                 <h1>
                     Locked <br>
-                    <span>{{ $locked_scooters->count() }}</span>
+                    <span>{{ $locked_scooters }}</span>
                 </h1>
             </div>
             <div class="card">

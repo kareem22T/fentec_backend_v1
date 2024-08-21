@@ -22,13 +22,10 @@ class ManageScooters extends Controller
 
     public function index () {
         $Activated_scooters = Scooter::whereHas('trips', function ($q) {
-            $q->whereDate('started_at', '>=', Carbon::now()->subDays(1)->startOfDay())
+            $q->whereDate('started_at', '>=', Carbon::now()->startOfDay())
                 ->whereNull('ended_at');
         })->get();
-        $locked_scooters = Scooter::whereHas('trips', function ($q) {
-            $q->whereDate('started_at', '>=', Carbon::now()->subDays(1)->startOfDay())
-              ->whereNotNull('ended_at');
-        })->orDoesntHave('trips')->get();
+        $locked_scooters = Scooter::all()->count() - $Activated_scooters->count();
         $this->updateScotersData();
         return view("admin.dashboard.scooters")->with(compact(['Activated_scooters', 'locked_scooters']));
     }
