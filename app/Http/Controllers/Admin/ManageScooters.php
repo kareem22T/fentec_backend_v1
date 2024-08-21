@@ -22,7 +22,7 @@ class ManageScooters extends Controller
 
     public function index () {
         $Activated_scooters = Scooter::whereHas('trips', function ($q) {
-            $q->whereDate('started_at', '>=', Carbon::now()->startOfDay())
+            $q->whereDate('started_at', '>=', Carbon::now()->setTimezone('Africa/Algiers')->startOfDay())
                 ->whereNull('ended_at');
         })->get();
         $locked_scooters = Scooter::all()->count() - $Activated_scooters->count();
