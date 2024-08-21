@@ -39,7 +39,7 @@ class SurveyController extends Controller
     }
 
     public function getRates() {
-        $trips = Survey::with(["user"])->paginate(15);
+        $trips = Survey::latest()->with(["user"])->paginate(15);
         return  $this->jsondata(true, null, 'Successful Operation', [], $trips);
     }
 }

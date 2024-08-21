@@ -43,28 +43,6 @@
             </thead>
             <tbody>
                 <tr v-if="rates && rates.length > 0" v-for="rate in rates" :key="rate.id">
-                    <td>
-                        <a :href="'/images/uploads/' + rate.lock_photo" download class="img rate_photo" v-if="rate.lock_photo" style="display: block;position: relative;width: 70px;height: 70px;padding: 5px;background: white;border-radius: 5px;border: 2px solid rgba(255, 115, 0,1);">
-                            <div class="after" style="position: absolute;top: 0;left: 0;width: 100%;height: 100%;display: flex;justify-content: center;align-items: center;background: white;border-radius: 5px;opacity: 0;transition: 0.3s all ease-in">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-download" width="40" height="40" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ff7300" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    {{-- <path stroke="none" d="M0 0h24v24H0z" fill="none"/> --}}
-                                    <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" />
-                                    <path d="M7 11l5 5l5 -5" />
-                                    <path d="M12 4l0 12" />
-                                </svg>
-                            </div>
-                            <img :src="'/images/uploads/' + rate.lock_photo" style="width: 100%; height: 100%"/>
-                        </a>
-                        <svg v-if="!rate.lock_photo" style="width: 70px;height: 70px;padding: 5px;background: white;border-radius: 5px;border: 2px solid #ff2724;" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-photo-x" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ff2825" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                            <path d="M15 8h.01" />
-                            <path d="M13 21h-7a3 3 0 0 1 -3 -3v-12a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v7" />
-                            <path d="M3 16l5 -5c.928 -.893 2.072 -.893 3 0l3 3" />
-                            <path d="M14 14l1 -1c.928 -.893 2.072 -.893 3 0" />
-                            <path d="M22 22l-5 -5" />
-                            <path d="M17 22l5 -5" />
-                        </svg>
-                    </td>
                     <td v-if="rate.user">@{{rate.reaction == 1 ? "Bad" : (rate.reaction == 2 ? "Good" : "Cool")}}</td>
                     <td v-if="rate.user">@{{rate.user.name}}</td>
                     <td v-if="rate.user">@{{rate.user.phone}}</td>

@@ -16,7 +16,7 @@
             <div class="card">
                 <h1>
                     Activated <br>
-                    <span>20</span>
+                    <span>{{$activated_scooters->count()}}</span>
                 </h1>
             </div>
             <div class="card">
@@ -28,7 +28,9 @@
             <div class="card">
                 <h1>
                     Battery less 20% <br>
-                    <span>10</span>
+                    <span>
+
+                    </span>
                 </h1>
             </div>
         </div>

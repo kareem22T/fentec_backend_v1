@@ -28,11 +28,11 @@ class ManageUsersController extends Controller
     public function getUsers(Request $request) {
 
         if (!$request->getJustUsersWithType) :
-            $usersRequests = User::where('approved', false)->where('rejected', false)->where('isBanned', false)->where('name', '!=', null)->paginate(15);
-            $usersList = User::where('approved', true)->where('isBanned', false)->paginate(15);
-            $incompleteUsers = User::where('name', null)->paginate(15);
-            $rejectedUsers = User::where('rejected', true)->paginate(15);
-            $bannedUsers = User::where('isBanned', true)->paginate(15);
+            $usersRequests = User::latest()->where('approved', false)->where('rejected', false)->where('isBanned', false)->where('name', '!=', null)->paginate(15);
+            $usersList = User::latest()->where('approved', true)->where('isBanned', false)->paginate(15);
+            $incompleteUsers = User::latest()->where('name', null)->paginate(15);
+            $rejectedUsers = User::latest()->where('rejected', true)->paginate(15);
+            $bannedUsers = User::latest()->where('isBanned', true)->paginate(15);
 
             return  $this->jsondata(true, null, 'Successful Operation', [], [
                 "usersRequests" => $usersRequests,
@@ -193,12 +193,12 @@ class ManageUsersController extends Controller
             $msg_title = 'Fentec Account Banned';
             $msg_body =
                 "Hello " . $user->name . " <br>You Account has been banned because: <br>" . $user->ban_reason
-                . "<br> Call Customer Service for more details: 123456789";
+                . "<br> Call Customer Service for more details: 0660980645";
 
             $this->sendEmail($email, $msg_title, $msg_body);
             if ($user->notification_token)
                 $response = $this->pushNotification($msg_title, "Hello " . $user->name . " You Account has been banned because: " . $user->ban_reason
-                . " Call Customer Service for more details: 123456789", $user->notification_token, $user->id);
+                . " Call Customer Service for more details: 0660980645", $user->notification_token, $user->id);
             return  $this->jsondata(true, null, 'User Banned Successfuly', [], []);
         endif;
     }

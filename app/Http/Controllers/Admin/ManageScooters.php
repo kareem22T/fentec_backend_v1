@@ -19,11 +19,22 @@ class ManageScooters extends Controller
     use DataFormController;
 
     public function index () {
+        // return $scooters = Scooter::whereHas('trips', function ($query) {
+        //     $query->whereNull('ended_at')
+        //           ->whereColumn('trips.id', '=', function ($subquery) {
+        //               $subquery->select('id')
+        //                        ->from('trips')
+        //                        ->whereColumn('scooter_id', 'scooters.id')
+        //                        ->orderByDesc('created_at')
+        //                        ->limit(1);
+        //           });
+        // })->get();
+
         $this->updateScotersData();
-        return view("admin.dashboard.scooters");
+        return view("admin.dashboard.scooters")->with(compact('activated_scooters'));
     }
     public function zonesIndex () {
-        $zones = Zone::all();
+        $zones = Zone::latest()->get();
         return view("admin.dashboard.zones")->with(compact('zones'));
     }
     public function addZone (Request $request) {
@@ -67,12 +78,12 @@ class ManageScooters extends Controller
     }
 
     public function getZones () {
-        $zones = Zone::all();
+        $zones = Zone::latest()->get();
         return $zones;
     }
 
     public function getAllScooters () {
-        $Scooters = Scooter::all();
+        $Scooters = Scooter::latest()->get();
         try {
             $this->updateScotersData();
         } catch (\Throwable $th) {
