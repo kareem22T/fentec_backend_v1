@@ -13,18 +13,26 @@ use App\Jobs\TestJob;
 
 use App\Models\Zone;
 use App\Models\Scooter;
+use App\Models\User;
+use Carbon\Carbon;
 
 class ManageScooters extends Controller
 {
     use DataFormController;
 
     public function index () {
-
+        $Activated_scooters = Scooter::whereHas('trips', function ($q) {
+            $q->whereDate('started_at', '>=', Carbon::now()->subDays(1)->startOfDay())
+                ->whereNull('ended_at');
+        })->get();
+        $locked_scooters = Scooter::whereHas('trips', function ($q) {
+            $q->whereDate('started_at', '>=', Carbon::now()->subDays(1)->startOfDay())
+              ->whereNotNull('ended_at');
+        })->orDoesntHave('trips')->get();
         $this->updateScotersData();
-        return view("admin.dashboard.scooters");
+        return view("admin.dashboard.scooters")->with(compact(['Activated_scooters', 'locked_scooters']));
     }
     public function zonesIndex () {
-        $zones = Zone::latest()->get();
         return view("admin.dashboard.zones")->with(compact('zones'));
     }
     public function addZone (Request $request) {

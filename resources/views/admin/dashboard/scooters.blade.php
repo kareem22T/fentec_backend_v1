@@ -5,31 +5,32 @@
 
 @section('content')
 <div class="scooter_wrapper" id="scooter_wrapper">
+
     <section class="main">
         <div class="statistics side">
             <div class="card">
                 <h1 v-if="scooters && scooters.length">
                     Total devices <br>
-                    <span>@{{ scooters.length}}</span>
+                    <span>@{{ scooters?.length}}</span>
                 </h1>
             </div>
             <div class="card">
                 <h1>
                     Activated <br>
-                    {{-- <span>{{$activated_scooters->count()}}</span> --}}
+                    <span>{{$Activated_scooters->count()}}</span>
                 </h1>
             </div>
             <div class="card">
                 <h1>
                     Locked <br>
-                    <span>25</span>
+                    <span>{{ $locked_scooters->count() }}</span>
                 </h1>
             </div>
             <div class="card">
                 <h1>
                     Battery less 20% <br>
                     <span>
-
+                        @{{ scooters?.filter(item => item.battary_charge < 20).length}}
                     </span>
                 </h1>
             </div>
@@ -219,6 +220,21 @@ setInterval(async () => {
 
         markers.push(marker); // Add the marker to the array
     });
+    const response = await fetch("/admin/scooters/get-zones");
+            const zones = await response.json();
+            zones.map((zone, index) => {
+                const polygon2 = new google.maps.Polygon({
+                    paths: JSON.parse(zone.path),
+                    strokeColor: "#000",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 2,
+                    fillColor: zone.type === 0 ? "#ff0000" : (zone.type === 1 ? "#00ff00" : "#ffa500"),
+                    fillOpacity: 0.35,
+                });
+                polygon2.setMap(map)
+            })
+
+
 }, 5000);    }
 </script>
 <script
