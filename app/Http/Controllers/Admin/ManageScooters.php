@@ -21,7 +21,7 @@ class ManageScooters extends Controller
     public function index () {
 
         $this->updateScotersData();
-        return view("admin.dashboard.scooters")->with(compact('activated_scooters'));
+        return view("admin.dashboard.scooters");
     }
     public function zonesIndex () {
         $zones = Zone::latest()->get();
