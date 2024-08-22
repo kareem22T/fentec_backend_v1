@@ -13,6 +13,7 @@
         "laravel/sanctum": "^3.2",
         "laravel/socialite": "^5.11",
         "laravel/tinker": "^2.8",
+        "maatwebsite/excel": "^3.1",
         "phpmailer/phpmailer": "^6.8",
         "symfony/psr-http-message-bridge": "^7.0"
     },

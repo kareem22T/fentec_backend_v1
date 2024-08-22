@@ -228,7 +228,7 @@ setInterval(async () => {
                     strokeColor: "#000",
                     strokeOpacity: 0.8,
                     strokeWeight: 2,
-                    fillColor: zone.type === 0 ? "#ff0000" : (zone.type === 1 ? "#00ff00" : "#ffa500"),
+                    fillColor: zone.type === 0 ? "#ff000063" : (zone.type === 1 ? "#00ff0057" : "#ffa50040"),
                     fillOpacity: 0.35,
                 });
                 polygon2.setMap(map)
