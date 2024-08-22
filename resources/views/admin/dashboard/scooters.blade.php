@@ -203,6 +203,19 @@ setInterval(async () => {
 
     markers = []; // Empty the array
 
+    const response = await fetch("/admin/scooters/get-zones");
+            const zones = await response.json();
+            zones.map((zone, index) => {
+                const polygon2 = new google.maps.Polygon({
+                    paths: JSON.parse(zone.path),
+                    strokeColor: "#000",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 2,
+                    fillColor: zone.type === 0 ? "#ff000063" : (zone.type === 1 ? "#00ff0057" : "#ffa50040"),
+                    fillOpacity: 0.35,
+                });
+                polygon2.setMap(map)
+            })
     let scooters = await fetch("/admin/scooters/get-scooters");
     let scooters_data = await scooters.json();
 
@@ -220,22 +233,8 @@ setInterval(async () => {
 
         markers.push(marker); // Add the marker to the array
     });
-    const response = await fetch("/admin/scooters/get-zones");
-            const zones = await response.json();
-            zones.map((zone, index) => {
-                const polygon2 = new google.maps.Polygon({
-                    paths: JSON.parse(zone.path),
-                    strokeColor: "#000",
-                    strokeOpacity: 0.8,
-                    strokeWeight: 2,
-                    fillColor: zone.type === 0 ? "#ff000063" : (zone.type === 1 ? "#00ff0057" : "#ffa50040"),
-                    fillOpacity: 0.35,
-                });
-                polygon2.setMap(map)
-            })
-
-
-}, 5000);    }
+    }, 5000);
+}
 </script>
 <script
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyADMSyZQR7V38GWvZ3MEl_DcDsn0pTS0WU&callback=initMap&libraries=places&v=weekly"
