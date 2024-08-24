@@ -30,6 +30,7 @@ class ManageScooters extends Controller
         return view("admin.dashboard.scooters")->with(compact(['Activated_scooters', 'locked_scooters']));
     }
     public function zonesIndex () {
+        $zones = Zone::all();
         return view("admin.dashboard.zones")->with(compact('zones'));
     }
     public function addZone (Request $request) {
