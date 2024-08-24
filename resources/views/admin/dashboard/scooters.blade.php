@@ -195,6 +195,20 @@
         markers.push(marker); // Add the marker to the array
     });
 
+    const response = await fetch("/admin/scooters/get-zones");
+        const zones = await response.json();
+    zones.map((zone, index) => {
+        const polygon2 = new google.maps.Polygon({
+            paths: JSON.parse(zone.path),
+            strokeColor: "#000",
+            strokeOpacity: 0.8,
+            strokeWeight: 2,
+            fillColor: zone.type === 0 ? "#ff000063" : (zone.type === 1 ? "#00ff0057" : "#ffa50040"),
+            fillOpacity: 0.35,
+        });
+        polygon2.setMap(map)
+    })
+
 setInterval(async () => {
     // Remove all markers from the map
     markers.forEach(marker => {
@@ -203,19 +217,6 @@ setInterval(async () => {
 
     markers = []; // Empty the array
 
-    const response = await fetch("/admin/scooters/get-zones");
-            const zones = await response.json();
-            zones.map((zone, index) => {
-                const polygon2 = new google.maps.Polygon({
-                    paths: JSON.parse(zone.path),
-                    strokeColor: "#000",
-                    strokeOpacity: 0.8,
-                    strokeWeight: 2,
-                    fillColor: zone.type === 0 ? "#ff000063" : (zone.type === 1 ? "#00ff0057" : "#ffa50040"),
-                    fillOpacity: 0.35,
-                });
-                polygon2.setMap(map)
-            })
     let scooters = await fetch("/admin/scooters/get-scooters");
     let scooters_data = await scooters.json();
 
