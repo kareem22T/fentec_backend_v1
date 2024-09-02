@@ -5,7 +5,6 @@
 
 @section('content')
 <div class="scooter_wrapper" id="scooter_wrapper">
-
     <section class="main">
         <div class="statistics side">
             <div class="card">
@@ -50,7 +49,10 @@
     </section>
     <section class="row-2 table_wrapper" >
         <div class="head" >
-            <h1>Scooters List</h1>
+            <h1>Scooters List </h1>
+            <div class="export-btn">
+                @exportTable('scooters', true)
+            </div>
             <div class="pagination">
                 <button @click="this.handlePrevInIot()">
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-caret-left-filled" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -151,93 +153,109 @@
 @section('scripts')
 <script>
     $(function () {
-        $('.loader').fadeOut()
-    })
-    async function initMap () {
+        $('.loader').fadeOut();
+    });
+
+    async function initMap() {
         const map = new google.maps.Map(document.getElementById('map'), {
             zoom: 8,
             center: { lat: 35.54754277777778, lng: 6.149226666666666 },
         });
-        const markersList = [
-            { lat: 37.4221, lng: -122.0841 },
-            { lat: 37.4245, lng: -122.0825 },
-            { lat: 37.4269, lng: -122.0811 },
-        ];
-
 
         let markers = []; // Array to store the markers
-    // Remove all markers from the map
-    markers.forEach(marker => {
-        marker.setMap(null); // This will remove the marker from the map
-    });
 
-    markers = []; // Empty the array
+        // Fetch scooter data
+        let scooters = await fetch("/admin/scooters/get-scooters");
+        let scooters_data = await scooters.json();
 
-    let scooters = await fetch("/admin/scooters/get-scooters");
-    let scooters_data = await scooters.json();
+        const infowindow = new google.maps.InfoWindow();
 
-    scooters_data.forEach((scooter, index) => {
-        // Create a new marker for each scooter
-        if (index === 0) {
+        // Add markers to the map
+        scooters_data.forEach((scooter, index) => {
+            if (index === 0) {
                 map.setCenter({ lat: parseFloat(scooter.latitude), lng: parseFloat(scooter.longitude) });
             }
 
-        const marker = new google.maps.Marker({
-            position: { lat: parseFloat(scooter.latitude), lng: parseFloat(scooter.longitude) },
-            map: map, // Assuming 'map' is your Google Maps instance
-            icon: {
-                url: "{{ asset('/images/high_charge.png') }}", // Set the custom marker icon URL
-                scaledSize: new google.maps.Size(40, 50) // Set the width and height
-            },
-            title: `Scooter ${index + 1}` // Optionally set a title for the marker
+            const marker = new google.maps.Marker({
+                position: { lat: parseFloat(scooter.latitude), lng: parseFloat(scooter.longitude) },
+                map: map,
+                icon: {
+                    url: "{{ asset('/images/high_charge.png') }}",
+                    scaledSize: new google.maps.Size(40, 50),
+                },
+                customInfo: `<div><h3>Scooter ${scooter.machine_no}</h3><p>Last User: (${scooter.trips.user.email})</p></div>`,
+                title: `Scooter ${scooter.machine_no}`
+            });
+
+            markers.push(marker);
+
+            // Add hover event listener
+            marker.addListener("mouseover", () => {
+                infowindow.setContent(marker.customInfo);
+                infowindow.open(map, marker);
+            });
+
+            marker.addListener("mouseout", () => {
+                infowindow.close();
+            });
         });
 
-        markers.push(marker); // Add the marker to the array
-    });
-
-    const response = await fetch("/admin/scooters/get-zones");
+        // Fetch zone data and draw polygons
+        const response = await fetch("/admin/scooters/get-zones");
         const zones = await response.json();
-    zones.map((zone, index) => {
-        const polygon2 = new google.maps.Polygon({
-            paths: JSON.parse(zone.path),
-            strokeColor: "#000",
-            strokeOpacity: 0.8,
-            strokeWeight: 2,
-            fillColor: zone.type === 0 ? "#ff000063" : (zone.type === 1 ? "#00ff0057" : "#ffa50040"),
-            fillOpacity: 0.35,
-        });
-        polygon2.setMap(map)
-    })
 
-setInterval(async () => {
-    // Remove all markers from the map
-    markers.forEach(marker => {
-        marker.setMap(null); // This will remove the marker from the map
-    });
-
-    markers = []; // Empty the array
-
-    let scooters = await fetch("/admin/scooters/get-scooters");
-    let scooters_data = await scooters.json();
-
-    scooters_data.forEach((scooter, index) => {
-        // Create a new marker for each scooter
-        const marker = new google.maps.Marker({
-            position: { lat: parseFloat(scooter.latitude), lng: parseFloat(scooter.longitude) },
-            map: map, // Assuming 'map' is your Google Maps instance
-            icon: {
-                url: "{{ asset('/images/high_charge.png') }}", // Set the custom marker icon URL
-                scaledSize: new google.maps.Size(40, 50) // Set the width and height
-            },
-            title: `Scooter ${index + 1}` // Optionally set a title for the marker
+        zones.forEach((zone) => {
+            const polygon = new google.maps.Polygon({
+                paths: JSON.parse(zone.path),
+                strokeColor: "#000",
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: zone.type === 0 ? "#ff000063" : (zone.type === 1 ? "#00ff0057" : "#ffa50040"),
+                fillOpacity: 0.35,
+            });
+            polygon.setMap(map);
         });
 
-        markers.push(marker); // Add the marker to the array
-    });
-    }, 5000);
-}
-</script>
-<script
+        // Update markers every 5 seconds
+        setInterval(async () => {
+            markers.forEach(marker => {
+                marker.setMap(null);
+            });
+
+            markers = [];
+
+            scooters = await fetch("/admin/scooters/get-scooters");
+            scooters_data = await scooters.json();
+
+            scooters_data.forEach((scooter, index) => {
+                const marker = new google.maps.Marker({
+                    position: { lat: parseFloat(scooter.latitude), lng: parseFloat(scooter.longitude) },
+                    map: map,
+                    icon: {
+                        url: "{{ asset('/images/high_charge.png') }}",
+                        scaledSize: new google.maps.Size(40, 50),
+                    },
+                    customInfo: `<div><h3>Scooter ${scooter.machine_no}</h3><p>Last User: (${scooter.trips.user.email})</p></div>`,
+                    title: `Scooter ${scooter.machine_no}`
+                });
+
+                markers.push(marker);
+
+                marker.addListener("mouseover", () => {
+                    infowindow.setContent(marker.customInfo);
+                    infowindow.open(map, marker);
+                });
+
+                marker.addListener("mouseout", () => {
+                    infowindow.close();
+                });
+            });
+        }, 5000);
+    }
+
+    // Ensure that the initMap function is globally accessible
+    window.initMap = initMap;
+</script><script
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyADMSyZQR7V38GWvZ3MEl_DcDsn0pTS0WU&callback=initMap&libraries=places&v=weekly"
     defer></script>
 

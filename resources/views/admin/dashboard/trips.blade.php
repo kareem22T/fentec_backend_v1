@@ -11,8 +11,12 @@
 </style>
 <div class="trips_wrapper" id="trips_wrapper">
     <section class="row-2 table_wrapper">
+
         <div class="head">
             <h1>Trips List</h1>
+            <div class="export-btn">
+                @exportTable('trips', true)
+            </div>
             <div class="pagination">
                 <button @click="this.handlePrevInTrips()">
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-caret-left-filled" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">

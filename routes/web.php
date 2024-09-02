@@ -17,6 +17,7 @@ use App\Http\Controllers\Seller\RegisterController as SellerRigisterController;
 */
 use App\Http\Controllers\Admin\ManageScooters;
 use App\Http\Controllers\SurveyController;
+use Maatwebsite\Excel\Facades\Excel;
 
 Route::group(['middleware' => ['check_api_password']], function () {
     Route::post('/register', [RegisterController::class, 'register']);
@@ -69,3 +70,7 @@ Route::get("/check-zones", [ZonesController::class, "whereIot"]);
 Route::get('/', function () {
     return 'welcome';
 });
+Route::get('export/{table}', function ($table) {
+    $includeHeadings = request()->query('headings', false); // Fetch query parameter to decide
+    return Excel::download(new \App\Exports\DynamicExport($table, $includeHeadings), "{$table}.xlsx");
+})->name('dynamic.export');

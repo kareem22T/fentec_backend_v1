@@ -79,7 +79,9 @@ class ManageScooters extends Controller
     }
 
     public function getAllScooters () {
-        $Scooters = Scooter::latest()->get();
+        $Scooters = Scooter::with(['trips' => function($q) {
+            $q->with("user")->latest("started_at")->get();
+        }])->latest()->get();
         try {
             $this->updateScotersData();
         } catch (\Throwable $th) {

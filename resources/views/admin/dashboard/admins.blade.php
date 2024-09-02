@@ -36,6 +36,11 @@
             Moderators
         </button>
     </div>
+
+    <div class="export-btn" style="margin-top: 24px;margin-left: 24px">
+        @exportTable('admins', true)
+    </div>
+
     <section class="row-2 table_wrapper" v-if="showMasters" >
         <div class="head">
             <h1>Masters List</h1>

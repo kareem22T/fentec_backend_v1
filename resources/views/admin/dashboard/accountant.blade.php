@@ -68,6 +68,10 @@
     <section class="row-2 table_wrapper" v-if="showSellers" >
         <div class="head" v-if="showSellers" >
             <h1>Sellers List</h1>
+            <div class="export-btn">
+                @exportTable('sellers', true)
+            </div>
+
             <div class="pagination">
                 <button @click="this.handlePrevInSellers()">
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-caret-left-filled" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -270,7 +274,7 @@ createApp({
         search: null,
         sellers_current_page: 1,
         sellers_last_page: 1,
-        
+
     }
   },
   methods: {
@@ -288,23 +292,23 @@ createApp({
     },
     handlePrevInSellers () {
         if (this.sellers_current_page > 1) {
-            this.sellers_current_page -= 1; 
+            this.sellers_current_page -= 1;
             if (!this.search)
                 this.getSellers()
             else
                 this.getSellersbySearch()
         }
-        
+
     },
     handleNextInSellers () {
         if (this.sellers_current_page < this.sellers_last_page) {
-            this.sellers_current_page += 1; 
+            this.sellers_current_page += 1;
             if (!this.search)
                 this.getSellers()
             else
                 this.getSellersbySearch()
         }
-        
+
     },
     async getSellers() {
       $('.loader').fadeIn().css('display', 'flex')

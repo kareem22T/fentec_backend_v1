@@ -5,6 +5,10 @@
 
 @section('content')
 <div class="users_wrapper" id="users_wrapper">
+    <div class="export-btn" style="margin-top: 24px;margin-left: 24px">
+        @exportTable('users', true)
+    </div>
+
     <section class="row-2 table_wrapper">
         <div class="head">
             <h1>Users Requests</h1>
@@ -31,19 +35,24 @@
         <table class="normal_table">
             <thead>
                 <tr>
+                    <th>ID</th>
                     <th>Name</th>
                     <th>Age</th>
                     <th>Email</th>
                     <th>Phone</th>
+                    <th>Phone</th>
+                    <th>Balance</th>
                     <th>Controls</th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-if="usersRequests && usersRequests.length > 0" v-for="user in usersRequests" :key="user.id">
+                    <td>@{{ "ID_" + String(user.id).padStart(4, '0') }}</td>
                     <td>@{{user.name}}</td>
                     <td>@{{user.dob}}</td>
                     <td>@{{user.email}}</td>
                     <td>@{{user.phone}}</td>
+                    <td>@{{user.coins}}</td>
                     <td>
                         <div class="btns flex-center">
                             <button class="button" @click="handleShowRequest(user)"><i class='bx bx-show-alt'></i></button>
@@ -85,19 +94,23 @@
         <table class="normal_table">
             <thead>
                 <tr>
+                    <th>ID</th>
                     <th>Name</th>
                     <th>Age</th>
                     <th>Email</th>
                     <th>Phone</th>
+                    <th>Balance</th>
                     <th>Controls</th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-if="usersList && usersList.length > 0" v-for="user in usersList" :key="user.id">
+                    <td>@{{ "ID_" + String(user.id).padStart(4, '0') }}</td>
                     <td>@{{user.name}}</td>
                     <td>@{{user.dob}}</td>
                     <td>@{{user.email}}</td>
                     <td>@{{user.phone}}</td>
+                    <td>@{{user.coins}}</td>
                     <td>
                         <div class="btns flex-center">
                             <button class="button" @click="selectedRequest = user;showUserProfile=true;"><i class='bx bx-show-alt'></i></button>
@@ -138,15 +151,20 @@
         <table class="normal_table">
             <thead>
                 <tr>
+                    <th>ID</th>
                     <th>Email</th>
                     <th>Phone</th>
+                    <th>Balance</th>
+
                     {{-- <th>Controls</th> --}}
                 </tr>
             </thead>
             <tbody>
                 <tr v-if="incompleteUsers && incompleteUsers.length > 0" v-for="user in incompleteUsers" :key="user.id">
+                    <td>@{{ "ID_" + String(user.id).padStart(4, '0') }}</td>
                     <td>@{{user.email}}</td>
                     <td>@{{user.phone}}</td>
+                    <td>@{{user.coins}}</td>
                     {{-- <td>
                         <div class="btns flex-center">
                             <button class="button secondary" @click=""><i class='bx bx-envelope'></i></button>
@@ -186,19 +204,23 @@
         <table class="normal_table">
             <thead>
                 <tr>
+                    <th>ID</th>
                     <th>name</th>
                     <th>Email</th>
                     <th>Phone</th>
                     <th>Ban Reason</th>
+                    <th>Balance</th>
                     <th>Controls</th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-if="bannedUsers && bannedUsers.length > 0" v-for="user in bannedUsers" :key="user.id">
+                    <td>@{{ "ID_" + String(user.id).padStart(4, '0') }}</td>
                     <td>@{{user.name}}</td>
                     <td>@{{user.email}}</td>
                     <td>@{{user.phone}}</td>
                     <td>@{{user.ban_reason}}</td>
+                    <td>@{{user.coins}}</td>
                     <td>
                         <div class="btns flex-center">
                             <button class="button success" @click="selectedRequest = user;handleShowApprovePopUp()"><i class='bx bx-check-circle' ></i></button>
@@ -238,19 +260,23 @@
         <table class="normal_table">
             <thead>
                 <tr>
+                    <th>ID</th>
                     <th>name</th>
                     <th>Email</th>
                     <th>Phone</th>
                     <th>Rejected Reason</th>
+                    <th>Balance</th>
                     <th>Controls</th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-if="rejectedUsers && rejectedUsers.length > 0" v-for="user in rejectedUsers" :key="user.id">
+                    <td>@{{ "ID_" + String(user.id).padStart(4, '0') }}</td>
                     <td>@{{user.name}}</td>
                     <td>@{{user.email}}</td>
                     <td>@{{user.phone}}</td>
                     <td>@{{user.rejection_reason}}</td>
+                    <td>@{{user.coins}}</td>
                     <td>
                         <div class="btns flex-center">
                             <button class="button" @click="handleShowRequest(user)"><i class='bx bx-show-alt'></i></button>
@@ -371,56 +397,56 @@
                         <div>
                             <p>3th wood street <span>12/12</span></p>
                             <p>65 Marlen park <span>-50 points</span></p>
-                        </div>                
+                        </div>
                     </div>
                     <div>
                         <img src="{{ asset('/dashboard/images/destination_icon.png') }}" alt="destination icon">
                         <div>
                             <p>3th wood street <span>12/12</span></p>
                             <p>65 Marlen park <span>-50 points</span></p>
-                        </div>                
+                        </div>
                     </div>
                     <div>
                         <img src="{{ asset('/dashboard/images/destination_icon.png') }}" alt="destination icon">
                         <div>
                             <p>3th wood street <span>12/12</span></p>
                             <p>65 Marlen park <span>-50 points</span></p>
-                        </div>                
+                        </div>
                     </div>
                     <div>
                         <img src="{{ asset('/dashboard/images/destination_icon.png') }}" alt="destination icon">
                         <div>
                             <p>3th wood street <span>12/12</span></p>
                             <p>65 Marlen park <span>-50 points</span></p>
-                        </div>                
+                        </div>
                     </div>
                     <div>
                         <img src="{{ asset('/dashboard/images/destination_icon.png') }}" alt="destination icon">
                         <div>
                             <p>3th wood street <span>12/12</span></p>
                             <p>65 Marlen park <span>-50 points</span></p>
-                        </div>                
+                        </div>
                     </div>
                     <div>
                         <img src="{{ asset('/dashboard/images/destination_icon.png') }}" alt="destination icon">
                         <div>
                             <p>3th wood street <span>12/12</span></p>
                             <p>65 Marlen park <span>-50 points</span></p>
-                        </div>                
+                        </div>
                     </div>
                     <div>
                         <img src="{{ asset('/dashboard/images/destination_icon.png') }}" alt="destination icon">
                         <div>
                             <p>3th wood street <span>12/12</span></p>
                             <p>65 Marlen park <span>-50 points</span></p>
-                        </div>                
+                        </div>
                     </div>
                     <div>
                         <img src="{{ asset('/dashboard/images/destination_icon.png') }}" alt="destination icon">
                         <div>
                             <p>3th wood street <span>12/12</span></p>
                             <p>65 Marlen park <span>-50 points</span></p>
-                        </div>                
+                        </div>
                     </div>
                 </div>
             </div>
@@ -502,7 +528,7 @@ createApp({
                 document.getElementById('errors').innerHTML = ''
                 $('.loader').fadeOut()
 
-                // active users 
+                // active users
                 if (response.data.data.usersList) {
                     this.usersList = response.data.data.usersList.data
                     this.users_list_current_page = response.data.data.usersList.current_page
@@ -748,7 +774,7 @@ createApp({
                 $('#errors').fadeOut('slow')
             }, 3000);
         } else {
-            this.showRjectionAlert = true; 
+            this.showRjectionAlert = true;
             this.rejectionReasonPopUp = false
         }
 
