@@ -13,6 +13,7 @@ class Scooter extends Model
         'token',
         'longitude',
         'latitude',
+        'iot_id',
         'battary_charge'
     ];
 

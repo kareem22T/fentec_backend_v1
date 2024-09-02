@@ -78,7 +78,8 @@
         </div>
         <table class="normal_table">
             <thead>
-                <tr>
+                <tr style="white-space: nowrap">
+                    <th>Iot ID</th>
                     <th>Machine No.</th>
                     <th>Token</th>
                     <th>Charge</th>
@@ -87,6 +88,7 @@
             </thead>
             <tbody>
                 <tr v-if="scooters && scooters.length > 0" v-for="iot in scooters" :key="iot.id">
+                    <td>@{{iot.iot_id}}</td>
                     <td>@{{iot.machine_no}}</td>
                     <td>@{{iot.token}}</td>
                     <td>@{{iot.battary_charge}}%</td>
@@ -119,6 +121,9 @@
         <h1>Add @{{ iot_title }}</h1>
         <br>
         <div class="form-group">
+            <input type="text" name="iot_id" id="iot_id" class="form-control input" v-model="iot_id" placeholder="Iot Id">
+        </div>
+        <div class="form-group">
             <input type="text" name="machine_no" id="machine_no" class="form-control input" v-model="machine_no" placeholder="Machine No.">
         </div>
         <br>
@@ -134,6 +139,9 @@
     <div class="pop-up show_request_details_wrapper card" v-if="showEditIot && iot_data">
         <h1>Edit @{{ iot_data.machine_no }} information</h1>
         <br>
+        <div class="form-group">
+            <input type="text" name="iot_id" id="iot_id" class="form-control input" v-model="to_edit_iot_iot_id" placeholder="Iot id">
+        </div>
         <div class="form-group">
             <input type="text" name="machine_no" id="machine_no" class="form-control input" v-model="to_edit_iot_machine_no" placeholder="Machine No">
         </div>
@@ -266,10 +274,12 @@ createApp({
   data() {
     return {
         machine_no: null,
+        iot_id: null,
         showAddIot: false,
         iot_title: null,
         token: null,
         to_edit_iot_machine_no: null,
+        to_edit_iot_iot_id: null,
         to_edit_iot_token: null,
         to_edit_id: null,
         showEditIot: false,
@@ -290,6 +300,7 @@ createApp({
     },
     getEditValues(iot) {
         this.to_edit_iot_machine_no = iot.machine_no;
+        this.to_edit_iot_iot_id = iot.iot_id;
         this.to_edit_iot_token = iot.token;
         this.to_edit_id = iot.id;
     },
@@ -311,9 +322,10 @@ createApp({
       $('.loader').fadeIn().css('display', 'flex')
         try {
             const response = await axios.post(`{{ route('scooter.update') }}`, {
-                iot_id: this.to_edit_id,
+                id: this.to_edit_id,
                 token: this.to_edit_iot_token,
                 machine_no: this.to_edit_iot_machine_no,
+                iot_id: this.to_edit_iot_iot_id,
             },
             {
                 headers: {
@@ -371,6 +383,7 @@ createApp({
             const response = await axios.post(`{{ route('scooter.add') }}`, {
                 token: this.token,
                 machine_no: this.machine_no,
+                iot_id: this.iot_id,
             },
             {
                 headers: {

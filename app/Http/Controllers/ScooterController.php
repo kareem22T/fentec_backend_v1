@@ -63,7 +63,7 @@ class ScooterController extends Controller
             ],
         ];
 
-        $iot = Scooter::where("machine_no", $request->scooter_serial)->first();
+        $iot = Scooter::where("machine_no", $request->scooter_serial)->orWhere("iot_id", $request->scooter_serial)->first();
 
         if (!$iot)
             return $this->jsondata(false, null, $error_msgs["unlock_failed"][$lang], [$error_msgs["invalid_serial"][$lang]], []);

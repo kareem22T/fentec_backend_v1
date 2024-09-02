@@ -120,15 +120,17 @@ class ManageScooters extends Controller
             'iot_id' => 'required',
             'token' => 'required',
             'machine_no' => 'required',
+            'id' => 'required',
         ]);
 
         if ($validator->fails()) {
             return $this->jsondata(false, null, 'Update failed', [$validator->errors()->first()], []);
         }
 
-        $iot = Scooter::find($request->iot_id);
+        $iot = Scooter::find($request->id);
         $iot->token = $request->token;
         $iot->machine_no = $request->machine_no;
+        $iot->iot_id = $request->iot_id;
         $iot->save();
 
         if ($iot)
@@ -138,6 +140,7 @@ class ManageScooters extends Controller
         $validator = Validator::make($request->all(), [
             'machine_no' => 'required',
             'token' => 'required',
+            'iot_id' => 'required|unique:scooters,iot_id',
         ], [
             "machine_no.required" => "Please Enter Machine Number",
             "token.required" => "Please Enter Machine token"
@@ -150,6 +153,7 @@ class ManageScooters extends Controller
         $iot = Scooter::create([
             "token" => $request->token,
             "machine_no" => $request->machine_no,
+            "iot_id" => $request->iot_id,
         ]);
         $iot->save();
 
