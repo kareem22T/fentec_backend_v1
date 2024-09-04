@@ -197,7 +197,7 @@ class ManageSellersController extends Controller
     public function getTransactionsHistory(Request $request) {
         $admin = $request->user();
 
-        $transactions = $admin->transactions()->paginate(20);
+        $transactions = $admin->transactions()->with(['admin', 'seller'])->paginate(20);
 
         return $this->jsonData(true, true, '', [], ['seller' => $transactions]);
     }
