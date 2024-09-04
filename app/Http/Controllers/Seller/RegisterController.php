@@ -287,7 +287,7 @@ class RegisterController extends Controller
     public function getTransactionsHistory(Request $request) {
         $seller = $request->user();
 
-        $transactions = $seller->transactions()->with(['admin', 'seller'])->paginate(1);
+        $transactions = $seller->transactions()->with(['admin', 'seller'])->paginate(10);
 
         return $this->jsonData(true, true, '', [], ['seller' => $transactions]);
     }
