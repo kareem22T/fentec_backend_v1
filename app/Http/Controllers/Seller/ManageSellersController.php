@@ -10,6 +10,8 @@ use App\Traits\DataFormController;
 use App\Traits\SendEmailTrait;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Admin;
+use App\Models\FenPayHistory;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 
@@ -171,15 +173,33 @@ class ManageSellersController extends Controller
 
         $seller = Seller::find($request->seller_id);
         $admin = $request->user();
-        if ($admin->role == "Accountant") {
-            $seller->unbilled_points = 0;
-            $seller->save();
-            if ($seller)
-                return  $this->jsondata(true, null, 'تم اعادة نقاط البائع بنجاح', [], []);
-        } else {
-            return $this->jsonData(false, null, 'Faild Operation', ['You are not have the role as Accountant'], []);
-        }
 
+        if ($admin->role == "Accountant") {
+            DB::transaction(function () use ($seller, $admin) {
+                // Record history
+                FenPayHistory::create([
+                    'seller_id' => $seller->id,
+                    'admin_id' => $admin->id,
+                    'ammount' => $seller->unbilled_points ,
+                ]);
+
+                // Reset unbilled points
+                $seller->unbilled_points = 0;
+                $seller->save();
+            });
+
+            return $this->jsondata(true, null, 'تم اعادة نقاط البائع بنجاح', [], []);
+        } else {
+            return $this->jsonData(false, null, 'Faild Operation', ['You do not have the role of Accountant'], []);
+        }
+    }
+
+    public function getTransactionsHistory(Request $request) {
+        $admin = $request->user();
+
+        $transactions = $admin->transactions()->paginate(20);
+
+        return $this->jsonData(true, true, '', [], ['seller' => $transactions]);
     }
 
     public function deleteSeller(Request $request) {
@@ -211,7 +231,7 @@ class ManageSellersController extends Controller
             $byAddresses = Seller::orderBy(\DB::raw('ABS(TIMESTAMPDIFF(SECOND, created_at, NOW()))'))->where('address', 'like', '%'.$request->search.'%')->get();
 
             $phones = Seller::orderBy(\DB::raw('ABS(TIMESTAMPDIFF(SECOND, created_at, NOW()))'))->where('phone', 'like', '%'.$request->search.'%')->get();
-            
+
             return $this->jsonData(true, null, '', [], !$byNames->isEmpty() ? $byNames : (!$byAddresses->isEmpty() ? $byAddresses : $phones));
 
         } else {

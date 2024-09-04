@@ -33,4 +33,9 @@ class Admin extends Authenticatable
     protected $hidden = [
         'password',
     ];
+
+    public function transactions()
+    {
+        return $this->hasMany(FenPayHistory::class, 'admin_id');
+    }
 }

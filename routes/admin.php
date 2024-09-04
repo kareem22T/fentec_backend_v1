@@ -96,6 +96,7 @@ Route::middleware('auth:admin')->group(function () {
         Route::post('/seller-update', [StatisticsController::class, 'updateSeller'])->name('update.seller');
         Route::post('/seller-delete', [StatisticsController::class, 'deleteSeller'])->name('seller.delete');
         Route::post('/fillter-sellers', [StatisticsController::class, 'fillterSellersByDate'])->name('fillter.seller');
+        Route::get('/get-transactions', [ManageSellersController::class, 'getTransactionsHistory']);
     });
 
     Route::get('/seller/{id}', [ManageSellersController::class, 'getSellerIndex'])->name("show.seller.details");

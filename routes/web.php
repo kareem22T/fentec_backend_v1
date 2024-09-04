@@ -48,6 +48,7 @@ Route::group(['middleware' => ['check_api_password'], 'prefix' => 'sellers'], fu
     Route::post('/login', [SellerRigisterController::class, 'login']);
     Route::post('/get-client', [SellerRigisterController::class, 'getClient']);
     Route::middleware('auth:sanctum')->post('/get-user', [SellerRigisterController::class, 'getSeller']);
+    Route::middleware('auth:sanctum')->post('/get-transactions', [SellerRigisterController::class, 'getTransactionsHistory']);
     Route::middleware('auth:sanctum')->post('/transfer', [SellerRigisterController::class, 'transfer']);
     Route::middleware('auth:sanctum')->post('/change-password', [SellerRigisterController::class, 'changePassword']);
     Route::middleware('auth:sanctum')->post('/edit-email', [SellerRigisterController::class, 'editEmail']);

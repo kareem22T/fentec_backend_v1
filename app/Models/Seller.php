@@ -31,4 +31,9 @@ class Seller  extends Authenticatable
         return $this->hasMany('App\Models\Seller_history', 'seller_id');
     }
 
+    public function transactions()
+    {
+        return $this->hasMany(FenPayHistory::class, 'seller_id');
+    }
+
 }

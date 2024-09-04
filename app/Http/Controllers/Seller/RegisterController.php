@@ -205,6 +205,7 @@ class RegisterController extends Controller
                 );
 
     }
+
     public function getSeller(Request $request)
     {
         if ($request->user()) :
@@ -281,6 +282,14 @@ class RegisterController extends Controller
         if ($client)
             return $this->jsondata(true, null, 'تم التحويل بنجاح', [], []);
 
+    }
+
+    public function getTransactionsHistory(Request $request) {
+        $seller = $request->user();
+
+        $transactions = $seller->transactions()->paginate(20);
+
+        return $this->jsonData(true, true, '', [], ['seller' => $transactions]);
     }
 
     public function logout (Request $request) {
