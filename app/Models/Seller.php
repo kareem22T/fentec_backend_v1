@@ -18,6 +18,8 @@ class Seller  extends Authenticatable
         'phone',
         'address',
         'password',
+        'longitude',
+        'latitude',
         "unbilled_points"
     ];
 

@@ -88,6 +88,8 @@ class ManageSellersController extends Controller
             'address' => 'required',
             'email' => 'required',
             'phone' => 'required',
+            'longitude' => 'required',
+            'latitude' => 'required',
             'password' => 'required|min:8|confirmed',
         ], [
             "name.required" => "الاسم مطلوب",
@@ -110,6 +112,8 @@ class ManageSellersController extends Controller
                 'address' => $request->address,
                 'email' => $request->email,
                 'phone' => $request->phone,
+                'latitude' => $request->latitude,
+                'longitude' => $request->longitude,
                 'password' => Hash::make($request->password),
             ]);
             if ($seller)
@@ -125,6 +129,8 @@ class ManageSellersController extends Controller
             'name' => 'required',
             'address' => 'required',
             'email' => 'required',
+            'longitude' => 'required',
+            'latitude' => 'required',
             'phone' => 'required',
         ], [
             "name.required" => "الاسم مطلوب",
@@ -151,6 +157,8 @@ class ManageSellersController extends Controller
             $seller->email = $request->email;
             $seller->address = $request->address;
             $seller->phone = $request->phone;
+            $seller->latitude = $request->latitude;
+            $seller->longitude = $request->longitude;
             $seller->save();
             if ($request->password)
                 $seller->password = $request->password;
