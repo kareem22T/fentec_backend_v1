@@ -37,6 +37,16 @@ class SellerMapController extends Controller
 
     public function getNearestSeller(Request $request) {
         $sellers = Seller::all();
+        $lang = $request->lang ? $request->lang : 'en';
+
+        $error_msgs = [
+            "message" => [
+                "en" => "Currently there is no FenPay point, please call 0540842707",
+                "fr" => "Il n'y a actuellement pas de point FenPay, veuillez appeler le 0540842707",
+                "ar" => "حاليا لايوجد نقطة FenPay, الرجاء الإتصال ب 0540842707.",
+            ],
+        ];
+
 
         if ($sellers->count() == 0) {
             return response()->json([
@@ -76,7 +86,7 @@ class SellerMapController extends Controller
         if ($nearestDistance > 3) { // assuming 3 km as the threshold for 'nearest'
             return response()->json([
                 "status" => true,
-                "message" => "There are no nearby sellers. The nearest one is about {$nearestDistanceKm}",
+                "message" => "{$error_msgs['message'][$lang]} {$nearestDistanceKm}",
                 "errors" => [],
                 "data" => ["seller" => $nearestSeller]
             ]);
