@@ -160,7 +160,7 @@ class ScooterController extends Controller
                 }
                 $trip->save();
                 if ($user) {
-                    $user->coins = (float) $user->coins - ($timeInterval * 9.99) - 10;
+                    $user->coins = (float) $user->coins - ($timeInterval * 15);
                     $user->save();
                 }
 
