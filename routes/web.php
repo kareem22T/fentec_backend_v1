@@ -28,6 +28,7 @@ Route::group(['middleware' => ['check_api_password']], function () {
     Route::middleware('auth:sanctum')->post('/collect', [RegisterController::class, 'collectPoints']);
     Route::post('/login', [RegisterController::class, 'login']);
     Route::middleware('auth:sanctum')->post('/get-user', [RegisterController::class, 'getUser']);
+    Route::middleware('auth:sanctum')->post('/get-invitation-code', [RegisterController::class, 'getOrCreateInvitationCode']);
     Route::post('/get-user-notification', [RegisterController::class, 'getNotification']);
     Route::post('/send-forgot-code', [RegisterController::class, 'sendForgotCode']);
     Route::middleware('auth:sanctum')->post('/user/save-notification-token', [RegisterController::class, 'setNotificationToken']);

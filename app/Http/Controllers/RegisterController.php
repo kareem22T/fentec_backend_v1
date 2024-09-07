@@ -18,6 +18,8 @@ use Illuminate\Validation\Rule;
 use App\Traits\SavePhotoTrait;
 use App\Traits\SendEmailTrait;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
+
 class RegisterController extends Controller
 {
     use DataFormController;
@@ -527,6 +529,36 @@ class RegisterController extends Controller
                 );
         endif;
 
+    }
+
+    public function getOrCreateInvitationCode(Request $request)
+    {
+        $user = $request->user();
+        // Check if the user already has an invitation code
+        $existingCode = Invetation_code::where('user_id', $user->id)->first();
+
+        if ($existingCode) {
+            // Return the existing invitation code
+            return response()->json([
+                'invitation_code' => $existingCode->code,
+            ]);
+        }
+
+        // Generate a unique code
+        do {
+            $newCode = Str::random(8); // Generates a random 8-character code
+        } while (Invetation_code::where('code', $newCode)->exists());
+
+        // Save the new code with the user ID
+        $invitationCode = Invetation_code::create([
+            'user_id' => $user->id,
+            'code' => $newCode,
+        ]);
+
+        // Return the newly created code
+        return response()->json([
+            'invitation_code' => $invitationCode->code,
+        ]);
     }
 
     public function collectPoints(Request $request)  {
