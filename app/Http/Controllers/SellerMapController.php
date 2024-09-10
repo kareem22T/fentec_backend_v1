@@ -86,14 +86,14 @@ class SellerMapController extends Controller
         if ($nearestDistance > 3) { // assuming 3 km as the threshold for 'nearest'
             return response()->json([
                 "status" => true,
-                "message" => "{$error_msgs['message'][$lang]} {$nearestDistanceKm}",
+                "message" => "{$error_msgs['message'][$lang]}",
                 "errors" => [],
                 "data" => ["seller" => $nearestSeller]
             ]);
         } else {
             return response()->json([
                 "status" => true,
-                "message" => "The nearest seller to your location is about {$nearestDistanceKm}",
+                "message" => "The nearest seller to your location is about",
                 "errors" => [],
                 "data" => ["seller" => $nearestSeller]
             ]);
