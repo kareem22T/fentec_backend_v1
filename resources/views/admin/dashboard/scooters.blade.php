@@ -251,7 +251,7 @@
                         url: "{{ asset('/images/high_charge.png') }}",
                         scaledSize: new google.maps.Size(40, 50),
                     },
-                    customInfo: `<div><h3>Scooter ${scooter.machine_no}</h3><p>Last User: (${scooter.trips.user.email})</p></div>`,
+                    customInfo: `<div><h3>Scooter ${scooter.machine_no}</h3><p>Last User: (${scooter.trips.user?.email})</p></div>`,
                     title: `Scooter ${scooter.machine_no}`
                 });
 
@@ -291,7 +291,7 @@
                             url: "{{ asset('/images/high_charge.png') }}",
                             scaledSize: new google.maps.Size(40, 50),
                         },
-                        customInfo: `<div><h3>Scooter ${scooter.machine_no}</h3><p>Last User: (${scooter.trips.user.email})</p></div>`,
+                        customInfo: `<div><h3>Scooter ${scooter.machine_no}</h3><p>Last User: (${scooter.trips.user?.email})</p></div>`,
                         title: `Scooter ${scooter.machine_no}`
                     });
 
