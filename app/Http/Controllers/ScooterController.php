@@ -22,7 +22,7 @@ class ScooterController extends Controller
 
     public function unlockScooter(Request $request) {
         $lang = $request->lang ? $request->lang : 'en';
-        $minCost = 5; //coins
+        $minCost = 15; //coins
         $user = $request->user();
 
         $error_msgs = [
@@ -160,7 +160,7 @@ class ScooterController extends Controller
                 }
                 $trip->save();
                 if ($user) {
-                    $user->coins = (float) $user->coins - ($timeInterval * 15);
+                    $user->coins = (float) $user->coins - (($timeInterval == 0 ? 1 : $timeInterval) * 15);
                     $user->save();
                 }
 

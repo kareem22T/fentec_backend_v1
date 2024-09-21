@@ -61,10 +61,21 @@ abstract class CheckScooterTripImage extends Command
                         );
                     }
 
+                    $content2 = "عزيزي المستخدم <br>";
+                    $content2 .= "لقد قمت بعدم إحترام تعليمات إنهاء الرحلة بعدم أخذ صورة التروتينات بعد الركن.<br>";
+                    $content2 .= "الرجاء الإتصال بالرقم 0540842707.<br><br>";
+                    $content2 .= "الرجاء العلم أنه في حال تكرار هذا التصرف سيتم إيقاف حسابك.<br><br>";
+                    $content2 .= "فانتك موبيليتي تقدم خدمة فعالة و مفيده للمجتمع الرجاء المحافظة عليها.<br><br>";
+                    $content2 .= "Dear User <br>";
+                    $content2 .= "You violated the trip termination policy by not taking a parking photo of the e-scooter. Please Call 0540842707.<br>";
+                    $content2 .= "Please note that if this behavior is repeated, your account will be suspended.<br>";
+                    $content2 .= "FenTec Mobility provides an effective and useful service to the community, please maintain it.";
+
+
                     $this->sendEmail(
                         $user->email,
                         "Warning",
-                        "You violated the trip termination policy by not taking a parking photo. Call 0660980645 to avoid a ban."
+                        $content2
                     );
                 }
             }

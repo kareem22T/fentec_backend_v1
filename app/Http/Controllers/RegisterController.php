@@ -741,7 +741,21 @@ class RegisterController extends Controller
 
             $email = $user->email;
             $msg_title = 'Verfication code';
-            $msg_body = 'Your email verfication code is: <b>' . $code . '</b>';
+            $msg_body = 'عزيزي المستخدم';
+            $msg_body .= '<br>';
+            $msg_body .= 'شكرا لاختيارك FenTec Mobility للتنقل الذكي والصديق للبيئة';
+            $msg_body .= '<br>';
+            $msg_body .= 'رمز الاثبات الخاص بك هو: <b>' . $code . '</b>';
+            $msg_body .= '<br>';
+            $msg_body .= 'استمتع بيومك و حافظ على مركبتك';
+            $msg_body .= '<br>';
+            $msg_body .= 'Dear user';
+            $msg_body .= '<br>';
+            $msg_body .= 'Thank you for choosing FenTec Mobility for Smart and environmentally friendly mobility';
+            $msg_body .= '<br>';
+            $msg_body .= 'Your verification code is: <b>' . $code . '</b>';
+            $msg_body .= '<br>';
+            $msg_body .= 'Enjoy Your Day and maintain YOUR SCOOTER';
 
             $this->sendEmail($email, $msg_title, $msg_body);
 
