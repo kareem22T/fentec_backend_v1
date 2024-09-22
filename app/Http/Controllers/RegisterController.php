@@ -910,8 +910,8 @@ class RegisterController extends Controller
             ],
             "password_confirmation" => [
                 "en" => "Password and its confirmation do not match!",
-                "fr" => "Le mot de passe et sa confirmation ne correspondent pas !",
-                "ar" => "كلمة المرور وتأكيدها غير متطابقين!",
+                "fr" => "Confirmation du mot de passe ne correspond pas!",
+                "ar" => "تأكيد كلمة المرور غير متطابق.!",
             ],
         ];
 
@@ -1013,6 +1013,11 @@ class RegisterController extends Controller
                 "fr" => "Vous avez changé votre mot de passe avec succès",
                 "ar" => "لقد قمت بتغيير كلمة المرور بنجاح",
             ],
+            "password_confirmation" => [
+                "en" => "Password and its confirmation do not match!",
+                "fr" => "Confirmation du mot de passe ne correspond pas!",
+                "ar" => "تأكيد كلمة المرور غير متطابق.!",
+            ],
         ];
 
         $validator = Validator::make($request->all(), [
@@ -1022,6 +1027,7 @@ class RegisterController extends Controller
             'old_password.required' => $error_msgs["old_password_required"][$lang],
             'new_password.required' => $error_msgs["new_password_required"][$lang],
             'new_password.min' => $error_msgs["new_password_min"][$lang],
+            'password.confirmed' => $error_msgs["password_confirmation"][$lang],
         ]);
 
         if ($validator->fails()) {
