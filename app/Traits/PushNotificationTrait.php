@@ -1,62 +1,68 @@
 <?php
-
 namespace App\Traits;
 
-use Illuminate\Support\Facades\Auth;
-use App\Models\Notification; 
-use App\Models\User; 
-use PHPMailer\PHPMailer\Exception;
-use ExpoSDK\ExpoMessage;
-use ExpoSDK\Expo;
+use Google\Client as Google_Client;  // Ensure the correct namespace
 use Illuminate\Support\Facades\Http;
+use App\Models\Notification;
 
 trait PushNotificationTrait
 {
-
-    public function pushNotification($title, $body, $token = null, $user_id = null, $data = null)
+    public function pushNotification($title, $body, $user_id = null, $data = null)
     {
+        // Create a new notification record
         $CreateNotification = Notification::create([
             "user_id" => $user_id,
             "title" => $title,
             "body" => $body,
         ]);
 
-        if ($user_id) :
-            $user = User::find($user_id);
-            if ($user) :
-                $user->has_unseened_notifications = true;
-                $user->save();
-            endif;
-        else :
-            User::where('id', '>', 0)->update(['has_unseened_notifications' => true]);
-        endif;
+        // Initialize the Google Client
+        $client = new Google_Client();
+        $client->setAuthConfig(storage_path('app/fentec-cf1a4-firebase-adminsdk-y7axz-ae1269608f.json'));  // Load the service account JSON file
+        $client->addScope('https://www.googleapis.com/auth/firebase.messaging');
 
-        $serverKey = 'AAAABSRf2YE:APA91bHHsnnNLnjhh6NI6pxCXWv8vH5C1ZQ4wO8qcN3K1Ql-keyWnbP77uTPz21hLgoThi3ni707rt-cufgDY8ismiLCuwbsMjD1C-FSZPgf64nuSTGFE8wP6DecOckgQHrnXauiAIWC';
-        $deviceToken = $token ? $token : "/topics/all_users";
-        
+        // Fetch the access token
+        $accessToken = $client->fetchAccessTokenWithAssertion()['access_token'];
+
+        // Determine if we are using a token or a topic
+        if ($user_id) {
+            // Fetch the user's device token from the database or however it's stored
+            // $deviceToken = "user's_device_token";
+            $deviceToken = $this->getUserDeviceToken($user_id);  // Create a method to fetch this if needed
+            $messageTarget = ['token' => $deviceToken];  // Use 'token' for device-specific push
+        } else {
+            $messageTarget = ['topic' => 'all_users'];  // Use 'topic' for broadcast
+        }
+
+        // Send the push notification
         $response = Http::withHeaders([
-                'Authorization' => 'key=' . $serverKey,
+                'Authorization' => 'Bearer ' . $accessToken,
                 'Content-Type' => 'application/json',
             ])
-            ->post('https://fcm.googleapis.com/fcm/send', [
-                'to' => $deviceToken,
-                'notification' => [
-                    'title' => $title,
-                    'body' => $body,
-                    'data' => $data,
-                    'icon' => "https://fentecmobility.com/imgs/icon.jpg"
-                ],
+            ->post('https://fcm.googleapis.com/v1/projects/fentec-cf1a4/messages:send', [
+                'message' => array_merge($messageTarget, [
+                    'notification' => [
+                        'title' => $title,
+                        'body' => $body,
+                    ],
+                    'data' => array_merge($data ?? [], [
+                        'icon_url' => "https://fentecmobility.com/imgs/icon.jpg"
+                    ])
+                ]),
             ]);
-        
-        // You can then check the response as needed
+
+        // Handle the response
         if ($response->successful()) {
-            // Request was successful
-            return $responseData = $response->json();
-            // Handle the response data
+            return $response->json();
         } else {
-            // Request failed
-            return $errorData = $response->json();
-            // Handle the error data
+            return $response->json();
         }
     }
-}
+
+    // Example function to get the user's device token
+    private function getUserDeviceToken($user_id)
+    {
+        // Fetch from your database or relevant storage
+        return "the_user_device_token";  // Replace with actual logic to fetch the token
+    }
+    }
