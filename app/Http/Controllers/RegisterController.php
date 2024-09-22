@@ -915,6 +915,7 @@ class RegisterController extends Controller
             'code.digits' => $error_msgs["code_digits"][$lang],
             'password.required' => $error_msgs["password_required"][$lang],
             'password.min' => $error_msgs["password_min"][$lang],
+            'password.confirmed' => $error_msgs["password_confirmation"][$lang],
         ]);
 
         if ($validator->fails()) {
