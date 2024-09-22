@@ -721,6 +721,16 @@ class RegisterController extends Controller
 
     public function sendForgotCode(Request $request)
     {
+        $lang = $request->lang ? $request->lang :  'en';
+
+        $error_msgs = [
+            "code_sent" => [
+                "en" => "'We have sent you a verification code on your email'",
+                "fr" => "Nous vous avons envoyé un code de vérification sur votre e-mail",
+                "ar" => "لقد أرسلنا لك رمز التحقق على بريدك الإلكتروني",
+            ],
+        ];
+
         $validator = Validator::make($request->all(), [
             'email' => ['required', 'email'],
         ], [
@@ -764,7 +774,7 @@ class RegisterController extends Controller
                     $this->jsonData(
                         true,
                         $user->verify,
-                        'We have sent you a verification code on your email',
+                        $error_msgs['code_sent'][$lang],
                         [],
                         [
                             'id' => $user->id,
