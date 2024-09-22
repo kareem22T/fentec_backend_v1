@@ -898,6 +898,11 @@ class RegisterController extends Controller
                 "fr" => "Il n'y a pas d'utilisateur avec cet e-mail",
                 "ar" => "لا يوجد مستخدم بهذا البريد الإلكتروني",
             ],
+            "password_confirmation" => [
+                "en" => "Password and its confirmation do not match!",
+                "fr" => "Le mot de passe et sa confirmation ne correspondent pas !",
+                "ar" => "كلمة المرور وتأكيدها غير متطابقين!",
+            ],
         ];
 
         $validator = Validator::make($request->all(), [
@@ -961,6 +966,7 @@ class RegisterController extends Controller
             );
         }
     }
+
     public function changePassword(Request $request) {
         $user = $request->user();
         $lang = $request->lang ? $request->lang : 'en';
