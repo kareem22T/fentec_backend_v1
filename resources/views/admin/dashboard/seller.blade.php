@@ -76,7 +76,7 @@
             </thead>
             <tbody>
                 <tr v-if="history && history.length > 0" v-for="result in history" :key="result.id">
-                    <td>@{{result.user.name}}</td>
+                    <td>@{{result.user?.name}}</td>
                     <td>@{{result.amount}}</td>
                     <td>@{{new Date(result.created_at).toLocaleString('en-US', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })}}</td>
                 </tr>
@@ -175,7 +175,7 @@ createApp({
         search: null,
         seller_current_page: 1,
         seller_last_page: 1,
-        
+
     }
   },
   methods: {
@@ -193,17 +193,17 @@ createApp({
     },
     handlePrevInseller () {
         if (this.seller_current_page > 1) {
-            this.seller_current_page -= 1; 
+            this.seller_current_page -= 1;
             this.getSellerData()
         }
-        
+
     },
     handleNextInseller () {
         if (this.seller_current_page < this.seller_last_page) {
-            this.seller_current_page += 1; 
+            this.seller_current_page += 1;
             this.getSellerData()
         }
-        
+
     },
     async editSeller() {
       $('.loader').fadeIn().css('display', 'flex')
