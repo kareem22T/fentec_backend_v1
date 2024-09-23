@@ -106,9 +106,9 @@ class StatisticsController extends Controller
         $seller->email = $request->email;
         $seller->address = $request->address;
         $seller->phone = $request->phone;
-        $seller->save();
         if ($request->password)
-            $seller->password = $request->password;
+            $seller->password = Hash::make($request->password);
+        $seller->save();
         if ($seller)
             return  $this->jsondata(true, null, 'تم تعديل بيانات البائع بنجاح', [], []);
 
