@@ -211,7 +211,7 @@
         </div>
         <br>
         <div class="form-group">
-            <input type="text" name="password" id="password" class="form-control input" v-model="to_edit_password" placeholder="New Password confirmation">
+            <input type="text" name="password" id="password" class="form-control input" v-model="to_edit_password_confirmation" placeholder="New Password confirmation">
         </div>
         <br>
         <div class="btns flex-center">
