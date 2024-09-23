@@ -7,7 +7,7 @@ use App\Models\Notification;
 
 trait PushNotificationTrait
 {
-    public function pushNotification($title, $body, $user_id = null, $data = null)
+    public function pushNotification($title, $body, $token, $user_id = null, $data = null)
     {
         // Create a new notification record
         $CreateNotification = Notification::create([
@@ -28,7 +28,7 @@ trait PushNotificationTrait
         if ($user_id) {
             // Fetch the user's device token from the database or however it's stored
             // $deviceToken = "user's_device_token";
-            $deviceToken = $this->getUserDeviceToken($user_id);  // Create a method to fetch this if needed
+            $deviceToken = $token;  // Create a method to fetch this if needed
             $messageTarget = ['token' => $deviceToken];  // Use 'token' for device-specific push
         } else {
             $messageTarget = ['topic' => 'all_users'];  // Use 'topic' for broadcast
