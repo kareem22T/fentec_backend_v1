@@ -608,7 +608,9 @@ class RegisterController extends Controller
 
     public function getChargesHistory(Request $request) {
         if ($request->user()) :
-            $history = User::with('chargeProcess')->find($request->user()->id);
+            $history = User::with(['chargeProcess' => function($q) {
+                $q->latest();
+            }])->find($request->user()->id);
             return $this->jsonData(true, $request->user()->verify, '', [], $history);
         else :
             return $this->jsonData(false, null, 'Account Not Found', [], []);
@@ -635,6 +637,11 @@ class RegisterController extends Controller
                 "fr" => "s'ilVotre nom d'utilisateur ou mot de passe sont incorrects",
                 "ar" => "اسم المستخدم أو كلمة المرور غير صحيحة",
             ],
+            "success" => [
+                "en" => "Successfuly operation",
+                "fr" => "Opération avec succès",
+                "ar" => "تمت العملية بنجاح",
+            ],
         ];
 
         $validator = Validator::make($request->all(), [
@@ -658,7 +665,7 @@ class RegisterController extends Controller
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
             $token = $user->createToken('token')->plainTextToken;
-            return $this->jsonData(true, $user->verify, 'Successfully Operation', [], ['token' => $token]);
+            return $this->jsonData(true, $user->verify, $error_msgs["success"][$lang], [], ['token' => $token]);
         }
         return $this->jsonData(false, null, 'Faild Operation', [$error_msgs["incorrect_info"][$lang]], []);
     }
