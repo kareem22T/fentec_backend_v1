@@ -98,6 +98,37 @@
     .show {
       display: block !important;
     }
+    .card {
+        position: relative;
+    }
+
+    .card .popup {
+    cursor: pointer;
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: white;
+    border: 1px solid #ddd;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    z-index: 99999999999999 !important;
+}
+
+.card:hover .popup {
+    display: block;
+}
+
+.card .popup table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.card .popup td {
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+}
+
   </style>
 </head>
 <body>

@@ -25,7 +25,7 @@ class ManageScooters extends Controller
             $q->whereDate('started_at', '>=', Carbon::now()->setTimezone('Africa/Algiers')->subHours(4))
                 ->whereNull('ended_at');
         })->get();
-        $locked_scooters = Scooter::all()->count() - $Activated_scooters->count();
+        $locked_scooters = Scooter::whereNotIn('id', $Activated_scooters->pluck('id'))->get();
         $this->updateScotersData();
         return view("admin.dashboard.scooters")->with(compact(['Activated_scooters', 'locked_scooters']));
     }

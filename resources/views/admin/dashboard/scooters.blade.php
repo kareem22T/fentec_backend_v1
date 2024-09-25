@@ -7,52 +7,96 @@
     <div class="scooter_wrapper" id="scooter_wrapper">
         <section class="main">
             <div class="statistics side">
-                <div class="card">
+                <!-- Total devices -->
+                <div class="card" @mouseover="hoveredCategory = 'all'" @mouseleave="hoveredCategory = null">
                     <h1 v-if="scooters && scooters.length">
                         Total devices <br>
                         <span>@{{ scooters?.length }}</span>
                     </h1>
+                    <!-- Pop-up on hover -->
+                    <div class="popup" v-if="hoveredCategory === 'all'">
+                        <table>
+                            <tr v-for="scooter in scooters" :key="scooter.id">
+                                <td>@{{ scooter.iot_id }}</td>
+                                <td>@{{ scooter.machine_no }}</td>
+                                <td>@{{ scooter.battary_charge }}%</td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
-                <div class="card">
+
+                <!-- Activated scooters -->
+                <div class="card" @mouseover="hoveredCategory = 'activated'" @mouseleave="hoveredCategory = null">
                     <h1>
                         Activated <br>
                         <span>{{ $Activated_scooters->count() }}</span>
                     </h1>
+                    <!-- Pop-up on hover -->
+                    <div class="popup" v-if="hoveredCategory === 'activated'">
+                        <table>
+                            <tr v-for="scooter in scooters.filter(scooter => scooter.isActivated)" :key="scooter.id">
+                                <td>@{{ scooter.iot_id }}</td>
+                                <td>@{{ scooter.machine_no }}</td>
+                                <td>@{{ scooter.battary_charge }}%</td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
-                <div class="card">
+
+                <!-- Locked scooters -->
+                <div class="card" @mouseover="hoveredCategory = 'locked'" @mouseleave="hoveredCategory = null">
                     <h1>
                         Locked <br>
-                        <span>{{ $locked_scooters }}</span>
+                        <span>{{ $locked_scooters->count() }}</span>
                     </h1>
+                    <!-- Pop-up on hover -->
+                    <div class="popup" v-if="hoveredCategory === 'locked'">
+                        <table>
+                            @foreach ($locked_scooters as $item)
+                            <tr>
+                                <td>{{ $item->iot_id }}</td>
+                                <td>{{ $item->machine_no }}</td>
+                                <td>{{ $item->battary_charge }}%</td>
+                            </tr>
+                            @endforeach
+                        </table>
+                    </div>
                 </div>
-                <div class="card">
+
+                <!-- Battery less than 20% -->
+                <div class="card" @mouseover="hoveredCategory = 'lowBattery'" @mouseleave="hoveredCategory = null">
                     <h1>
                         Battery less 20% <br>
-                        <span>
-                            @{{ scooters?.filter(item => item.battary_charge < 20).length }}
-                        </span>
+                        <span>@{{ scooters?.filter(item => item.battary_charge < 20).length }}</span>
                     </h1>
+                    <!-- Pop-up on hover -->
+                    <div class="popup" v-if="hoveredCategory === 'lowBattery'">
+                        <table>
+                            <tr v-for="scooter in scooters.filter(scooter => scooter.battary_charge < 20)" :key="scooter.id">
+                                <td>@{{ scooter.iot_id }}</td>
+                                <td>@{{ scooter.machine_no }}</td>
+                                <td>@{{ scooter.battary_charge }}%</td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
             </div>
 
             <div class="map_wrapper card">
                 <div class="head">
                     <a href="{{ route('zones.manage') }}">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                            style="transform: ;msFilter:;">
-                            <path
-                                d="M3 5v14c0 1.103.897 2 2 2h14c1.103 0 2-.897 2-2V5c0-1.103-.897-2-2-2H5c-1.103 0-2 .897-2 2zm16.002 14H5V5h14l.002 14z">
-                            </path>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="transform: ;msFilter:;">
+                            <path d="M3 5v14c0 1.103.897 2 2 2h14c1.103 0 2-.897 2-2V5c0-1.103-.897-2-2-2H5c-1.103 0-2 .897-2 2zm16.002 14H5V5h14l.002 14z"></path>
                             <path d="M15 12h2V7h-5v2h3zm-3 3H9v-3H7v5h5z"></path>
                         </svg>
                         Zones
                     </a>
-
                 </div>
                 <br>
                 <div class="map" id="map"></div>
             </div>
         </section>
+
         <section class="row-2 table_wrapper">
             <div class="head">
                 <h1>Scooters List </h1>
@@ -329,6 +373,7 @@
                     iot_id: null,
                     showAddIot: false,
                     iot_title: null,
+                    hoveredCategory: null, // stores the category of the card being hovered
                     token: null,
                     to_edit_iot_machine_no: null,
                     to_edit_iot_iot_id: null,
