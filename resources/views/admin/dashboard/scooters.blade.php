@@ -14,7 +14,7 @@
                         <span>@{{ scooters?.length }}</span>
                     </h1>
                     <!-- Pop-up on hover -->
-                    <div class="popup" v-if="hoveredCategory === 'all'">
+                    <div class="popup" >
                         <table>
                             <tr v-for="scooter in scooters" :key="scooter.id">
                                 <td>@{{ scooter.iot_id }}</td>
