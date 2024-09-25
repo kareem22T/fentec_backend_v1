@@ -40,6 +40,7 @@
                                 <td>{{ $item->machine_no }}</td>
                                 <td>{{ $item->battary_charge }}%</td>
                             </tr>
+                            @endforeach
                         </table>
                     </div>
                 </div>
