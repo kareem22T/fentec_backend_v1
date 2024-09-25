@@ -98,7 +98,7 @@
     .show {
       display: block !important;
     }
-    .card {
+    .card:not(.pop-up) {
         position: relative;
     }
 

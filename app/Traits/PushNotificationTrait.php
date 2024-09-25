@@ -7,7 +7,7 @@ use App\Models\Notification;
 
 trait PushNotificationTrait
 {
-    public function pushNotification($title, $body, $token, $user_id = null, $data = null)
+    public function pushNotification($title, $body, $token = null, $user_id = null, $data = null)
     {
         // Create a new notification record
         $CreateNotification = Notification::create([
