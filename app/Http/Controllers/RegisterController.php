@@ -1054,112 +1054,159 @@ class RegisterController extends Controller
             return $this->jsondata(true, $user->verify, $error_msgs["password_changed"][$lang], [], []);
         }
     }
+    public function translate($key, $lang = 'en') {
+        $translations = [
+            'en' => [
+                'change_email_failed' => 'Change email failed',
+                'old_email_error' => 'You have entered the old email',
+                'email_changed_success' => 'Your email has changed successfully!',
+                'change_phone_failed' => 'Change phone failed',
+                'phone_changed_success' => 'Your phone number has changed successfully!',
+                'change_profile_pic_failed' => 'Change profile pic failed',
+                'profile_pic_changed_success' => 'Your profile pic changed successfully!',
+                'required_email' => 'Please write a valid email',
+                'invalid_email' => 'Please write a valid email',
+                'required_phone' => 'Please write a valid phone number',
+                'required_profile_pic' => 'Please upload a profile picture',
+            ],
+            'fr' => [
+                'change_email_failed' => 'Échec du changement d\'email',
+                'old_email_error' => 'Vous avez saisi l\'ancien email',
+                'email_changed_success' => 'Votre email a été changé avec succès!',
+                'change_phone_failed' => 'Échec du changement de numéro de téléphone',
+                'phone_changed_success' => 'Votre numéro de téléphone a été changé avec succès!',
+                'change_profile_pic_failed' => 'Échec du changement de photo de profil',
+                'profile_pic_changed_success' => 'Votre photo de profil a été changée avec succès!',
+                'required_email' => 'Veuillez saisir un email valide',
+                'invalid_email' => 'Veuillez saisir un email valide',
+                'required_phone' => 'Veuillez saisir un numéro de téléphone valide',
+                'required_profile_pic' => 'Veuillez télécharger une photo de profil',
+            ],
+            'ar' => [
+                'change_email_failed' => 'فشل تغيير البريد الإلكتروني',
+                'old_email_error' => 'لقد أدخلت البريد الإلكتروني القديم',
+                'email_changed_success' => 'تم تغيير بريدك الإلكتروني بنجاح!',
+                'change_phone_failed' => 'فشل تغيير رقم الهاتف',
+                'phone_changed_success' => 'تم تغيير رقم هاتفك بنجاح!',
+                'change_profile_pic_failed' => 'فشل تغيير صورة الملف الشخصي',
+                'profile_pic_changed_success' => 'تم تغيير صورة الملف الشخصي بنجاح!',
+                'required_email' => 'يرجى كتابة بريد إلكتروني صالح',
+                'invalid_email' => 'يرجى كتابة بريد إلكتروني صالح',
+                'required_phone' => 'يرجى كتابة رقم هاتف صالح',
+                'required_profile_pic' => 'يرجى تحميل صورة الملف الشخصي',
+            ]
+        ];
+
+        return $translations[$lang][$key] ?? $translations['en'][$key];
+    }
 
     public function editEmail(Request $request) {
         $user = $request->user();
+        $lang = $request->get('lang', 'en');
+
         $validator = Validator::make($request->all(), [
             'new_email' => 'required|email',
-        ],[
-            'new_email.required' => 'please write an valid email',
-            'new_email.email' => 'please write an valid email'
+        ], [
+            'new_email.required' => $this->translate('required_email', $lang),
+            'new_email.email' => $this->translate('invalid_email', $lang),
         ]);
 
-        if ($validator->fails())
-            return $this->jsondata(false, $user->verify, 'Change email failed', [$validator->errors()->first()], []);
+        if ($validator->fails()) {
+            return $this->jsondata(false, $user->verify, $this->translate('change_email_failed', $lang), [$validator->errors()->first()], []);
+        }
 
-        if ($user->email !== $request->new_email):
+        if ($user->email !== $request->new_email) {
             $user->email = $request->new_email;
             $user->verify = 0;
             $user->save();
-        else:
-            return $this->jsondata(false, $user->verify, 'Change email failed', ["You have Enterd the old email"], []);
-        endif;
+        } else {
+            return $this->jsondata(false, $user->verify, $this->translate('change_email_failed', $lang), [$this->translate('old_email_error', $lang)], []);
+        }
 
-        if ($user)
-            return
-                $this->jsondata(
-                    true,
-                    $user->verify, '
-                    Your email has changed successfully!',
-                    [],
-                    [
-                        'name' => $user->name,
-                        'phone' => $user->phone,
-                        'email' => $user->email,
-                    ]
-                );
-
+        return $this->jsondata(
+            true,
+            $user->verify,
+            $this->translate('email_changed_success', $lang),
+            [],
+            [
+                'name' => $user->name,
+                'phone' => $user->phone,
+                'email' => $user->email,
+            ]
+        );
     }
 
     public function editPhone(Request $request) {
         $user = $request->user();
+        $lang = $request->get('lang', 'en');
+
         $validator = Validator::make($request->all(), [
             'new_phone' => 'required',
-        ],[
-            'new_phone.required' => 'please write an valid phone number'
+        ], [
+            'new_phone.required' => $this->translate('required_phone', $lang),
         ]);
 
-        if ($validator->fails())
-            return $this->jsondata(false, $user->verify, 'Change phone failed', [$validator->errors()->first()], []);
+        if ($validator->fails()) {
+            return $this->jsondata(false, $user->verify, $this->translate('change_phone_failed', $lang), [$validator->errors()->first()], []);
+        }
 
-        if ($user->phone !== $request->new_phone):
+        if ($user->phone !== $request->new_phone) {
             $user->phone = $request->new_phone;
             $user->save();
-        endif;
+        }
 
-        if ($user)
-            return
-                $this->jsondata(
-                    true,
-                    $user->verify,
-                    'Your phone number has changed successfully!',
-                    [],
-                    [
-                        'name' => $user->name,
-                        'phone' => $user->phone,
-                        'email' => $user->email,
-                    ]
-                );
-
+        return $this->jsondata(
+            true,
+            $user->verify,
+            $this->translate('phone_changed_success', $lang),
+            [],
+            [
+                'name' => $user->name,
+                'phone' => $user->phone,
+                'email' => $user->email,
+            ]
+        );
     }
+
     public function editProfilePic(Request $request) {
         $user = $request->user();
+        $lang = $request->get('lang', 'en');
+
         $validator = Validator::make($request->all(), [
             'profile_img' => 'required',
-        ],[
-            'profile_img.required' => 'please upload profile pic'
+        ], [
+            'profile_img.required' => $this->translate('required_profile_pic', $lang),
         ]);
 
-        if ($validator->fails())
-            return $this->jsondata(false, $user->verify, 'Change profile pic failed', [$validator->errors()->first()], []);
+        if ($validator->fails()) {
+            return $this->jsondata(false, $user->verify, $this->translate('change_profile_pic_failed', $lang), [$validator->errors()->first()], []);
+        }
 
-        if ($request->profile_img) :
+        if ($request->profile_img) {
             $disk = 'public';
 
             // Specify the path to the image within the storage disk
             $path = 'images/uploads/' . $user->photo_path;
-            if (Storage::disk($disk)->exists($path))
+            if (Storage::disk($disk)->exists($path)) {
                 Storage::disk($disk)->delete($path);
+            }
 
             $profile_pic = $this->saveImg($request->profile_img, 'images/uploads', 'profile' . $user->id . "_" . time());
             $user->photo_path = $profile_pic;
             $user->save();
-        endif;
+        }
 
-        if ($user)
-            return
-                $this->jsondata(
-                    true,
-                    $user->verify,
-                    'Your profile pic changed successfully!',
-                    [],
-                    [
-                        'name' => $user->name,
-                        'phone' => $user->phone,
-                        'email' => $user->email,
-                    ]
-                );
-
+        return $this->jsondata(
+            true,
+            $user->verify,
+            $this->translate('profile_pic_changed_success', $lang),
+            [],
+            [
+                'name' => $user->name,
+                'phone' => $user->phone,
+                'email' => $user->email,
+            ]
+        );
     }
 
     public function getUser(Request $request)
