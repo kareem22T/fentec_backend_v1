@@ -34,10 +34,11 @@
                     <!-- Pop-up on hover -->
                     <div class="popup" v-if="hoveredCategory === 'activated'">
                         <table>
-                            <tr v-for="scooter in scooters.filter(scooter => scooter.isActivated)" :key="scooter.id">
-                                <td>@{{ scooter.iot_id }}</td>
-                                <td>@{{ scooter.machine_no }}</td>
-                                <td>@{{ scooter.battary_charge }}%</td>
+                            @foreach ($Activated_scooters as $item)
+                            <tr>
+                                <td>{{ $item->iot_id }}</td>
+                                <td>{{ $item->machine_no }}</td>
+                                <td>{{ $item->battary_charge }}%</td>
                             </tr>
                         </table>
                     </div>
