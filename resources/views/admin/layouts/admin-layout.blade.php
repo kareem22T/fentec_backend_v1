@@ -125,8 +125,9 @@
 }
 
 .card .popup td {
-    padding: 8px;
-    border-bottom: 1px solid #ddd;
+    padding: 2px;
+  border-bottom: 1px solid #ddd;
+  font-size: 12px;
 }
 
   </style>
