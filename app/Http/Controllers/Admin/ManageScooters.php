@@ -267,25 +267,25 @@ class ManageScooters extends Controller
         $iot = Scooter::find($request->iot_id);
 
         $client = new Client();
-            // // First HTTP POST request
-            // $unlock_lock = $client->post('http://api.uqbike.com/terControl/sendControl.do', [
-            //     'form_params' => [
-            //         'machineNO' => $iot->machine_no,
-            //         'token' => $iot->token,
-            //         'paramName' => 22,
-            //         'controlType' => 'control'
-            //     ]
-            // ]);
+            // First HTTP POST request
+            $unlock_lock = $client->post('http://api.uqbike.com/terControl/sendControl.do', [
+                'form_params' => [
+                    'machineNO' => $iot->machine_no,
+                    'token' => $iot->token,
+                    'paramName' => 22,
+                    'controlType' => 'control'
+                ]
+            ]);
 
-            // // Second HTTP POST request
-            // $unlock_lock_wheel = $client->post('http://api.uqbike.com/terControl/sendControl.do', [
-            //     'form_params' => [
-            //         'machineNO' => $iot->machine_no,
-            //         'token' => $iot->token,
-            //         'paramName' => 11,
-            //         'controlType' => 'control'
-            //     ]
-            // ]);
+            // Second HTTP POST request
+            $unlock_lock_wheel = $client->post('http://api.uqbike.com/terControl/sendControl.do', [
+                'form_params' => [
+                    'machineNO' => $iot->machine_no,
+                    'token' => $iot->token,
+                    'paramName' => 11,
+                    'controlType' => 'control'
+                ]
+            ]);
 
         if ($iot)
             return $this->jsondata(true, null, 'Scooter wheel has unlocked successfuly', [], []);
