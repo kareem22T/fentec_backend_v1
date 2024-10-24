@@ -14,7 +14,7 @@ class AdminMiddleware
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle($request, Closure $next, $role)
+    public function handle($request, Closure $next, ...$roles)
     {
         if (!Auth::check()) {
             return redirect('/login');
@@ -22,7 +22,8 @@ class AdminMiddleware
 
         $user = Auth::user();
 
-        if ($user->role === 'Master' || $user->role === $role) {
+        // Check if the user role is either 'Master' or one of the allowed roles
+        if ($user->role === 'Master' || in_array($user->role, $roles)) {
             return $next($request);
         }
 

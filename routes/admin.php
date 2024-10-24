@@ -40,7 +40,7 @@ Route::middleware('auth:admin')->group(function () {
     Route::middleware('admin:Master')->post('/resend-notification', [AdminHomeController::class, 'resendNotification'])->name("notification.resend");
 
     // users
-    Route::middleware('admin:Moderator')->prefix('users')->group(function () {
+    Route::middleware('admin:Master')->prefix('users')->group(function () {
         Route::get('/', [ManageUsersController::class, 'previewIndex'])->name('prev.users');
         Route::post('/', [ManageUsersController::class, 'getUsers'])->name('get.users');
         Route::post('/approve', [ManageUsersController::class, 'approve'])->name('user.approve');
@@ -70,7 +70,7 @@ Route::middleware('auth:admin')->group(function () {
     });
 
     // scooters
-    Route::middleware('admin:Technician')->prefix('scooters')->group(function () {
+    Route::middleware('admin:Technician,Moderator')->prefix('scooters')->group(function () {
         Route::get('/', [ManageScooters::class, 'index'])->name('scooters.manage');
         Route::get('/zones', [ManageScooters::class, 'zonesIndex'])->name('zones.manage');
         Route::get('/get-zones', [ManageScooters::class, 'getZones'])->name('zones.get');

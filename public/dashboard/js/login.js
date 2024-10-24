@@ -28,7 +28,7 @@ createApp({
                         $('#errors').fadeOut('slow')
                         switch (response.data.data.role) {
                             case "Moderator":
-                                window.location.href = '/admin/users'
+                                window.location.href = '/admin/scooters'
                                 break;
 
                             case "Accountant":
