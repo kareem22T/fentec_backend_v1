@@ -86,6 +86,7 @@
 
             <div class="map_wrapper card">
                 <div class="head">
+                    @if(Auth::guard("admin")->user()->role != "Moderator")
                     <a href="{{ route('zones.manage') }}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="transform: ;msFilter:;">
                             <path d="M3 5v14c0 1.103.897 2 2 2h14c1.103 0 2-.897 2-2V5c0-1.103-.897-2-2-2H5c-1.103 0-2 .897-2 2zm16.002 14H5V5h14l.002 14z"></path>
@@ -93,6 +94,7 @@
                         </svg>
                         Zones
                     </a>
+                    @endif
                 </div>
                 <br>
                 <div class="map" id="map"></div>
