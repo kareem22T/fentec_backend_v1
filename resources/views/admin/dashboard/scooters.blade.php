@@ -160,8 +160,8 @@
                             <div class="btns flex-center">
                                 <button class="button success" @click="handleEditIot(iot)"><i
                                         class='bx bx-edit'></i></button>
-                                <button class="button danger" @click="deleteIot(iot.id, iot.machine_no)"><i
-                                        class='bx bx-trash'></i></button>
+                                {{-- <button class="button danger" @click="deleteIot(iot.id, iot.machine_no)"><i
+                                        class='bx bx-trash'></i></button> --}}
                                 <div class="button primary" style="position: relative;margin: 0;"
                                     @click="showBattaryPopup[iot.id] ? showBattaryPopup[iot.id] = !showBattaryPopup[iot.id] : showBattaryPopup[iot.id] = true">
                                     <i class='bx bxs-battery-charging'></i>
