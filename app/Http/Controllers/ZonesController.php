@@ -14,7 +14,7 @@ class ZonesController extends Controller
 
         if ($scooters->count() > 0) {
             foreach ($scooters as $iot) {
-                $response = Http::post('http://api.uqbike.com/position/getpos.do?machineNO=' . $iot->machine_no . "&token=" . $iot->token);
+                $response = Http::timeout(60)->post('http://api.uqbike.com/position/getpos.do?machineNO=' . $iot->machine_no . "&token=" . $iot->token);
                 if ($response->successful()) {
                     $iot->latitude = $response['data'][0]['latitude'];
                     $iot->longitude = $response['data'][0]['longitude'];
