@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Models\Scooter;
 
-class CheckFourthScooterZone extends CheckScooterZone
+class CheckSixthScooterZone extends CheckScooterZone
 {
     /**
      * The name and signature of the console command.

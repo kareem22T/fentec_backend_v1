@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use App\Models\Scooter;
 use Illuminate\Console\Command;
 
-class CheckFourthScooterTripImage extends CheckScooterTripImage
+class CheckSixthScooterTripImage extends CheckScooterTripImage
 {
     /**
      * The name and signature of the console command.
