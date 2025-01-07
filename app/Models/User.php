@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -82,4 +83,10 @@ class User extends Authenticatable
         return $this->belongsToMany('App\Models\Coupon', 'users_coupons', 'user_id', 'coupon_id', 'id', 'id');
     }
 
+    protected $appends = ['total_charged_points'];
+
+    public function getTotalChargedPointsAttribute()
+    {
+        return DB::table('seller_history')->where('user_id', $this->id)->sum('amount');
+    }
 }

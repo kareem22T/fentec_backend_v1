@@ -1,5 +1,6 @@
 <?php
 
+use App\Exports\DynamicExport;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ZonesController;
@@ -17,6 +18,8 @@ use App\Http\Controllers\Seller\RegisterController as SellerRigisterController;
 */
 use App\Http\Controllers\Admin\ManageScooters;
 use App\Http\Controllers\SurveyController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 
 Route::group(['middleware' => ['check_api_password']], function () {
@@ -72,7 +75,15 @@ Route::get("/check-zones", [ZonesController::class, "whereIot"]);
 Route::get('/', function () {
     return 'welcome';
 });
-Route::get('export/{table}', function ($table) {
-    $includeHeadings = request()->query('headings', false); // Fetch query parameter to decide
-    return Excel::download(new \App\Exports\DynamicExport($table, $includeHeadings), "{$table}.xlsx");
+Route::get('export', function (Request $request) {
+    $table = $request->input('table');
+    $headings = $request->boolean('headings', false);
+    $conditions = json_decode($request->input('conditions'));
+
+    Log::info($conditions);
+
+    return Excel::download(
+        new DynamicExport($table, $headings, $conditions),
+        "{$table}_export.xlsx"
+    );
 })->name('dynamic.export');

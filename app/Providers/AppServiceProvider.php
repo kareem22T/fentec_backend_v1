@@ -23,8 +23,18 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Blade::directive('exportTable', function ($expression) {
-            list($table, $headings) = array_pad(explode(',', $expression), 2, 'false');
-            $exportRoute = "<?php echo route('dynamic.export', ['table' => trim($table, \"'\"), 'headings' => trim($headings)]); ?>";
+            list($table, $headings, $conditions) = array_pad(explode(',', $expression), 3, 'null');
+
+            // Convert headings and conditions to valid JSON strings
+            $headings = trim($headings) === 'true' ? 'true' : 'false';
+            $conditions = $conditions;
+
+            $exportRoute = "<?php echo route('dynamic.export', [
+        'table' => trim($table, \"'\"),
+        'headings' => $headings,
+        'conditions' => $conditions
+    ]); ?>";
+
             return "<a href=\"{$exportRoute}\" style=\"font-size: 18px; font-weight: bold; color: #ff7300;\">Export {$table}</a>";
         });
     }

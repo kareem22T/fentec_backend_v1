@@ -21,18 +21,20 @@ class ManageUsersController extends Controller
         $this->middleware('admin:Moderator')->only(['previewIndex', 'getUsers', "approve", "reject"]);
     }
 
-    public function previewIndex () {
+    public function previewIndex()
+    {
         return view('admin.dashboard.users.preview');
     }
 
-    public function getUsers(Request $request) {
+    public function getUsers(Request $request)
+    {
 
         if (!$request->getJustUsersWithType) :
-            $usersRequests = User::latest()->where('approved', false)->where('rejected', false)->where('isBanned', false)->where('name', '!=', null)->paginate(15);
-            $usersList = User::latest()->where('approved', true)->where('isBanned', false)->paginate(15);
-            $incompleteUsers = User::latest()->where('name', null)->paginate(15);
-            $rejectedUsers = User::latest()->where('rejected', true)->paginate(15);
-            $bannedUsers = User::latest()->where('isBanned', true)->paginate(15);
+            $usersRequests = User::with('trips')->latest()->where('approved', false)->where('rejected', false)->where('isBanned', false)->where('name', '!=', null)->paginate(15);
+            $usersList = User::with('trips')->latest()->where('approved', true)->where('isBanned', false)->paginate(15);
+            $incompleteUsers = User::with('trips')->latest()->where('name', null)->paginate(15);
+            $rejectedUsers = User::with('trips')->latest()->where('rejected', true)->paginate(15);
+            $bannedUsers = User::with('trips')->latest()->where('isBanned', true)->paginate(15);
 
             return  $this->jsondata(true, null, 'Successful Operation', [], [
                 "usersRequests" => $usersRequests,
@@ -45,67 +47,68 @@ class ManageUsersController extends Controller
 
         if ($request->getJustUsersWithType && $request->getJustUsersWithType === "Active"):
             $usersList = User::where('approved', true)->where('isBanned', false)
-            ->where(function ($query) use ($request) {
-                $query->where('name', 'like', '%' . $request->Active_search_words . '%')
-                    ->orWhere('email', 'like', '%' . $request->Active_search_words . '%')
-                    ->orWhere('phone', 'like', '%' . $request->Active_search_words . '%');
-            })
-            ->paginate(15);
+                ->where(function ($query) use ($request) {
+                    $query->where('name', 'like', '%' . $request->Active_search_words . '%')
+                        ->orWhere('email', 'like', '%' . $request->Active_search_words . '%')
+                        ->orWhere('phone', 'like', '%' . $request->Active_search_words . '%');
+                })
+                ->paginate(15);
             return  $this->jsondata(true, null, 'Successful Operation', [], [
                 "usersList" => $usersList,
             ]);
         endif;
         if ($request->getJustUsersWithType && $request->getJustUsersWithType === "Requests"):
             $usersRequests = User::where('approved', false)->where('rejected', false)->where('isBanned', false)->where('name', '!=', null)
-            ->where(function ($query) use ($request) {
-                $query->where('name', 'like', '%' . $request->Requests_search_words . '%')
-                    ->orWhere('email', 'like', '%' . $request->Requests_search_words . '%')
-                    ->orWhere('phone', 'like', '%' . $request->Requests_search_words . '%');
-            })
-            ->paginate(15);
+                ->where(function ($query) use ($request) {
+                    $query->where('name', 'like', '%' . $request->Requests_search_words . '%')
+                        ->orWhere('email', 'like', '%' . $request->Requests_search_words . '%')
+                        ->orWhere('phone', 'like', '%' . $request->Requests_search_words . '%');
+                })
+                ->paginate(15);
             return  $this->jsondata(true, null, 'Successful Operation', [], [
                 "usersRequests" => $usersRequests,
             ]);
         endif;
         if ($request->getJustUsersWithType && $request->getJustUsersWithType === "Incomplete"):
             $incompleteUsers = User::where('name', null)
-            ->where(function ($query) use ($request) {
-                $query->where('name', 'like', '%' . $request->Incomplete_search_words . '%')
-                    ->orWhere('email', 'like', '%' . $request->Incomplete_search_words . '%')
-                    ->orWhere('phone', 'like', '%' . $request->Incomplete_search_words . '%');
-            })
-            ->paginate(15);
+                ->where(function ($query) use ($request) {
+                    $query->where('name', 'like', '%' . $request->Incomplete_search_words . '%')
+                        ->orWhere('email', 'like', '%' . $request->Incomplete_search_words . '%')
+                        ->orWhere('phone', 'like', '%' . $request->Incomplete_search_words . '%');
+                })
+                ->paginate(15);
             return  $this->jsondata(true, null, 'Successful Operation', [], [
                 "incompleteUsers" => $incompleteUsers,
             ]);
         endif;
         if ($request->getJustUsersWithType && $request->getJustUsersWithType === "Banned"):
             $bannedUsers = User::where('isBanned', true)
-            ->where(function ($query) use ($request) {
-                $query->where('name', 'like', '%' . $request->Banned_search_words . '%')
-                    ->orWhere('email', 'like', '%' . $request->Banned_search_words . '%')
-                    ->orWhere('phone', 'like', '%' . $request->Banned_search_words . '%');
-            })
-            ->paginate(15);
+                ->where(function ($query) use ($request) {
+                    $query->where('name', 'like', '%' . $request->Banned_search_words . '%')
+                        ->orWhere('email', 'like', '%' . $request->Banned_search_words . '%')
+                        ->orWhere('phone', 'like', '%' . $request->Banned_search_words . '%');
+                })
+                ->paginate(15);
             return  $this->jsondata(true, null, 'Successful Operation', [], [
                 "bannedUsers" => $bannedUsers,
             ]);
         endif;
         if ($request->getJustUsersWithType && $request->getJustUsersWithType === "Rejected"):
             $rejectedUsers = User::where('rejected', true)
-            ->where(function ($query) use ($request) {
-                $query->where('name', 'like', '%' . $request->Rejected_search_words . '%')
-                    ->orWhere('email', 'like', '%' . $request->Rejected_search_words . '%')
-                    ->orWhere('phone', 'like', '%' . $request->Rejected_search_words . '%');
-            })
-            ->paginate(15);
+                ->where(function ($query) use ($request) {
+                    $query->where('name', 'like', '%' . $request->Rejected_search_words . '%')
+                        ->orWhere('email', 'like', '%' . $request->Rejected_search_words . '%')
+                        ->orWhere('phone', 'like', '%' . $request->Rejected_search_words . '%');
+                })
+                ->paginate(15);
             return  $this->jsondata(true, null, 'Successful Operation', [], [
                 "rejectedUsers" => $rejectedUsers,
             ]);
         endif;
     }
 
-    public function approve(Request $request) {
+    public function approve(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'id' => 'required',
         ], [
@@ -137,7 +140,8 @@ class ManageUsersController extends Controller
         endif;
     }
 
-    public function reject(Request $request) {
+    public function reject(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'id' => 'required',
             'rejection_reason' => 'required',
@@ -169,7 +173,8 @@ class ManageUsersController extends Controller
         endif;
     }
 
-    public function ban(Request $request) {
+    public function ban(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'id' => 'required',
             'ban_reason' => 'required',
@@ -198,7 +203,7 @@ class ManageUsersController extends Controller
             $this->sendEmail($email, $msg_title, $msg_body);
             if ($user->notification_token)
                 $response = $this->pushNotification($msg_title, "Hello " . $user->name . " You Account has been banned because: " . $user->ban_reason
-                . " Call Customer Service for more details: 0660980645", $user->notification_token, $user->id);
+                    . " Call Customer Service for more details: 0660980645", $user->notification_token, $user->id);
             return  $this->jsondata(true, null, 'User Banned Successfuly', [], []);
         endif;
     }
